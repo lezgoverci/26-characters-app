@@ -63,7 +63,7 @@ export default function Signup() {
           </form>
           <div className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href="#" className="font-medium underline" prefetch={false}>
+            <Link href="/login" className="font-medium underline" prefetch={false}>
               Sign in
             </Link>
           </div>
