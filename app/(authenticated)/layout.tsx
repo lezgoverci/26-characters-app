@@ -1,14 +1,18 @@
+import SideMenu from "@/components/sidemenu"
+
+
 export default function DashboardLayout({
     children, // will be a page or nested layout
   }: {
     children: React.ReactNode
   }) {
     return (
-      <section>
-        {/* Include shared UI here e.g. a header or sidebar */}
-        <nav>This is a nav</nav>
-   
-        {children}
-      </section>
+      <div className="grid min-h-screen w-full grid-cols-1 md:grid-cols-[280px_1fr]">
+      <SideMenu />
+      <div className="flex flex-col">
+ 
+       {children}
+      </div>
+    </div>
     )
   }
