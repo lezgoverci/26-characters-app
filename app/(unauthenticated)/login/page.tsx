@@ -1,3 +1,6 @@
+'use client'
+
+
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/I51BxIUMYKJ
@@ -7,15 +10,22 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useRouter } from 'next/navigation'
 
 export default function Component() {
+
+  const router = useRouter()
+  const processLogin = (e) => {
+    e.preventDefault()
+    router.push("/templates")
+  }
   return (
     <div className="grid min-h-screen w-full grid-cols-1 md:grid-cols-2">
       <div className="flex flex-col items-center justify-center bg-primary p-6 md:p-12">
         <div className="max-w-md space-y-4">
           <div className="flex items-center space-x-2">
             <MountainIcon className="h-8 w-8 text-primary-foreground" />
-            <span className="text-2xl font-bold text-primary-foreground">Acme Inc.</span>
+            <span className="text-2xl font-bold text-primary-foreground">26 Characters </span>
           </div>
           <p className="text-lg text-primary-foreground">
             Join the thousands of businesses that trust us to power their digital experiences.
@@ -34,7 +44,7 @@ export default function Component() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" placeholder="Enter your password" required />
             </div>
-            <Button type="submit" className="w-full">
+            <Button onClick={processLogin} type="submit" className="w-full">
               Login
             </Button>
           </form>

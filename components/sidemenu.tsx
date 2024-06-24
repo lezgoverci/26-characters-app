@@ -21,30 +21,34 @@ export default function SideMenu(){
             </Button>
             <Link href="#" className="flex items-center gap-2 font-semibold" prefetch={false}>
               <Package2Icon className="h-6 w-6" />
-              <span className="">Acme Inc</span>
+              <span className="">26 Characters</span>
             </Link>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="h-9 w-9">
                 <AvatarImage src="/placeholder-user.jpg" />
-                <AvatarFallback>JP</AvatarFallback>
+                <AvatarFallback>VM</AvatarFallback>
                 <span className="sr-only">Toggle user menu</span>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>My Account</DropdownMenuItem>
-              <DropdownMenuItem>Notifications</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
+              {/* <DropdownMenuItem>Notifications</DropdownMenuItem>
+              <DropdownMenuItem>Billing</DropdownMenuItem> */}
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/login" prefetch={false}>
+                  Logout
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
         <div className="flex-1 overflow-auto py-4 lg:block">
           <nav className="grid gap-1 px-4 text-sm font-medium">
             <Link
-              href="#"
+              href="/templates"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
               prefetch={false}
             >
@@ -52,7 +56,7 @@ export default function SideMenu(){
               Templates
             </Link>
             <Link
-              href="#"
+              href="/clients"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
               prefetch={false}
             >
@@ -60,37 +64,14 @@ export default function SideMenu(){
               Clients
             </Link>
             <Link
-              href="#"
+              href="/files"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
               prefetch={false}
             >
               <FileIcon className="h-4 w-4" />
               Files
             </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
-              prefetch={false}
-            >
-              <LayoutDashboardIcon className="h-4 w-4" />
-              Dashboard
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
-              prefetch={false}
-            >
-              <CalendarIcon className="h-4 w-4" />
-              Calendar
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
-              prefetch={false}
-            >
-              <GroupIcon className="h-4 w-4" />
-              Team
-            </Link>
+            
           </nav>
         </div>
         <div className="mt-auto border-t p-4 lg:hidden">

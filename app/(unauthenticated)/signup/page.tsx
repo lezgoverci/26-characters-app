@@ -34,7 +34,7 @@ export default function Signup() {
       <div className="flex flex-col items-center justify-center bg-primary p-6 md:p-12">
         <div className="max-w-md space-y-4">
           <div className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-primary-foreground">Acme Inc.</span>
+            <span className="text-2xl font-bold text-primary-foreground">26 Characters </span>
           </div>
           <p className="text-lg text-primary-foreground">
             Join the thousands of businesses that trust us to power their digital experiences.
