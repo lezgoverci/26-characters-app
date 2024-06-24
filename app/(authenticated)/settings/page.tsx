@@ -13,9 +13,17 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Select } from "@/components/ui/select"
+
 import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
+  
 
 export default function Component() {
   const [search, setSearch] = useState("")
@@ -73,6 +81,11 @@ export default function Component() {
       <div className="flex flex-col flex-1">
         <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
           <h1 className="text-lg font-semibold">Settings</h1>
+          <div className="flex items-center gap-2">
+         
+            <Button size="sm">Save</Button>
+        
+          </div>
         </header>
         <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
           <div className="grid gap-6">
@@ -105,24 +118,31 @@ export default function Component() {
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-1">
                       <Label htmlFor="default-model">Default Model</Label>
-                      <Select id="default-model" value={defaultModel} onValueChange={handleDefaultModelChange}>
-                        <option value="gpt-3.5">GPT-3.5</option>
-                        <option value="gpt-4">GPT-4</option>
-                        <option value="gpt-4-optimized">GPT-4 Optimized</option>
-                      </Select>
+                    
+                      <Select  id="default-model" value={defaultModel} onValueChange={handleDefaultModelChange}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Theme" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
+                            <SelectItem value="gpt-4">GPT-4</SelectItem>
+                            <SelectItem value="gpt-4-o">GPT-4o</SelectItem>
+                        </SelectContent>
+                        </Select>
+
                     </div>
-                    <div className="space-y-1">
+                    {/* <div className="space-y-1">
                       <Label htmlFor="assistant">Assistant</Label>
                       <Select id="assistant" value={assistant} onValueChange={handleAssistantChange}>
                         <option value="gpt-3.5">GPT-3.5</option>
                         <option value="gpt-4">GPT-4</option>
                         <option value="gpt-4-optimized">GPT-4 Optimized</option>
                       </Select>
-                    </div>
+                    </div> */}
                   </div>
-                  <Button type="submit" className="w-full">
+                  {/* <Button type="submit" className="w-full">
                     Save Settings
-                  </Button>
+                  </Button> */}
                 </form>
               </CardContent>
             </Card>
@@ -134,30 +154,18 @@ export default function Component() {
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="google-drive-integration"
-                      checked={googleDriveIntegration}
-                      onCheckedChange={handleGoogleDriveIntegrationChange}
-                    />
-                    <Label htmlFor="google-drive-integration">Google Drive</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="google-sheets-integration"
-                      checked={googleSheetsIntegration}
-                      onCheckedChange={handleGoogleSheetsIntegrationChange}
-                    />
-                    <Label htmlFor="google-sheets-integration">Google Sheets</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="gmail-integration"
-                      checked={gmailIntegration}
-                      onCheckedChange={handleGmailIntegrationChange}
-                    />
-                    <Label htmlFor="gmail-integration">Gmail</Label>
-                  </div>
+                <Button variant="outline">
+                    <ChromeIcon className="mr-2 h-4 w-4" /> Connect with Google Drive
+                </Button>
+
+                <Button variant="outline">
+                    <SheetIcon className="mr-2 h-4 w-4" /> Connect with Google Sheets
+                </Button>
+               
+
+                <Button variant="outline">
+                    <MailIcon className="mr-2 h-4 w-4" /> Connect with Gmail
+                </Button>
                 </div>
               </CardContent>
             </Card>
@@ -384,3 +392,70 @@ function UsersIcon(props) {
     </svg>
   )
 }
+
+function ChromeIcon(props) {
+    return (
+      <svg
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <circle cx="12" cy="12" r="4" />
+        <line x1="21.17" x2="12" y1="8" y2="8" />
+        <line x1="3.95" x2="8.54" y1="6.06" y2="14" />
+        <line x1="10.88" x2="15.46" y1="21.94" y2="14" />
+      </svg>
+    )
+  }
+
+  function MailIcon(props) {
+    return (
+      <svg
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect width="20" height="16" x="2" y="4" rx="2" />
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+      </svg>
+    )
+  }
+
+
+function SheetIcon(props) {
+    return (
+      <svg
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+        <line x1="3" x2="21" y1="9" y2="9" />
+        <line x1="3" x2="21" y1="15" y2="15" />
+        <line x1="9" x2="9" y1="9" y2="21" />
+        <line x1="15" x2="15" y1="9" y2="21" />
+      </svg>
+    )
+  }
