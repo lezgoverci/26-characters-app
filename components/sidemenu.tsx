@@ -71,12 +71,12 @@ export default function SideMenu(){
               <FileIcon className="h-4 w-4" />
               Files
             </Link>
-            
+         
           </nav>
         </div>
-        <div className="mt-auto border-t p-4 lg:hidden">
+        <div className="mt-auto border-t p-4 lg:block">
           <Link
-            href="#"
+            href="/settings"
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
             prefetch={false}
           >
