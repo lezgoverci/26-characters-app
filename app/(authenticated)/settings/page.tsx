@@ -46,16 +46,16 @@ export default function Component() {
   const filteredUsers = useMemo(() => {
     return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
   }, [search])
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
     setSearch(e.target.value)
   }
   const handleUserSelect = (user) => {
     setSelectedUser(user)
   }
-  const handleGoogleDriveLinkChange = (e) => {
+  const handleGoogleDriveLinkChange = (e: React.MouseEvent<HTMLButtonElement>) => {
     setGoogleDriveLink(e.target.value)
   }
-  const handleOpenAIApiKeyChange = (e) => {
+  const handleOpenAIApiKeyChange = (e: React.MouseEvent<HTMLButtonElement>) => {
     setOpenAIApiKey(e.target.value)
   }
   const handleDefaultModelChange = (value) => {
@@ -73,7 +73,7 @@ export default function Component() {
   const handleGmailIntegrationChange = () => {
     setGmailIntegration(!gmailIntegration)
   }
-  const handleTreasureChestCustomPromptChange = (e) => {
+  const handleTreasureChestCustomPromptChange = (e: React.MouseEvent<HTMLButtonElement>) => {
     setTreasureChestCustomPrompt(e.target.value)
   }
   return (

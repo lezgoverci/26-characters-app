@@ -17,7 +17,7 @@ import {useRouter} from "next/navigation"
 export default function Clients(){
     const router = useRouter();
 
-    const viewDetails = (e) =>{
+    const viewDetails = (e: React.MouseEvent<HTMLButtonElement>) =>{
         e.preventDefault();
         router.push("/clients/1")
     }

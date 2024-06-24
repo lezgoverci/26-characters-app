@@ -63,7 +63,7 @@ export default function Component() {
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentItems = filteredFiles.slice(indexOfFirstItem, indexOfLastItem)
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
     setSearch(e.target.value)
     setCurrentPage(1)
   }
