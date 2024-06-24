@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/8JUkUJwAd9v
@@ -10,9 +12,15 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationEllipsis, PaginationNext } from "@/components/ui/pagination"
-
+import {useRouter} from "next/navigation"
 
 export default function Clients(){
+    const router = useRouter();
+
+    const viewDetails = (e) =>{
+        e.preventDefault();
+        router.push("/clients/1")
+    }
     return(
         <>
         <div className="flex flex-col">
@@ -42,7 +50,7 @@ export default function Clients(){
                       <p className="text-sm text-muted-foreground">johndoe@example.com</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button onClick={viewDetails} variant="outline" size="sm">
                         View
                       </Button>
                       <Button variant="outline" size="sm">
@@ -64,7 +72,7 @@ export default function Clients(){
                       <p className="text-sm text-muted-foreground">janedoe@example.com</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button onClick={viewDetails} variant="outline" size="sm">
                         View
                       </Button>
                       <Button variant="outline" size="sm">
@@ -86,7 +94,7 @@ export default function Clients(){
                       <p className="text-sm text-muted-foreground">sarahmiller@example.com</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button onClick={viewDetails} variant="outline" size="sm">
                         View
                       </Button>
                       <Button variant="outline" size="sm">
@@ -108,7 +116,7 @@ export default function Clients(){
                       <p className="text-sm text-muted-foreground">michaeljohnson@example.com</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button onClick={viewDetails} variant="outline" size="sm">
                         View
                       </Button>
                       <Button variant="outline" size="sm">
@@ -132,7 +140,7 @@ export default function Clients(){
                       <p className="text-sm text-muted-foreground">emilywilson@example.com</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button onClick={viewDetails} variant="outline" size="sm">
                         View
                       </Button>
                       <Button variant="outline" size="sm">
@@ -154,7 +162,7 @@ export default function Clients(){
                       <p className="text-sm text-muted-foreground">robertdavis@example.com</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button onClick={viewDetails} variant="outline" size="sm">
                         View
                       </Button>
                       <Button variant="outline" size="sm">
