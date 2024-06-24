@@ -4,7 +4,7 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 "use client"
-
+import React, { ChangeEvent } from 'react';
 import { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -15,6 +15,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Pagination } from "@/components/ui/pagination"
+
+interface File {
+  name: string;
+}
 
 export default function Component() {
   const [search, setSearch] = useState("")
@@ -63,14 +67,16 @@ export default function Component() {
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentItems = filteredFiles.slice(indexOfFirstItem, indexOfLastItem)
-  const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setSearch(e.target.value)
-    setCurrentPage(1)
-  }
-  const handleDownload = (file) => {
-    console.log(`Downloading ${file.name}`)
-  }
-  const handlePageChange = (pageNumber) => {
+  const handleSearch = (e:ChangeEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    setSearch(target.value);
+    setCurrentPage(1);
+};
+  
+const handleDownload = (file: File) => {
+  console.log(`Downloading ${file.name}`);
+};
+  const handlePageChange = (pageNumber:number) => {
     setCurrentPage(pageNumber)
   }
   return (
@@ -138,10 +144,10 @@ export default function Component() {
           </div>
           <div className="flex justify-center mt-6">
             <Pagination
-              currentPage={currentPage}
-              totalItems={filteredFiles.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
+              // currentPage={currentPage}
+              // totalItems={filteredFiles.length}
+              // itemsPerPage={itemsPerPage}
+              // onPageChange={handlePageChange}
             />
           </div>
         </main>
