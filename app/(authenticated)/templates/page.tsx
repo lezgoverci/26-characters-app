@@ -29,7 +29,7 @@ export default function Templates() {
             <TableBody>
               <TableRow>
                 <TableCell>
-                  <Link href="#" className="font-medium underline" prefetch={false}>
+                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
                     https://drive.google.com/treasure-chest-template-1
                   </Link>
                 </TableCell>
@@ -37,7 +37,7 @@ export default function Templates() {
               </TableRow>
               <TableRow>
                 <TableCell>
-                  <Link href="#" className="font-medium underline" prefetch={false}>
+                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
                   https://drive.google.com/treasure-chest-template-2
                   </Link>
                 </TableCell>
@@ -45,7 +45,7 @@ export default function Templates() {
               </TableRow>
               <TableRow>
                 <TableCell>
-                  <Link href="#" className="font-medium underline" prefetch={false}>
+                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
                   https://drive.google.com/treasure-chest-template-3
                   </Link>
                 </TableCell>
@@ -53,7 +53,7 @@ export default function Templates() {
               </TableRow>
               <TableRow>
                 <TableCell>
-                  <Link href="#" className="font-medium underline" prefetch={false}>
+                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
                   https://drive.google.com/treasure-chest-template-4
                   </Link>
                 </TableCell>
@@ -61,7 +61,7 @@ export default function Templates() {
               </TableRow>
               <TableRow>
                 <TableCell>
-                  <Link href="#" className="font-medium underline" prefetch={false}>
+                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
                   https://drive.google.com/treasure-chest-template-5
                   </Link>
                 </TableCell>
