@@ -206,7 +206,7 @@ export default function Clients(){
     )
 }
 
-function UploadIcon(props) {
+function UploadIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
       <svg
         {...props}

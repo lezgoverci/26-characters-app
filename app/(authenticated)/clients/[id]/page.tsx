@@ -172,7 +172,7 @@ export default function ClientsDetails(){
     )
 }
 
-function ChevronDownIcon(props) {
+function ChevronDownIcon(props:React.SVGProps<SVGSVGElement>) {
     return (
       <svg
         {...props}
@@ -191,7 +191,7 @@ function ChevronDownIcon(props) {
     )
   }
 
-  function GiftIcon(props) {
+  function GiftIcon(props:React.SVGProps<SVGSVGElement>) {
     return (
       <svg
         {...props}

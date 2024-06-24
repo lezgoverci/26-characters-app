@@ -124,7 +124,7 @@ export default function Component() {
   )
 }
 
-function CalendarIcon(props) {
+function CalendarIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -147,7 +147,7 @@ function CalendarIcon(props) {
 }
 
 
-function ChevronDownIcon(props) {
+function ChevronDownIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -167,7 +167,7 @@ function ChevronDownIcon(props) {
 }
 
 
-function FileIcon(props) {
+function FileIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -188,7 +188,7 @@ function FileIcon(props) {
 }
 
 
-function GroupIcon(props) {
+function GroupIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -213,7 +213,7 @@ function GroupIcon(props) {
 }
 
 
-function LayoutDashboardIcon(props) {
+function LayoutDashboardIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -236,7 +236,7 @@ function LayoutDashboardIcon(props) {
 }
 
 
-function LayoutTemplateIcon(props) {
+function LayoutTemplateIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -258,7 +258,7 @@ function LayoutTemplateIcon(props) {
 }
 
 
-function MenuIcon(props) {
+function MenuIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -280,7 +280,7 @@ function MenuIcon(props) {
 }
 
 
-function Package2Icon(props) {
+function Package2Icon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -302,7 +302,7 @@ function Package2Icon(props) {
 }
 
 
-function SettingsIcon(props) {
+function SettingsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -323,7 +323,7 @@ function SettingsIcon(props) {
 }
 
 
-function UsersIcon(props) {
+function UsersIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
