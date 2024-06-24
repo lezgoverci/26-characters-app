@@ -64,6 +64,17 @@ export default function ClientsDetails(){
                       className="w-full text-sm font-medium"
                     />
                   </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="company-description" className="text-sm">
+                      Company Description
+                    </Label>
+                    <Textarea
+                      id="company-description"
+                      placeholder="Acme Inc is a leading provider of innovative software solutions. We specialize in developing cutting-edge applications that empower our clients to achieve their business goals."
+                      className="w-full text-sm text-muted-foreground"
+                      defaultValue="Acme Inc is a leading provider of innovative software solutions. We specialize in developing cutting-edge applications that empower our clients to achieve their business goals."
+                    />
+                  </div>
                 </CardContent>
               </Card>
               <Card>
@@ -149,29 +160,8 @@ export default function ClientsDetails(){
                       defaultValue="Enter your recruiting profile"
                     />
                   </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="company-name" className="text-sm">
-                      Company Name
-                    </Label>
-                    <Input
-                      id="company-name"
-                      type="text"
-                      placeholder="Acme Inc"
-                      defaultValue="Acme Inc"
-                      className="w-full text-sm font-medium"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="company-description" className="text-sm">
-                      Company Description
-                    </Label>
-                    <Textarea
-                      id="company-description"
-                      placeholder="Acme Inc is a leading provider of innovative software solutions. We specialize in developing cutting-edge applications that empower our clients to achieve their business goals."
-                      className="w-full text-sm text-muted-foreground"
-                      defaultValue="Acme Inc is a leading provider of innovative software solutions. We specialize in developing cutting-edge applications that empower our clients to achieve their business goals."
-                    />
-                  </div>
+             
+                  
                 </CardContent>
               </Card>
             </div>

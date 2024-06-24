@@ -52,7 +52,7 @@ export default function Component() {
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="font-medium underline" prefetch={false}>
               Sign up
-            </Link>
+            </Link>  
           </div>
         </div>
       </div>

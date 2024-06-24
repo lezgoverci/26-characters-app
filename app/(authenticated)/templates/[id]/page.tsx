@@ -1,6 +1,6 @@
 /**
  * v0 by Vercel.
- * @see https://v0.dev/t/ZcTEiy07olK
+ * @see https://v0.dev/t/tvIALyN8hfa
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 "use client"
@@ -17,7 +17,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar"
 import { Separator } from "@/components/ui/separator"
 
-export default function TemplatesDetails() {
+export default function Component() {
   const [search, setSearch] = useState("")
   const [selectedUser, setSelectedUser] = useState(null)
   const users = [
@@ -37,13 +37,13 @@ export default function TemplatesDetails() {
     setSelectedUser(user)
   }
   return (
-   <>
-     <div className="flex flex-col">
+   
+      <div className="flex flex-col">
         <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
           <h1 className="text-lg font-semibold">Templates</h1>
           <Button size="sm">Create New</Button>
         </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6">
+        <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
           <div className="grid gap-6">
             <Card>
               <CardHeader>
@@ -54,7 +54,7 @@ export default function TemplatesDetails() {
               </CardHeader>
               <CardContent>
                 <form className="grid gap-4">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <Label htmlFor="google-drive-link">Google Drive Link</Label>
                       <Input id="google-drive-link" placeholder="Enter link" />
@@ -80,82 +80,39 @@ export default function TemplatesDetails() {
                 </form>
               </CardContent>
             </Card>
+          </div>
+          <div className="grid gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Preview Templates</CardTitle>
-                <CardDescription>Search and preview templates to use in your project.</CardDescription>
+                <CardTitle>Preview Users</CardTitle>
+                <CardDescription>Search and preview users to use in your project.</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="w-full justify-between sm:w-auto">
-                          <span>Search Templates</span>
-                          <ChevronDownIcon className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-[300px]">
-                        <div className="p-4">
-                          <Input
-                            placeholder="Search users..."
-                            value={search}
-                            onChange={handleSearch}
-                            className="mb-4"
-                          />
-                          <div className="grid gap-2">
-                            {filteredUsers.map((user) => (
-                              <div
-                                key={user.id}
-                                className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
-                                onClick={() => handleUserSelect(user)}
-                              >
-                                <Avatar>
-                                  <AvatarImage src="/placeholder-user.jpg" />
-                                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <div className="font-medium">{user.name}</div>
-                                  <div className="text-sm text-muted-foreground">{user.email}</div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    {selectedUser && (
-                      <Button variant="outline" size="sm">
-                        Preview for {selectedUser.name}
-                      </Button>
-                    )}
+                  <div className="flex items-center gap-4">
+                    <Input placeholder="Search users..." value={search} onChange={handleSearch} className="w-full" />
+                    <Button variant={selectedUser ? "primary" : "outline"} size="sm" disabled={!selectedUser}>
+                      Preview
+                    </Button>
                   </div>
                   <Separator />
                   <div className="grid gap-4">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                      <img src="/placeholder.svg" width={48} height={48} alt="Template Preview" className="rounded" />
-                      <div>
-                        <div className="font-medium">Budget Proposal</div>
-                        <div className="text-sm text-muted-foreground">XLSX template</div>
+                    {filteredUsers.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
+                        onClick={() => handleUserSelect(user)}
+                      >
+                        <Avatar>
+                          <AvatarImage src="/placeholder-user.jpg" />
+                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium">{user.name}</div>
+                          <div className="text-sm text-muted-foreground">{user.email}</div>
+                        </div>
                       </div>
-                      {selectedUser && (
-                        <Button variant="outline" size="sm">
-                          Preview for {selectedUser.name}
-                        </Button>
-                      )}
-                    </div>
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                      <img src="/placeholder.svg" width={48} height={48} alt="Template Preview" className="rounded" />
-                      <div>
-                        <div className="font-medium">Project Roadmap</div>
-                        <div className="text-sm text-muted-foreground">PDF template</div>
-                      </div>
-                      {selectedUser && (
-                        <Button variant="outline" size="sm">
-                          Preview for {selectedUser.name}
-                        </Button>
-                      )}
-                    </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>
@@ -163,8 +120,6 @@ export default function TemplatesDetails() {
           </div>
         </main>
       </div>
-   </>
-    
    
   )
 }
