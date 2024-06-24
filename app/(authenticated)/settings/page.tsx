@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef, SetStateAction } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
@@ -43,26 +43,31 @@ export default function Component() {
     { id: 4, name: "Sarah Lee", email: "sarah@example.com" },
     { id: 5, name: "Tom Wilson", email: "tom@example.com" },
   ]
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const filteredUsers = useMemo(() => {
     return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
   }, [search])
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setSearch(e.target.value)
-  }
-  const handleUserSelect = (user) => {
+    if (inputRef.current) {
+      setSearch(inputRef.current.value);
+    }
+  };
+  const handleUserSelect = (user: SetStateAction<null>) => {
     setSelectedUser(user)
   }
   const handleGoogleDriveLinkChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setGoogleDriveLink(e.target.value)
+    // setGoogleDriveLink(e.target.value)
   }
   const handleOpenAIApiKeyChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setOpenAIApiKey(e.target.value)
+    // setOpenAIApiKey(e.target.value)
   }
-  const handleDefaultModelChange = (value) => {
-    setDefaultModel(value)
+  const handleDefaultModelChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // setDefaultModel(value)
   }
-  const handleAssistantChange = (value) => {
-    setAssistant(value)
+  const handleAssistantChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // setAssistant(value)
   }
   const handleGoogleDriveIntegrationChange = () => {
     setGoogleDriveIntegration(!googleDriveIntegration)
@@ -74,7 +79,7 @@ export default function Component() {
     setGmailIntegration(!gmailIntegration)
   }
   const handleTreasureChestCustomPromptChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setTreasureChestCustomPrompt(e.target.value)
+    // setTreasureChestCustomPrompt(e.target.value)
   }
   return (
    
@@ -102,7 +107,7 @@ export default function Component() {
                         id="google-drive-link"
                         placeholder="Enter Google Drive folder link"
                         value={googleDriveLink}
-                        onChange={handleGoogleDriveLinkChange}
+                        // onChange={handleGoogleDriveLinkChange}
                       />
                     </div>
                     <div className="space-y-1">
@@ -111,7 +116,7 @@ export default function Component() {
                         id="openai-api-key"
                         placeholder="Enter OpenAI API key"
                         value={openAIApiKey}
-                        onChange={handleOpenAIApiKeyChange}
+                        // onChange={handleOpenAIApiKeyChange}
                       />
                     </div>
                   </div>
@@ -119,7 +124,9 @@ export default function Component() {
                     <div className="space-y-1">
                       <Label htmlFor="default-model">Default Model</Label>
                     
-                      <Select  id="default-model" value={defaultModel} onValueChange={handleDefaultModelChange}>
+                      <Select  name="default-model" value={defaultModel} 
+                      // onValueChange={handleDefaultModelChange}
+                      >
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Theme" />
                         </SelectTrigger>
@@ -179,7 +186,7 @@ export default function Component() {
                     id="treasure-chest-custom-prompt"
                     placeholder="Enter your custom prompt for the Treasure Chest feature"
                     value={treasureChestCustomPrompt}
-                    onChange={handleTreasureChestCustomPromptChange}
+                    // onChange={handleTreasureChestCustomPromptChange}
                     className="min-h-[100px]"
                   />
                 </div>

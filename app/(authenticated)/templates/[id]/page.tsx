@@ -31,10 +31,10 @@ export default function Component() {
     return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
   }, [search])
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setSearch(e.target.value)
+    // setSearch(e.target.value)
   }
-  const handleUserSelect = (user) => {
-    setSelectedUser(user)
+  const handleUserSelect = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // setSelectedUser(user)
   }
   return (
    
@@ -69,7 +69,9 @@ export default function Component() {
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="p-2">
-                          <Calendar mode="single" defaultValue={new Date("2023-06-01")} />
+                          <Calendar mode="single" 
+                          // defaultValue={new Date("2023-06-01")} 
+                          />
                         </PopoverContent>
                       </Popover>
                     </div>
@@ -90,8 +92,13 @@ export default function Component() {
               <CardContent>
                 <div className="grid gap-4">
                   <div className="flex items-center gap-4">
-                    <Input placeholder="Search users..." value={search} onChange={handleSearch} className="w-full" />
-                    <Button variant={selectedUser ? "primary" : "outline"} size="sm" disabled={!selectedUser}>
+                    <Input placeholder="Search users..." value={search} 
+                    // onChange={handleSearch} 
+                    className="w-full" 
+                    />
+                    <Button 
+                    variant="outline"
+                    size="sm" disabled={!selectedUser}>
                       Preview
                     </Button>
                   </div>
@@ -101,7 +108,7 @@ export default function Component() {
                       <div
                         key={user.id}
                         className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
-                        onClick={() => handleUserSelect(user)}
+                        // onClick={() => handleUserSelect(user)}
                       >
                         <Avatar>
                           <AvatarImage src="/placeholder-user.jpg" />
