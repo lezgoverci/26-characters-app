@@ -11,13 +11,31 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import axios from "axios"
 
 export default function Component() {
+
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    });
 
   const router = useRouter()
   const processLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    router.push("/templates")
+    axios.post('https://n8n.xponent.ph/webhook/api/auth/login', formData)
+    .then(response => {
+      console.log(response.data);
+      if (response.status == 200) {
+        router.push('/templates')
+      } else {
+        alert(response.data.message)
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    });
   }
   return (
     <div className="grid min-h-screen w-full grid-cols-1 md:grid-cols-2">
@@ -38,11 +56,21 @@ export default function Component() {
           <form className="space-y-4">
             <div className="space-y-1">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
+              <Input id="email" type="email" placeholder="m@example.com" required onChange={
+                 (e) => setFormData({
+                    ...formData,
+                    email: e.target.value,
+                  })
+              }/>
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="Enter your password" required />
+              <Input id="password" type="password" placeholder="Enter your password" required onChange={
+                (e) => setFormData({
+                    ...formData,
+                    password: e.target.value,
+                  })
+              } />
             </div>
             <Button onClick={processLogin} type="submit" className="w-full">
               Login
