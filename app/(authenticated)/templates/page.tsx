@@ -1,3 +1,4 @@
+'use client'
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/ZqmtuBPpN3F
@@ -10,13 +11,15 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 
 import SideMenu from "@/components/sidemenu"
+import {useRouter} from "next/navigation"
 
 export default function Templates() {
+  const router = useRouter()
   return (
    <>
    <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
           <h1 className="text-lg font-semibold">Templates</h1>
-          <Button size="sm">Create New</Button>
+          <Button size="sm" onClick={() => router.push("/templates/create")}>Create New</Button>
         </header>
         <main className="flex-1 overflow-auto p-4 md:p-6">
           <Table>
