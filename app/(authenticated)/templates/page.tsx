@@ -11,77 +11,69 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 
 import SideMenu from "@/components/sidemenu"
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation"
+import axios from "axios"
+import { useEffect, useState } from "react"
+
+interface Template {
+  id: number
+  date: string
+  link: string
+  created_at: string
+  updated_at: string
+}
+
 
 export default function Templates() {
   const router = useRouter()
+
+  const [templates, setTemplates] = useState<Template[]>([])
+
+  useEffect(() => {
+    axios.get("https://n8n.xponent.ph/webhook/api/templates/").then((res) => {
+      console.log(res.data)
+      setTemplates(res.data.data)
+    })
+  }, [])
   return (
-   <>
-   <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
-          <h1 className="text-lg font-semibold">Templates</h1>
-          <Button size="sm" onClick={() => router.push("/templates/create")}>Create New</Button>
-        </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Link</TableHead>
-                <TableHead>Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
+    <>
+      <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
+        <h1 className="text-lg font-semibold">Templates</h1>
+        <Button size="sm" onClick={() => router.push("/templates/create")}>Create New</Button>
+      </header>
+      <main className="flex-1 overflow-auto p-4 md:p-6">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Link</TableHead>
+              <TableHead>Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {templates.map((template) => (
+              <TableRow key={template.id}>
                 <TableCell>
-                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
-                    https://drive.google.com/treasure-chest-template-1
+                  <Link href={`/templates/${template.id}`} className="font-medium underline" prefetch={false}>
+                    {template.link}
                   </Link>
                 </TableCell>
-                <TableCell>June 2023</TableCell>
+                <TableCell>{template.date}</TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
-                  https://drive.google.com/treasure-chest-template-2
-                  </Link>
-                </TableCell>
-                <TableCell>May 2023</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
-                  https://drive.google.com/treasure-chest-template-3
-                  </Link>
-                </TableCell>
-                <TableCell>April 2023</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
-                  https://drive.google.com/treasure-chest-template-4
-                  </Link>
-                </TableCell>
-                <TableCell>March 2023</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Link href="/templates/1" className="font-medium underline" prefetch={false}>
-                  https://drive.google.com/treasure-chest-template-5
-                  </Link>
-                </TableCell>
-                <TableCell>February 2023</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-          <div className="mt-6 flex justify-between">
-            <Button variant="outline" size="sm">
-              Previous
-            </Button>
-            <Button variant="outline" size="sm">
-              Next
-            </Button>
-          </div>
-        </main>
-   </>
+            ))}
+
+
+          </TableBody>
+        </Table>
+        <div className="mt-6 flex justify-between">
+          <Button variant="outline" size="sm">
+            Previous
+          </Button>
+          <Button variant="outline" size="sm">
+            Next
+          </Button>
+        </div>
+      </main>
+    </>
   )
 }
 
