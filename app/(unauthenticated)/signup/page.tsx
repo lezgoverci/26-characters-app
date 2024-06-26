@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import axios from "axios"
 import { useRouter } from 'next/navigation'
+import { Loader2 } from "lucide-react"
 
 export default function Signup() {
   const router = useRouter()
@@ -43,18 +44,23 @@ export default function Signup() {
 
     });
 
+    const [isLoading, setIsLoading] = useState(false)
+
   const handleSubmit = (e: any) =>{
     e.preventDefault();
   console.log(formData);
+  setIsLoading(true)
   axios.post('https://n8n.xponent.ph/webhook/api/auth/signup', formData)
   .then(response => {
-    console.log(response.data);
-    alert("Success")
+
+
+    setIsLoading(false)
     router.push('/templates')
   })
   .catch(error => {
     console.error(error);
     alert("failed")
+    setIsLoading(false)
   });
 
   }
@@ -92,7 +98,8 @@ export default function Signup() {
                 (e) => setFormData({ ...formData, confirmPassword: e.target.value })
               } />
             </div>
-            <Button onClick={handleSubmit} type="submit" className="w-full">
+            <Button onClick={handleSubmit} type="submit" className="w-full"  disabled={isLoading}>
+              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Sign Up
             </Button>
           </form>

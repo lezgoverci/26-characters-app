@@ -13,6 +13,7 @@ import Link from "next/link"
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import axios from "axios"
+import { Loader2 } from "lucide-react"
 
 export default function Component() {
 
@@ -21,9 +22,12 @@ export default function Component() {
     password: '',
     });
 
+    const [isLoading, setIsLoading] = useState(false)
+
   const router = useRouter()
   const processLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
+    setIsLoading(true)
     axios.post('https://n8n.xponent.ph/webhook/api/auth/login', formData)
     .then(response => {
       console.log(response.data);
@@ -32,9 +36,12 @@ export default function Component() {
       } else {
         alert(response.data.message)
       }
+      setIsLoading(false)
     })
     .catch(error => {
       console.error(error);
+      alert("failed")
+      setIsLoading(false)
     });
   }
   return (
@@ -72,7 +79,9 @@ export default function Component() {
                   })
               } />
             </div>
-            <Button onClick={processLogin} type="submit" className="w-full">
+            <Button onClick={processLogin} type="submit" className="w-full"  disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+
               Login
             </Button>
           </form>
