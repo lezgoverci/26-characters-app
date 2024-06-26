@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
@@ -17,7 +17,15 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar"
 import { Separator } from "@/components/ui/separator"
 
+import { useParams } from "next/navigation"
+
+import axios from "axios"
+
 export default function Component() {
+  
+  const {id} = useParams()
+
+  // const id = searchParams.get("id")
   const [search, setSearch] = useState("")
   const [selectedUser, setSelectedUser] = useState(null)
   const users = [
@@ -30,104 +38,124 @@ export default function Component() {
   const filteredUsers = useMemo(() => {
     return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
   }, [search])
+
+  const [googleDriveLink, setGoogleDriveLink] = useState("")
+  const [date, setDate] = useState(new Date())
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
     // setSearch(e.target.value)
   }
   const handleUserSelect = (e: React.MouseEvent<HTMLButtonElement>) => {
     // setSelectedUser(user)
   }
-  return (
+
+  useEffect(() => {
    
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
-          <h1 className="text-lg font-semibold">Templates</h1>
-          <Button size="sm">Save</Button>
-        </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
-          <div className="grid gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Add New Template</CardTitle>
-                <CardDescription>
-                  Add a new template by providing a Google Drive link and selecting a month.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form className="grid gap-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <Label htmlFor="google-drive-link">Google Drive Link</Label>
-                      <Input id="google-drive-link" placeholder="Enter link" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="month-picker">Month</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" className="w-full justify-between">
-                            <span>June 2023</span>
-                            <ChevronDownIcon className="w-4 h-4" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="p-2">
-                          <Calendar mode="single" 
-                          // defaultValue={new Date("2023-06-01")} 
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`https://n8n.xponent.ph/webhook/c1491c73-4ff5-42ef-971f-1e15d2466730/api/templates/${id}`);
+        console.log(response.data);
+        setGoogleDriveLink(response.data.link);
+        setDate(new Date(response.data.date));
+       
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, []
+  );
+  return (
+
+    <div className="flex flex-col">
+      <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
+        <h1 className="text-lg font-semibold">Templates</h1>
+        <Button size="sm">Save</Button>
+      </header>
+      <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
+        <div className="grid gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Add New Template</CardTitle>
+              <CardDescription>
+                Add a new template by providing a Google Drive link and selecting a month.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form className="grid gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <Label htmlFor="google-drive-link">Google Drive Link</Label>
+                    <Input id="google-drive-link" placeholder="Enter link"  value={googleDriveLink} onChange={(e) => setGoogleDriveLink(e.target.value)} />
                   </div>
-                  <Button type="submit" className="w-full">
-                    Add Template
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="grid gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Preview Users</CardTitle>
-                <CardDescription>Search and preview users to use in your project.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                  <div className="flex items-center gap-4">
-                    <Input placeholder="Search users..." value={search} 
-                    // onChange={handleSearch} 
-                    className="w-full" 
-                    />
-                    <Button 
-                    variant="outline"
-                    size="sm" disabled={!selectedUser}>
-                      Preview
-                    </Button>
-                  </div>
-                  <Separator />
-                  <div className="grid gap-4">
-                    {filteredUsers.map((user) => (
-                      <div
-                        key={user.id}
-                        className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
-                        // onClick={() => handleUserSelect(user)}
-                      >
-                        <Avatar>
-                          <AvatarImage src="/placeholder-user.jpg" />
-                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">{user.name}</div>
-                          <div className="text-sm text-muted-foreground">{user.email}</div>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="space-y-1">
+                    <Label htmlFor="month-picker">Month</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span>{date.toLocaleDateString()}</span>
+                          <ChevronDownIcon className="w-4 h-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="p-2">
+                        <Calendar mode="single"
+                        // defaultValue={new Date("2023-06-01")} 
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </main>
-      </div>
-   
+                <Button type="submit" className="w-full">
+                  Add Template
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="grid gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Preview Users</CardTitle>
+              <CardDescription>Search and preview users to use in your project.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                <div className="flex items-center gap-4">
+                  <Input placeholder="Search users..." value={search}
+                    // onChange={handleSearch} 
+                    className="w-full"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm" disabled={!selectedUser}>
+                    Preview
+                  </Button>
+                </div>
+                <Separator />
+                <div className="grid gap-4">
+                  {filteredUsers.map((user) => (
+                    <div
+                      key={user.id}
+                      className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
+                    // onClick={() => handleUserSelect(user)}
+                    >
+                      <Avatar>
+                        <AvatarImage src="/placeholder-user.jpg" />
+                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium">{user.name}</div>
+                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
+
   )
 }
 
