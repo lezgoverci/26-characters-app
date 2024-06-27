@@ -48,6 +48,21 @@ export default function Component() {
     // setSelectedUser(user)
   }
 
+  const handleSave = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+     event.preventDefault();
+      const data = {
+        link: googleDriveLink,
+        date: date.toISOString(),
+      };
+      axios.post(`https://n8n.xponent.ph/webhook/6cc085c7-f6bb-4744-bf8e-ce991c9450d6/api/templates/${id}`, data)
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.error('Error updating data:', error);
+        });
+  }
+
   useEffect(() => {
    
     const fetchData = async () => {
@@ -69,15 +84,15 @@ export default function Component() {
     <div className="flex flex-col">
       <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
         <h1 className="text-lg font-semibold">Templates</h1>
-        <Button size="sm">Save</Button>
+        <Button size="sm" onClick={handleSave}>Save</Button>
       </header>
       <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
         <div className="grid gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Add New Template</CardTitle>
+              <CardTitle>Template Details</CardTitle>
               <CardDescription>
-                Add a new template by providing a Google Drive link and selecting a month.
+               Make changes to your template here. Click save when you're done.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -104,9 +119,6 @@ export default function Component() {
                     </Popover>
                   </div>
                 </div>
-                <Button type="submit" className="w-full">
-                  Add Template
-                </Button>
               </form>
             </CardContent>
           </Card>
