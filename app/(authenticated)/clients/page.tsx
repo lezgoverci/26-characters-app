@@ -28,7 +28,9 @@ export default function Clients(){
           <h1 className="text-lg font-semibold">Clients</h1>
           <div className="flex items-center gap-2">
             <Input type="search" placeholder="Search clients..." className="max-w-[200px]" />
-            <Button size="sm">Create New</Button>
+            <Button size="sm" onClick={()=>{
+               router.push("/clients/create")
+            }}>Create New</Button>
             <Button variant="outline" size="sm">
               <UploadIcon className="h-4 w-4 mr-2" />
               Import CSV
