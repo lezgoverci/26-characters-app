@@ -1,3 +1,4 @@
+'use client'
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/F3hDyv0OUod
@@ -13,9 +14,16 @@ import { Input } from "@/components/ui/input"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Command, CommandList, CommandItem } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-
+import { FormEvent, useState } from "react"
+import { Client } from "@/types"
 
 export default function ClientCreate(){
+
+    const [formData, setFormData] = useState({} as Client);
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    throw new Error("Function not implemented.")
+  }
+
     return(
         <>
         <div className="flex flex-col">
@@ -26,7 +34,7 @@ export default function ClientCreate(){
         <main className="flex-1 overflow-auto p-4 md:p-6">
           <div className="grid gap-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
-              <form>
+              <form onSubmit={handleSubmit}>
               <Card>
                 <CardContent className="space-y-4">
                   <div className="space-y-1">
