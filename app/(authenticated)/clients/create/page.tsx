@@ -108,7 +108,7 @@ export default function ClientCreate() {
       <div className="flex flex-col">
         <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
           <h1 className="text-lg font-semibold">New Client</h1>
-          <Button>Save</Button>
+          {/* <Button type="submit">Save</Button> */}
         </header>
         <main className="flex-1 overflow-auto p-4 md:p-6">
           <div className="grid gap-6">
@@ -119,7 +119,7 @@ export default function ClientCreate() {
                 <form onSubmit={form.handleSubmit(onSubmit, onErorrs)}>
                   <Card>
                     <CardContent className="space-y-4">
-                      <Button type="submit">Submit</Button>
+
 
                       <FormField
                         control={form.control}
@@ -379,7 +379,7 @@ export default function ClientCreate() {
                           </FormItem>
                         )}
                       />
-
+                      <Button type="submit">Submit</Button>
                     </CardContent>
                   </Card>
 
