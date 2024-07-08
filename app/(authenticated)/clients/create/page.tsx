@@ -19,6 +19,7 @@ import { Client } from "@/types"
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import axios from "axios"
 
 import {
   Select,
@@ -85,10 +86,18 @@ export default function ClientCreate() {
 
   const [url, setUrl] = useState('');
 
-  const onSubmit = (values: Client) => {
+  const onSubmit = async (values: Client) => {
 
 
     console.log(values)
+    try {
+      const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/clients`, {
+        values
+      });
+      //TODO: show success message
+    } catch (error) {
+      console.error('Error updating data:', error);
+    }
   }
 
   const onErorrs = (errors: any) => {

@@ -55,7 +55,7 @@ export default function TemplatesCreate() {
         link: googleDriveLink,
         date: date.toISOString(),
       });
-      console.log(response.data);
+      //TODO: show success message
     } catch (error) {
       console.error('Error updating data:', error);
     }
