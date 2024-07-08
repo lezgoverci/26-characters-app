@@ -13,14 +13,32 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationEllipsis, PaginationNext } from "@/components/ui/pagination"
 import {useRouter} from "next/navigation"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { Client } from "@/types"
 
 export default function Clients(){
     const router = useRouter();
+
+    const [clients, setClients] = useState<Client[]>([])
 
     const viewDetails = (e: React.MouseEvent<HTMLButtonElement>) =>{
         e.preventDefault();
         router.push("/clients/1")
     }
+
+    const fetchClients = async () =>{
+       try{
+            const response = await axios.get("https://n8n.xponent.ph/webhook/api/clients/")
+            setClients(response.data.data)
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    useEffect(()=>{
+       fetchClients()
+    },[]) 
     return(
         <>
         <div className="flex flex-col">
@@ -40,7 +58,35 @@ export default function Clients(){
         <main className="flex-1 overflow-auto p-4 md:p-6">
           <div className="grid gap-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4">
-              <Card>
+              { 
+                clients.map((client,index)=>{
+                    return(
+                        <Card key={index}>
+                        <CardContent>
+                          <div className="flex flex-col items-center gap-4">
+                            <Avatar className="h-16 w-16">
+                              <AvatarImage src="/placeholder-user.jpg" />
+                              <AvatarFallback>JP</AvatarFallback>
+                            </Avatar>
+                            <div className="text-center">
+                              <h3 className="text-lg font-semibold">{client.first_name + " " + client.last_name}</h3>
+                              <p className="text-sm text-muted-foreground">{client.email}</p>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button onClick={viewDetails} variant="outline" size="sm">
+                                View
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                Edit
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                })
+              }
+              {/* <Card>
                 <CardContent>
                   <div className="flex flex-col items-center gap-4">
                     <Avatar className="h-16 w-16">
@@ -173,7 +219,7 @@ export default function Clients(){
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
             <div className="flex justify-center">
               <Pagination>

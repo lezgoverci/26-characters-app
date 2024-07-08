@@ -91,7 +91,7 @@ export default function ClientCreate() {
 
     console.log(values)
     try {
-      const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/clients`, {
+      const response = await axios.post(`https://n8n.xponent.ph/webhook/api/clients`, {
         values
       });
       //TODO: show success message
