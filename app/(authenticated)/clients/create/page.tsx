@@ -120,12 +120,13 @@ export default function ClientCreate() {
           {/* <Button type="submit">Save</Button> */}
         </header>
         <main className="flex-1 overflow-auto p-4 md:p-6">
-          <div className="grid gap-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit, onErorrs)}>
+              <div className="grid gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
 
 
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit, onErorrs)}>
                   <Card>
                     <CardContent className="space-y-4">
 
@@ -323,22 +324,20 @@ export default function ClientCreate() {
                           <FormItem className="space-y-1">
                             <FormLabel htmlFor="role">Treasure Chest</FormLabel>
                             <FormControl>
-                              <>
+                              <div className="flex w-full text-sm items-center space-x-2">
                                 <Input
                                   id="treasure_chest_link"
                                   type="text"
                                   // placeholder="Enter your role"
                                   {...field}
                                   value={url}
-                                  className="w-full text-sm text-muted-foreground"
+                                  className=" text-muted-foreground"
                                 />
                                 <Button variant="outline" size="sm" onClick={(event) => { event.preventDefault(); handleGenerateClick(); }}>
                                   <GiftIcon className="h-4 w-4 mr-2" />
                                   Generate
                                 </Button>
-                              </>
-
-
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -393,13 +392,14 @@ export default function ClientCreate() {
                   </Card>
 
 
-                </form>
-              </Form>
 
 
 
-            </div>
-          </div>
+                </div>
+              </div>
+
+            </form>
+          </Form>
         </main>
       </div>
     </>

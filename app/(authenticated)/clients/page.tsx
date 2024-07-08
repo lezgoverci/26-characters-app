@@ -36,6 +36,11 @@ export default function Clients(){
         }
     }
 
+    const editDetails = (id: string) =>{
+
+        router.push(`/clients/${id}/edit`)
+    }
+
     useEffect(()=>{
        fetchClients()
     },[]) 
@@ -74,9 +79,9 @@ export default function Clients(){
                             </div>
                             <div className="flex gap-2">
                               <Button onClick={viewDetails} variant="outline" size="sm">
-                                View
+                                View TC
                               </Button>
-                              <Button variant="outline" size="sm">
+                              <Button onClick={(e)=>{e.preventDefault(); editDetails(client.id)}} variant="outline" size="sm">
                                 Edit
                               </Button>
                             </div>
