@@ -14,6 +14,8 @@ import SideMenu from "@/components/sidemenu"
 import { useRouter } from "next/navigation"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { SkeletonList } from "@/components/skeleton-list"
+
 
 interface Template {
   id: number
@@ -28,11 +30,14 @@ export default function Templates() {
   const router = useRouter()
 
   const [templates, setTemplates] = useState<Template[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // setLoading(true)
     axios.get("https://n8n.xponent.ph/webhook/api/templates/").then((res) => {
       console.log(res.data)
       setTemplates(res.data.data)
+      setLoading(false)
     })
   }, [])
   return (
@@ -41,38 +46,45 @@ export default function Templates() {
         <h1 className="text-lg font-semibold">Templates</h1>
         <Button size="sm" onClick={() => router.push("/templates/create")}>Create New</Button>
       </header>
+
       <main className="flex-1 overflow-auto p-4 md:p-6">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Link</TableHead>
-              <TableHead>Date</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {templates.map((template) => (
-              <TableRow key={template.id}>
-                <TableCell>
-                  <Link href={`/templates/${template.id}`} className="font-medium underline" prefetch={false}>
-                    {template.link}
-                  </Link>
-                </TableCell>
-                <TableCell>{template.date}</TableCell>
+        {loading ? <SkeletonList /> : <>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Link</TableHead>
+                <TableHead>Date</TableHead>
               </TableRow>
-            ))}
+            </TableHeader>
+            <TableBody>
+
+              {templates.map((template) => (
+                <TableRow key={template.id}>
+                  <TableCell>
+                    <Link href={`/templates/${template.id}`} className="font-medium underline" prefetch={false}>
+                      {template.link}
+                    </Link>
+                  </TableCell>
+                  <TableCell>{template.date}</TableCell>
+                </TableRow>
+              ))}
 
 
-          </TableBody>
-        </Table>
-        <div className="mt-6 flex justify-between">
-          <Button variant="outline" size="sm">
-            Previous
-          </Button>
-          <Button variant="outline" size="sm">
-            Next
-          </Button>
-        </div>
+            </TableBody>
+          </Table>
+          <div className="mt-6 flex justify-between">
+            <Button variant="outline" size="sm">
+              Previous
+            </Button>
+            <Button variant="outline" size="sm">
+              Next
+            </Button>
+          </div>
+        </>
+        }
       </main>
+
+
     </>
   )
 }
