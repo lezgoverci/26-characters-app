@@ -21,9 +21,13 @@ import { useParams } from "next/navigation"
 
 import axios from "axios"
 
+import { SkeletonOneRow } from "@/components/skeleton-one-row"
+import { SkeletonListThumbnail } from "@/components/skeleton-list-thumbnail"
+
 export default function TemplatesCreate() {
-  
-  const {id} = useParams()
+
+  const { id } = useParams()
+  const [loading, setLoading] = useState<boolean>(true)
 
 
   // const id = searchParams.get("id")
@@ -62,16 +66,17 @@ export default function TemplatesCreate() {
   };
 
   useEffect(() => {
-   
+
     const fetchData = async () => {
       try {
         const response = await axios.get(`https://n8n.xponent.ph/webhook/c1491c73-4ff5-42ef-971f-1e15d2466730/api/templates/${id}`);
         console.log(response.data);
         setGoogleDriveLink(response.data.link);
         setDate(new Date(response.data.date));
-       
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
+        setLoading(false);
       }
     };
     fetchData();
@@ -98,33 +103,36 @@ export default function TemplatesCreate() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <Label htmlFor="google-drive-link">Google Drive Link</Label>
-                    <Input id="google-drive-link" placeholder="Enter link"  value={googleDriveLink} onChange={(e) => setGoogleDriveLink(e.target.value)} />
-                  </div>
+                    {loading ? <SkeletonOneRow /> :
+                      <Input id="google-drive-link" placeholder="Enter link" value={googleDriveLink} onChange={(e) => setGoogleDriveLink(e.target.value)} />
+                    }</div>
                   <div className="space-y-1">
                     <Label htmlFor="month-picker">Month</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full justify-between">
-                          <span>{date.toLocaleDateString()}</span>
-                          <ChevronDownIcon className="w-4 h-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="p-2">
-                        <Calendar mode="single"
-                        // defaultValue={new Date("2023-06-01")} 
-                          selected={new Date(date)}
-                          onSelect={(day)=>{
-                           
-                            if(day){
-                              setDate(day)
-                            }
-                          }}
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    {loading ? <SkeletonOneRow /> :
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" className="w-full justify-between">
+                            <span>{date.toLocaleDateString()}</span>
+                            <ChevronDownIcon className="w-4 h-4" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="p-2">
+                          <Calendar mode="single"
+                            // defaultValue={new Date("2023-06-01")} 
+                            selected={new Date(date)}
+                            onSelect={(day) => {
+
+                              if (day) {
+                                setDate(day)
+                              }
+                            }}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    }
                   </div>
                 </div>
-                
+
               </form>
             </CardContent>
           </Card>
@@ -150,7 +158,8 @@ export default function TemplatesCreate() {
                 </div>
                 <Separator />
                 <div className="grid gap-4">
-                  {filteredUsers.map((user) => (
+                { loading? <SkeletonListThumbnail /> :
+                  filteredUsers.map((user) => (
                     <div
                       key={user.id}
                       className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
