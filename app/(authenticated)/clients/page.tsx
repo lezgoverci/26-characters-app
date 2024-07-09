@@ -18,6 +18,7 @@ import axios from "axios"
 import { Client } from "@/types"
 import SkeletonCardGrid from "@/components/skeleton-card-grid"
 
+
 export default function Clients() {
   const router = useRouter();
 
