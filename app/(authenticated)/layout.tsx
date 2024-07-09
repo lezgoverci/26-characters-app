@@ -1,4 +1,5 @@
 import SideMenu from "@/components/sidemenu"
+import { Toaster } from "@/components/ui/toaster"
 
 
 export default function DashboardLayout({
@@ -13,6 +14,7 @@ export default function DashboardLayout({
  
        {children}
       </div>
+      <Toaster/>
     </div>
     )
   }

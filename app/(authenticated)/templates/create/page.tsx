@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { Separator } from "@/components/ui/separator"
+import { useToast } from "@/components/ui/use-toast"
+import { Loader2 } from "lucide-react"
 
 import { useParams } from "next/navigation"
 
@@ -26,9 +28,8 @@ import { SkeletonListThumbnail } from "@/components/skeleton-list-thumbnail"
 
 export default function TemplatesCreate() {
 
-  const { id } = useParams()
   const [loading, setLoading] = useState<boolean>(true)
-
+  const { toast } = useToast()
 
   // const id = searchParams.get("id")
   const [search, setSearch] = useState("")
@@ -54,32 +55,30 @@ export default function TemplatesCreate() {
   }
 
   const handleSave = async () => {
+    setLoading(true)
     try {
       const response = await axios.post(`https://n8n.xponent.ph/webhook/api/templates`, {
         link: googleDriveLink,
         date: date.toISOString(),
       });
-      //TODO: show success message
+      toast({
+        description: "Successfully created template",
+        variant:"default"
+      });
+      setLoading(false)
     } catch (error) {
       console.error('Error updating data:', error);
+      setLoading(false)
+      toast({
+        description: "Failed to create template",
+        variant:"destructive"
+      });
     }
   };
 
   useEffect(() => {
-
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`https://n8n.xponent.ph/webhook/c1491c73-4ff5-42ef-971f-1e15d2466730/api/templates/${id}`);
-        console.log(response.data);
-        setGoogleDriveLink(response.data.link);
-        setDate(new Date(response.data.date));
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
-    };
-    fetchData();
+     setLoading(false)
+    
   }, []
   );
   return (
@@ -87,7 +86,7 @@ export default function TemplatesCreate() {
     <div className="flex flex-col">
       <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
         <h1 className="text-lg font-semibold">Templates</h1>
-        <Button size="sm" onClick={handleSave}>Save</Button>
+        <Button size="sm" onClick={handleSave} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Save</Button>
       </header>
       <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
         <div className="grid gap-6">
