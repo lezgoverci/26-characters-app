@@ -18,6 +18,8 @@ import { Calendar } from "@/components/ui/calendar"
 import { Separator } from "@/components/ui/separator"
 
 import { useParams } from "next/navigation"
+import { useToast } from "@/components/ui/use-toast"
+import { Loader2 } from "lucide-react"
 
 import axios from "axios"
 
@@ -28,6 +30,7 @@ export default function Component() {
 
   const { id } = useParams()
   const [loading, setLoading] = useState<boolean>(true)
+  const { toast } = useToast()
 
   // const id = searchParams.get("id")
   const [search, setSearch] = useState("")
@@ -54,6 +57,7 @@ export default function Component() {
 
   const handleSave = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
+    setLoading(true);
     const data = {
       link: googleDriveLink,
       date: date.toISOString(),
@@ -61,9 +65,20 @@ export default function Component() {
     axios.post(`https://n8n.xponent.ph/webhook/6cc085c7-f6bb-4744-bf8e-ce991c9450d6/api/templates/${id}`, data)
       .then(response => {
         console.log(response.data);
+        setLoading(false);
+        toast({
+          title: "Template saved",
+          description: "Your template has been saved successfully."
+        });
       })
       .catch(error => {
         console.error('Error updating data:', error);
+        setLoading(false);
+        toast({
+          title: "Error saving template",
+          description: "An error occurred while saving your template.",
+          variant: "destructive"
+        });
       });
   }
 
@@ -89,7 +104,7 @@ export default function Component() {
     <div className="flex flex-col">
       <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
         <h1 className="text-lg font-semibold">Templates</h1>
-        <Button size="sm" onClick={handleSave}>Save</Button>
+        <Button size="sm" onClick={handleSave} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Save</Button>
       </header>
       <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
         <div className="grid gap-6">
