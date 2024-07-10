@@ -44,7 +44,7 @@ export default function Component() {
   ]
   const filteredUsers = useMemo(() => {
     return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
-  }, [search])
+  }, [search,users])
 
   const [googleDriveLink, setGoogleDriveLink] = useState("")
   const [date, setDate] = useState(new Date())
@@ -112,7 +112,7 @@ export default function Component() {
             <CardHeader>
               <CardTitle>Template Details</CardTitle>
               <CardDescription>
-                Make changes to your template here. Click save when you're done.
+                Make changes to your template here. Click save when you&apos;re done.
               </CardDescription>
             </CardHeader>
             <CardContent>

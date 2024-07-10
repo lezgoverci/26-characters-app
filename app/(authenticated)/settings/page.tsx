@@ -48,7 +48,7 @@ export default function Component() {
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
-  }, [search])
+  }, [search,users])
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (inputRef.current) {
       setSearch(inputRef.current.value);

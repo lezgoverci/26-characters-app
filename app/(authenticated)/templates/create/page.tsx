@@ -43,7 +43,7 @@ export default function TemplatesCreate() {
   ]
   const filteredUsers = useMemo(() => {
     return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
-  }, [search])
+  }, [search,users])
 
   const [googleDriveLink, setGoogleDriveLink] = useState("")
   const [date, setDate] = useState(new Date())
