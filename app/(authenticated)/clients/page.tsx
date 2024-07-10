@@ -89,7 +89,7 @@ export default function Clients() {
                               <Button onClick={viewDetails} variant="outline" size="sm">
                                 View TC
                               </Button>
-                              <Button onClick={(e) => { e.preventDefault(); editDetails(client.id) }} variant="outline" size="sm">
+                              <Button onClick={(e) => { e.preventDefault(); editDetails(client.id ?? "") }} variant="outline" size="sm">
                                 Edit
                               </Button>
                             </div>
