@@ -32,36 +32,56 @@ import Link from "next/link"
 import axios from "axios"
 import { useRouter } from 'next/navigation'
 import { Loader2 } from "lucide-react"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function Signup() {
   const router = useRouter()
+  const { toast } = useToast()
 
   const [formData, setFormData] = useState({
 
-     email: '',
-     password: '',
-     confirmPassword: ''
+    email: '',
+    password: '',
+    confirmPassword: ''
 
-    });
-
-    const [isLoading, setIsLoading] = useState(false)
-
-  const handleSubmit = (e: any) =>{
-    e.preventDefault();
-  console.log(formData);
-  setIsLoading(true)
-  axios.post('https://n8n.xponent.ph/webhook/api/auth/signup', formData)
-  .then(response => {
-
-
-    setIsLoading(false)
-    router.push('/templates')
-  })
-  .catch(error => {
-    console.error(error);
-    alert("failed")
-    setIsLoading(false)
   });
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    // console.log(formData);
+    setIsLoading(true)
+    axios.post('https://n8n.xponent.ph/webhook/api/auth/signup', formData)
+      .then(response => {
+        
+        if (response.data.error && typeof response.data.error === 'object') {
+          setIsLoading(false);
+          toast({
+            title: 'Error',
+            description: "Signup failed",
+            variant:"destructive"
+          });
+          return;
+        }
+        if (response.data.statusCode === 200) {
+          setIsLoading(false)
+          toast({
+            title: 'Success',
+            description: "Signup successful",
+          });
+          router.push('/templates')
+        }
+
+      })
+      .catch(error => {
+        setIsLoading(false);
+        toast({
+          title: 'Error',
+          description: "Signup failed",
+          variant:"destructive"
+        });
+      });
 
   }
   return (
@@ -98,7 +118,7 @@ export default function Signup() {
                 (e) => setFormData({ ...formData, confirmPassword: e.target.value })
               } />
             </div>
-            <Button onClick={handleSubmit} type="submit" className="w-full"  disabled={isLoading}>
+            <Button onClick={handleSubmit} type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Sign Up
             </Button>
