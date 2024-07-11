@@ -83,13 +83,38 @@ export default function Component() {
           });
           return;
         }
+        // if (response.data.statusCode === 200) {
+        //   setIsLoading(false)
+        //   toast({
+        //     title: 'Success',
+        //     description: "Login successful",
+        //   });
+        //   router.push('/dashboard/templates')
+        // }
+
         if (response.data.statusCode === 200) {
-          setIsLoading(false)
+          // Extract tokens from the response
+          const { access_token, refresh_token } = response.data.body;
+
+          // Store the tokens in localStorage
+          localStorage.setItem('accessToken', access_token);
+          localStorage.setItem('refreshToken', refresh_token);
+
+          setIsLoading(false);
           toast({
             title: 'Success',
             description: "Login successful",
           });
-          router.push('/templates')
+
+          // Example of setting non-HttpOnly cookies from the response headers
+          const cookies = response.data.headers['set-cookie'];
+          if (cookies) {
+            cookies.forEach((cookie:string) => {
+              document.cookie = cookie.split(';')[0]; // Sets each cookie individually
+            });
+          }
+
+          router.push('/dashboard/templates');
         }
 
       })

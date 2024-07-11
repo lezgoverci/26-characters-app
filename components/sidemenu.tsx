@@ -48,7 +48,7 @@ export default function SideMenu(){
         <div className="flex-1 overflow-auto py-4 lg:block">
           <nav className="grid gap-1 px-4 text-sm font-medium">
             <Link
-              href="/templates"
+              href="/dashboard/templates"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
               prefetch={false}
             >
@@ -56,7 +56,7 @@ export default function SideMenu(){
               Templates
             </Link>
             <Link
-              href="/clients"
+              href="/dashboard/clients"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
               prefetch={false}
             >
@@ -64,7 +64,7 @@ export default function SideMenu(){
               Clients
             </Link>
             <Link
-              href="/files"
+              href="/dashboard/files"
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
               prefetch={false}
             >
@@ -76,7 +76,7 @@ export default function SideMenu(){
         </div>
         <div className="mt-auto border-t p-4 lg:block">
           <Link
-            href="/settings"
+            href="/dashboard/settings"
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
             prefetch={false}
           >
