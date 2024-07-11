@@ -54,17 +54,17 @@ export default function Component() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values)
-    login(values)
+    await login(values)
   }
 
-  const login = (values: z.infer<typeof formSchema>) => {
+  const login = async (values: z.infer<typeof formSchema>) => {
 
     setIsLoading(true)
-    axios.post('https://n8n.xponent.ph/webhook/api/auth/login', values)
+    await axios.post('https://n8n.xponent.ph/webhook/api/auth/login', values)
       .then(response => {
         // console.log(response.data);
         // if (response.status == 200) {

@@ -35,7 +35,7 @@ import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, useFormState } from "react-hook-form"
 
 import {
   Form,
@@ -55,7 +55,7 @@ export default function Signup() {
   const formSchema = z.object({
     email: z.string().email(),
     password: z.string().min(8),
-    confirmPassword: z.string().min(8)
+    confirmPassword: z.string().min(8),
   })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,6 +65,10 @@ export default function Signup() {
       confirmPassword: ''
     },
   })
+
+  // const formState = useFormState({
+  //   control: form.control
+  // })
 
   const [formData, setFormData] = useState({
 
@@ -76,16 +80,14 @@ export default function Signup() {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
-    signup(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await signup(values)
   }
 
-  const signup = (values: z.infer<typeof formSchema> )=> {
+  const signup = async (values: z.infer<typeof formSchema>) => {
+    console.log(form.formState.isSubmitSuccessful)
     setIsLoading(true)
-    axios.post('https://n8n.xponent.ph/webhook/api/auth/signup', values)
+    await axios.post('https://n8n.xponent.ph/webhook/api/auth/signup', values)
       .then(response => {
 
         if (response.data.error && typeof response.data.error === 'object') {
@@ -117,7 +119,7 @@ export default function Signup() {
       });
   }
 
-  
+
   return (
     <div className="grid min-h-screen w-full grid-cols-1 md:grid-cols-2">
       <div className="flex flex-col items-center justify-center bg-primary p-6 md:p-12">
@@ -197,6 +199,7 @@ export default function Signup() {
               />
               <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+
                 Sign Up
               </Button>
             </form>
