@@ -33,10 +33,38 @@ import axios from "axios"
 import { useRouter } from 'next/navigation'
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+
 
 export default function Signup() {
   const router = useRouter()
   const { toast } = useToast()
+
+  const formSchema = z.object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    confirmPassword: z.string().min(8)
+  })
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: ''
+    },
+  })
 
   const [formData, setFormData] = useState({
 
@@ -48,19 +76,24 @@ export default function Signup() {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    // console.log(formData);
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values)
+    signup(values)
+  }
+
+  const signup = (values)=> {
     setIsLoading(true)
-    axios.post('https://n8n.xponent.ph/webhook/api/auth/signup', formData)
+    axios.post('https://n8n.xponent.ph/webhook/api/auth/signup', values)
       .then(response => {
-        
+
         if (response.data.error && typeof response.data.error === 'object') {
           setIsLoading(false);
           toast({
             title: 'Error',
             description: "Signup failed",
-            variant:"destructive"
+            variant: "destructive"
           });
           return;
         }
@@ -79,11 +112,12 @@ export default function Signup() {
         toast({
           title: 'Error',
           description: "Signup failed",
-          variant:"destructive"
+          variant: "destructive"
         });
       });
-
   }
+
+  
   return (
     <div className="grid min-h-screen w-full grid-cols-1 md:grid-cols-2">
       <div className="flex flex-col items-center justify-center bg-primary p-6 md:p-12">
@@ -99,7 +133,7 @@ export default function Signup() {
       <div className="flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md space-y-4">
           <h2 className="text-2xl font-bold">Create an account</h2>
-          <form className="space-y-4">
+          {/* <form className="space-y-4">
             <div className="space-y-1">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="m@example.com" required onChange={
@@ -122,7 +156,51 @@ export default function Signup() {
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Sign Up
             </Button>
-          </form>
+          </form> */}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <div className="space-y-1">
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input id="email" type="email" placeholder="m@example.com" required {...field} />
+                    </FormControl>
+                  </div>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <div className="space-y-1">
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input id="password" type="password" placeholder="Enter your password" required {...field} />
+                    </FormControl>
+                  </div>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <div className="space-y-1">
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input id="confirm-password" type="password" placeholder="Retype your password" required {...field} />
+                    </FormControl>
+                  </div>
+                )}
+              />
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Sign Up
+              </Button>
+            </form>
+          </Form>
           <div className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link href="/login" className="font-medium underline" prefetch={false}>
