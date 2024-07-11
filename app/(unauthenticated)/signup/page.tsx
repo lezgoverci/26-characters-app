@@ -83,7 +83,7 @@ export default function Signup() {
     signup(values)
   }
 
-  const signup = (values)=> {
+  const signup = (values: z.infer<typeof formSchema> )=> {
     setIsLoading(true)
     axios.post('https://n8n.xponent.ph/webhook/api/auth/signup', values)
       .then(response => {
