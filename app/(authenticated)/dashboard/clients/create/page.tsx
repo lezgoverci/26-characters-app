@@ -20,6 +20,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import axios from "axios"
+import { useToast } from "@/components/ui/use-toast"
+import { Loader2 } from "lucide-react"
 
 import {
   Select,
@@ -45,6 +47,9 @@ import {
 import { Input } from "@/components/ui/input"
 
 export default function ClientCreate() {
+
+  const [loading, setLoading] = useState<boolean>(false)
+  const { toast } = useToast()
 
 
   const formSchema = z.object({
@@ -89,14 +94,23 @@ export default function ClientCreate() {
   const onSubmit = async (values: Client) => {
 
 
-    console.log(values)
+    setLoading(true)
     try {
       const response = await axios.post(`https://n8n.xponent.ph/webhook/api/clients`, {
         values
       });
-      //TODO: show success message
+      toast({
+        description: "Successfully created client",
+        variant:"default"
+      });
+      setLoading(false)
     } catch (error) {
       console.error('Error updating data:', error);
+      setLoading(false)
+      toast({
+        description: "Failed to create client",
+        variant:"destructive"
+      });
     }
   }
 
@@ -387,7 +401,7 @@ export default function ClientCreate() {
                           </FormItem>
                         )}
                       />
-                      <Button type="submit">Submit</Button>
+                      <Button size="sm" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Submit</Button>
                     </CardContent>
                   </Card>
 
