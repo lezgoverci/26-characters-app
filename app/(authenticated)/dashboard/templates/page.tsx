@@ -44,7 +44,7 @@ export default function Templates() {
     <>
       <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
         <h1 className="text-lg font-semibold">Templates</h1>
-        <Button size="sm" onClick={() => router.push("/templates/create")}>Create New</Button>
+        <Button size="sm" onClick={() => router.push("/dashboard/templates/create")}>Create New</Button>
       </header>
 
       <main className="flex-1 overflow-auto p-4 md:p-6">
@@ -61,7 +61,7 @@ export default function Templates() {
               {templates.map((template) => (
                 <TableRow key={template.id}>
                   <TableCell>
-                    <Link href={`/templates/${template.id}`} className="font-medium underline" prefetch={false}>
+                    <Link href={`/dashboard/templates/${template.id}`} className="font-medium underline" prefetch={false}>
                       {template.link}
                     </Link>
                   </TableCell>

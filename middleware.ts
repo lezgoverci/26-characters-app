@@ -8,6 +8,12 @@ export function middleware(request: NextRequest) {
     return Response.redirect(new URL('/dashboard/templates', request.url))
   }
 
+  // Adjusted logic to allow access to /dashboard/templates and its subpaths without redirection
+  if (currentUser && request.nextUrl.pathname.startsWith('/dashboard/templates')) {
+    // No redirection for /dashboard/templates and its subpaths
+    return; // Allow the request to proceed without redirection
+  }
+
   // Existing logic to redirect authenticated users not trying to access /dashboard
   if (currentUser && !request.nextUrl.pathname.startsWith('/dashboard')) {
     return Response.redirect(new URL('/dashboard/templates', request.url))

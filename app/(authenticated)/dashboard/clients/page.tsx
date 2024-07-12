@@ -28,7 +28,7 @@ export default function Clients() {
 
   const viewDetails = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    router.push("/clients/1")
+    router.push("/dashboard/clients/1")
   }
 
   const fetchClients = async () => {
@@ -44,7 +44,7 @@ export default function Clients() {
 
   const editDetails = (id: string) => {
 
-    router.push(`/clients/${id}/edit`)
+    router.push(`/dashboard/clients/${id}/edit`)
   }
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function Clients() {
           <div className="flex items-center gap-2">
             <Input type="search" placeholder="Search clients..." className="max-w-[200px]" />
             <Button size="sm" onClick={() => {
-              router.push("/clients/create")
+              router.push("/dashboard/clients/create")
             }}>Create New</Button>
             <Button variant="outline" size="sm">
               <UploadIcon className="h-4 w-4 mr-2" />
