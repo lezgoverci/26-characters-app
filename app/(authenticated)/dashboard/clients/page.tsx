@@ -26,12 +26,15 @@ export default function Clients() {
 
   const [clients, setClients] = useState<Client[]>([])
 
+  const [searchInput, setSearchInput] = useState<string>("")
+
   const viewDetails = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     router.push("/dashboard/clients/1")
   }
 
   const fetchClients = async () => {
+    setLoading(true)
     try {
       const response = await axios.get("https://n8n.xponent.ph/webhook/api/clients/")
       setClients(response.data.data)
@@ -47,16 +50,43 @@ export default function Clients() {
     router.push(`/dashboard/clients/${id}/edit`)
   }
 
+  const searchClients = async () => {
+
+    setLoading(true)
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/clients/?search=${searchInput}`)
+      setClients(response.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+    setLoading(false)
+  }
+
+
+  const handleSearchClientInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value)
+
+  }
+
+
   useEffect(() => {
     fetchClients()
   }, [])
+
+  useEffect(() => {
+    if (searchInput === "") {
+      fetchClients()
+    }
+
+  }
+    , [searchInput])
   return (
     <>
       <div className="flex flex-col">
         <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
           <h1 className="text-lg font-semibold">Clients</h1>
           <div className="flex items-center gap-2">
-            <Input type="search" placeholder="Search clients..." className="max-w-[200px]" />
+
             <Button size="sm" onClick={() => {
               router.push("/dashboard/clients/create")
             }}>Create New</Button>
@@ -68,6 +98,11 @@ export default function Clients() {
         </header>
 
         <main className="flex-1 overflow-auto p-4 md:p-6">
+          <div className="flex justify-start mb-4 gap-2">
+            <Input type="search" onChange={handleSearchClientInput} placeholder="Search clients..." className="max-w-[200px]" />
+            <Button onClick={searchClients} variant="outline" >Search</Button>
+          </div>
+
           {loading ? <SkeletonCardGrid /> :
             <div className="grid gap-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4">
