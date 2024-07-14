@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, ChangeEvent } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
@@ -43,6 +43,7 @@ export default function Component() {
   const [selectedUser, setSelectedUser] = useState(null)
 
 
+  const [inputGoogleDriveLink, setInputGoogleDriveLink] = useState("")
   const [expectedGoogleDriveLink, setExpectedGoogleDriveLink] = useState("")
 
   const [users, setUsers] = useState<Client[]>([])
@@ -94,11 +95,13 @@ export default function Component() {
 
   const deleteTemplate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) => {
     event.preventDefault();
+    setLoading(true);
     await axios.delete(`https://n8n.xponent.ph/webhook/api/templates`,{
       data: { id: id }
     })
       .then(response => {
         console.log(response.data);
+        setLoading(false);
         toast({
           title: "Template deleted",
           description: "Your template has been deleted successfully."
@@ -107,6 +110,7 @@ export default function Component() {
       })
       .catch(error => {
         console.error('Error deleting data:', error);
+        setLoading(false);
         toast({
           title: "Error deleting template",
           description: "An error occurred while deleting your template.",
@@ -166,6 +170,10 @@ export default function Component() {
       fetchUsers()
     }
   },[search]);
+  function handleGoogleDriveLinkChange(e: ChangeEvent<HTMLInputElement>): void {
+    setInputGoogleDriveLink(e.target.value)
+  }
+
   return (
 
     <div className="flex flex-col">
@@ -232,7 +240,7 @@ export default function Component() {
                     onClick={searchUsers}
                     variant="outline"
                     size="sm" disabled={loading}>
-                    Preview
+                    Search
                   </Button>
                 </div>
                 <Separator />
@@ -265,24 +273,24 @@ export default function Component() {
             <CardHeader>
               <CardTitle>Delete Template</CardTitle>
               <CardDescription>
-                Enter the link of the template to confirm deletion. This action cannot be undone.
+                Type <strong>{ googleDriveLink }</strong> in the input field below to delete this template. This action cannot be undone.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-4">
                 <Input
                   placeholder="Template Link"
-                  onChange={(e) => setExpectedGoogleDriveLink(e.target.value)}
-                  // value={expectedGoogleDriveLink}
+                  onChange={(e) => handleGoogleDriveLinkChange(e)}
+                  value={inputGoogleDriveLink}
                 />
                 <Button
                   variant="destructive"
                   className="w-auto"
                   size="sm"
                   onClick={deleteTemplate}
-                  disabled={loading || googleDriveLink !== expectedGoogleDriveLink}
+                  disabled={!( inputGoogleDriveLink === expectedGoogleDriveLink && inputGoogleDriveLink !== "" && !loading)}
                 >
-                  Delete
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Delete
                 </Button>
               </div>
             </CardContent>
