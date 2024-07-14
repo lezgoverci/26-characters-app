@@ -19,6 +19,8 @@ import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 
+import {Client} from "@/types"
+
 import { useParams } from "next/navigation"
 
 import axios from "axios"
@@ -34,24 +36,51 @@ export default function TemplatesCreate() {
   // const id = searchParams.get("id")
   const [search, setSearch] = useState("")
   const [selectedUser, setSelectedUser] = useState(null)
-  const users = [
-    { id: 1, name: "John Doe", email: "john@example.com" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com" },
-    { id: 3, name: "Bob Johnson", email: "bob@example.com" },
-    { id: 4, name: "Sarah Lee", email: "sarah@example.com" },
-    { id: 5, name: "Tom Wilson", email: "tom@example.com" },
-  ]
+  const [users, setUsers] = useState<Client[]>([])
+
   const filteredUsers = useMemo(() => {
-    return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
+  return users.filter((user) => {
+    const fullName = `${user.first_name} ${user.last_name}`;
+    return (
+      fullName.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase())
+    );
+  });
   }, [search,users])
 
   const [googleDriveLink, setGoogleDriveLink] = useState("")
   const [date, setDate] = useState(new Date())
-  const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // setSearch(e.target.value)
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value)
   }
   const handleUserSelect = (e: React.MouseEvent<HTMLButtonElement>) => {
     // setSelectedUser(user)
+  }
+
+  const fetchUsers = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/clients`);
+  
+      setUsers(response.data.data)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error updating data:', error);
+      setLoading(false)
+    }
+  }
+
+  const searchUsers = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/clients?search=${search}`);
+  
+      setUsers(response.data.data)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error updating data:', error);
+      setLoading(false)
+    }
   }
 
   const handleSave = async () => {
@@ -78,9 +107,16 @@ export default function TemplatesCreate() {
 
   useEffect(() => {
      setLoading(false)
+     fetchUsers()
     
-  }, []
-  );
+  }, []);
+
+  useEffect(()=>{
+    if(search == ''){
+      fetchUsers()
+    }
+  },[search]);
+  
   return (
 
     <div className="flex flex-col">
@@ -146,13 +182,14 @@ export default function TemplatesCreate() {
               <div className="grid gap-4">
                 <div className="flex items-center gap-4">
                   <Input placeholder="Search users..." value={search}
-                    // onChange={handleSearch} 
+                    onChange={handleSearch} 
                     className="w-full"
                   />
                   <Button
+                    onClick={searchUsers}
                     variant="outline"
-                    size="sm" disabled={!selectedUser}>
-                    Preview
+                    size="sm" disabled={loading}>
+                    Search
                   </Button>
                 </div>
                 <Separator />
@@ -166,10 +203,10 @@ export default function TemplatesCreate() {
                     >
                       <Avatar>
                         <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>{user.first_name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="font-medium">{user.name}</div>
+                        <div className="font-medium">{user.first_name} {user.last_name}</div>
                         <div className="text-sm text-muted-foreground">{user.email}</div>
                       </div>
                     </div>
