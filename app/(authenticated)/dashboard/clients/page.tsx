@@ -136,7 +136,7 @@ export default function Clients() {
                 }
 
               </div>
-              <div className="flex justify-center">
+              {/* <div className="flex justify-center">
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
@@ -161,7 +161,7 @@ export default function Clients() {
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>
-              </div>
+              </div> */}
             </div>
           }
         </main>
