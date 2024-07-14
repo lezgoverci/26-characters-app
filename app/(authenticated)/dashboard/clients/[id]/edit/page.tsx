@@ -9,15 +9,17 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Command, CommandList, CommandItem } from "@/components/ui/command"
 import { Textarea } from "@/components/ui/textarea"
-
+import { Loader2 } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from 'next/navigation'
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -54,6 +56,12 @@ export default function ClientsDetails() {
   const { id } = useParams()
   const [client, setClient] = useState<Client | null>(null)
   const [url, setUrl] = useState<string>("")
+  const [clientEmailInput, setClientEmailInput] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const router = useRouter()
+
+  const { toast } = useToast()
 
   const formSchema = z.object({
     first_name: z.string().min(2).max(50),
@@ -104,6 +112,36 @@ export default function ClientsDetails() {
     setUrl(newUrl);
     form.setValue('treasure_chest_link', newUrl);
   };
+
+  const handleClientEmailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setClientEmailInput(e.target.value);
+  }
+
+  const deleteClient = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.delete(`https://n8n.xponent.ph/webhook/api/clients`,{
+        data:{
+          id: id
+        }
+      });
+    toast({
+      title: "Client deleted",
+      description: "The client has been deleted successfully."
+    });
+ 
+
+    router.push('/dashboard/clients');
+
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error deleting client",
+        description: "There was an error deleting the client."
+      });
+    }
+    setLoading(false)
+  }
 
   const onSubmit = async (values: Client) => {
 
@@ -435,6 +473,33 @@ export default function ClientsDetails() {
 
                   </CardContent>
                 </Card>
+
+                <Card>
+            <CardHeader>
+              <CardTitle>Delete Client</CardTitle>
+              <CardDescription>
+                Type <strong>{ client?.email }</strong> in the input field below to delete this template. This action cannot be undone.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-4">
+                <Input
+                  placeholder="Enter client email to confirm deletion"
+                  onChange={(e) => handleClientEmailInput(e)}
+                  value={clientEmailInput}
+                />
+                <Button
+                  variant="destructive"
+                  className="w-auto"
+                  size="sm"
+                  onClick={deleteClient}
+                  disabled={!( clientEmailInput === client?.email && clientEmailInput !== "" && !loading)}
+                >
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Delete
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
               </div>
             </div>
