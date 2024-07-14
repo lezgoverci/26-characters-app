@@ -21,12 +21,16 @@ import { useParams } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 
+import { useRouter } from 'next/navigation'
+
 import axios from "axios"
 
 import { SkeletonOneRow } from "@/components/skeleton-one-row"
-import {SkeletonListThumbnail} from "@/components/skeleton-list-thumbnail"
+import { SkeletonListThumbnail } from "@/components/skeleton-list-thumbnail"
 
 export default function Component() {
+
+  const router = useRouter()
 
   const { id } = useParams()
   const [loading, setLoading] = useState<boolean>(true)
@@ -35,6 +39,10 @@ export default function Component() {
   // const id = searchParams.get("id")
   const [search, setSearch] = useState("")
   const [selectedUser, setSelectedUser] = useState(null)
+
+
+  const [expectedGoogleDriveLink, setExpectedGoogleDriveLink] = useState("")
+
   const users = [
     { id: 1, name: "John Doe", email: "john@example.com" },
     { id: 2, name: "Jane Smith", email: "jane@example.com" },
@@ -44,7 +52,7 @@ export default function Component() {
   ]
   const filteredUsers = useMemo(() => {
     return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
-  }, [search,users])
+  }, [search, users])
 
   const [googleDriveLink, setGoogleDriveLink] = useState("")
   const [date, setDate] = useState(new Date())
@@ -82,6 +90,29 @@ export default function Component() {
       });
   }
 
+  const deleteTemplate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) => {
+    event.preventDefault();
+    await axios.delete(`https://n8n.xponent.ph/webhook/api/templates`,{
+      data: { id: id }
+    })
+      .then(response => {
+        console.log(response.data);
+        toast({
+          title: "Template deleted",
+          description: "Your template has been deleted successfully."
+        });
+        router.push('/dashboard/templates')
+      })
+      .catch(error => {
+        console.error('Error deleting data:', error);
+        toast({
+          title: "Error deleting template",
+          description: "An error occurred while deleting your template.",
+          variant: "destructive"
+        });
+      });
+  }
+
   useEffect(() => {
 
     const fetchData = async () => {
@@ -90,6 +121,7 @@ export default function Component() {
         console.log(response.data);
         setGoogleDriveLink(response.data.link);
         setDate(new Date(response.data.date));
+        setExpectedGoogleDriveLink(response.data.link);
         setLoading(false)
 
       } catch (error) {
@@ -169,24 +201,53 @@ export default function Component() {
                 </div>
                 <Separator />
                 <div className="grid gap-4">
-                  { loading? <SkeletonListThumbnail /> :
-                  filteredUsers.map((user) => (
-                    <div
-                      key={user.id}
-                      className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
-                    // onClick={() => handleUserSelect(user)}
-                    >
-                      <Avatar>
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="font-medium">{user.name}</div>
-                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                  {loading ? <SkeletonListThumbnail /> :
+                    filteredUsers.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
+                      // onClick={() => handleUserSelect(user)}
+                      >
+                        <Avatar>
+                          <AvatarImage src="/placeholder-user.jpg" />
+                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium">{user.name}</div>
+                          <div className="text-sm text-muted-foreground">{user.email}</div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Delete Template</CardTitle>
+              <CardDescription>
+                Enter the link of the template to confirm deletion. This action cannot be undone.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-4">
+                <Input
+                  placeholder="Template Link"
+                  onChange={(e) => setExpectedGoogleDriveLink(e.target.value)}
+                  // value={expectedGoogleDriveLink}
+                />
+                <Button
+                  variant="destructive"
+                  className="w-auto"
+                  size="sm"
+                  onClick={deleteTemplate}
+                  disabled={loading || googleDriveLink !== expectedGoogleDriveLink}
+                >
+                  Delete
+                </Button>
               </div>
             </CardContent>
           </Card>

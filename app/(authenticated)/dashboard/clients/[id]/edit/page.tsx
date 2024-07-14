@@ -126,7 +126,7 @@ export default function ClientsDetails() {
   useEffect(() => {
     console.log(id)
     fetchClient()
-  })
+  },[])
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit, onErorrs)}>
