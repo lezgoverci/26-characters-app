@@ -105,7 +105,7 @@ export default function Signup() {
             title: 'Success',
             description: "Signup successful",
           });
-          router.push('/templates')
+          router.push('/dashboard/templates')
         }
 
       })
