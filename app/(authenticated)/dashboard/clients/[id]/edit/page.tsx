@@ -70,7 +70,7 @@ export default function ClientsDetails() {
     company: z.string().min(2).max(50),
     company_description: z.string().min(2).max(50),
     role: z.string().min(2).max(50),
-    experience: z.string().min(2).max(50),
+    experience: z.string().min(1).max(50),
     subscription: z.string().min(2).max(50),
     writing_profile: z.string().min(2).max(50),
     recruiting_profile: z.string().min(2).max(50),
