@@ -53,7 +53,7 @@ import axios from "axios"
 
 export default function ClientsDetails() {
 
-  const { id } = useParams()
+  const params = useParams<{ id: string }>()
   const [client, setClient] = useState<Client | null>(null)
   const [url, setUrl] = useState<string>("")
   const [clientEmailInput, setClientEmailInput] = useState<string>("")
@@ -96,7 +96,7 @@ export default function ClientsDetails() {
 
   const fetchClient = async () => {
     try {
-      const response = await axios.get(`https://n8n.xponent.ph/webhook/2f4bc294-6be4-4da2-ba85-9f681a8e93b4/api/clients/${id}`);
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/2f4bc294-6be4-4da2-ba85-9f681a8e93b4/api/clients/${params?.id}`);
       console.log(response.data);
       setClient(response.data)
       form.reset(response.data)
@@ -122,7 +122,7 @@ export default function ClientsDetails() {
     try {
       const response = await axios.delete(`https://n8n.xponent.ph/webhook/api/clients`,{
         data:{
-          id: id
+          id: params?.id
         }
       });
     toast({
@@ -148,7 +148,7 @@ export default function ClientsDetails() {
 
     console.log(values)
     try {
-      const response = await axios.post(`https://n8n.xponent.ph/webhook/7cbc6da7-575d-4e36-90f6-25602514b561/api/clients/${id}`, {
+      const response = await axios.post(`https://n8n.xponent.ph/webhook/7cbc6da7-575d-4e36-90f6-25602514b561/api/clients/${params?.id}`, {
         values
       });
       //TODO: show success message
@@ -162,7 +162,7 @@ export default function ClientsDetails() {
   }
 
   useEffect(() => {
-    console.log(id)
+  
     fetchClient()
   },[])
   return (

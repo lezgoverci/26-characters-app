@@ -34,7 +34,7 @@ export default function Component() {
 
   const router = useRouter()
 
-  const { id } = useParams()
+  const params = useParams<{ id: string }>()
   const [loading, setLoading] = useState<boolean>(true)
   const { toast } = useToast()
 
@@ -73,7 +73,7 @@ export default function Component() {
       link: googleDriveLink,
       date: date.toISOString(),
     };
-    axios.post(`https://n8n.xponent.ph/webhook/6cc085c7-f6bb-4744-bf8e-ce991c9450d6/api/templates/${id}`, data)
+    axios.post(`https://n8n.xponent.ph/webhook/6cc085c7-f6bb-4744-bf8e-ce991c9450d6/api/templates/${params?.id}`, data)
       .then(response => {
         console.log(response.data);
         setLoading(false);
@@ -97,7 +97,7 @@ export default function Component() {
     event.preventDefault();
     setLoading(true);
     await axios.delete(`https://n8n.xponent.ph/webhook/api/templates`,{
-      data: { id: id }
+      data: { id: params?.id }
     })
       .then(response => {
         console.log(response.data);
@@ -149,7 +149,7 @@ export default function Component() {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://n8n.xponent.ph/webhook/c1491c73-4ff5-42ef-971f-1e15d2466730/api/templates/${id}`);
+        const response = await axios.get(`https://n8n.xponent.ph/webhook/c1491c73-4ff5-42ef-971f-1e15d2466730/api/templates/${params?.id}`);
         console.log(response.data);
         setGoogleDriveLink(response.data.link);
         setDate(new Date(response.data.date));
