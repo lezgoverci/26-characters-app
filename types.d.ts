@@ -12,3 +12,12 @@ export interface Client {
     recruiting_profile: string;
     treasure_chest_link: string;
   };
+
+  export interface Template {
+    id: number
+    name: string
+    date: string
+    link: string
+    created_at: string
+    updated_at: string
+  }

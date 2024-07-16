@@ -16,14 +16,8 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { SkeletonList } from "@/components/skeleton-list"
 
+import { Template } from "@/types"
 
-interface Template {
-  id: number
-  date: string
-  link: string
-  created_at: string
-  updated_at: string
-}
 
 
 export default function Templates() {
@@ -52,6 +46,7 @@ export default function Templates() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Name</TableHead>
                 <TableHead>Link</TableHead>
                 <TableHead>Date</TableHead>
               </TableRow>
@@ -60,6 +55,7 @@ export default function Templates() {
 
               {templates.map((template) => (
                 <TableRow key={template.id}>
+                  <TableCell>{template.name}</TableCell>
                   <TableCell>
                     <Link href={`/dashboard/templates/${template.id}`} className="font-medium underline" prefetch={false}>
                       {template.link}
