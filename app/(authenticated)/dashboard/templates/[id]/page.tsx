@@ -44,8 +44,8 @@ export default function Component() {
   const [selectedUser, setSelectedUser] = useState(null)
 
 
-  const [inputGoogleDriveLink, setInputGoogleDriveLink] = useState("")
-  const [expectedGoogleDriveLink, setExpectedGoogleDriveLink] = useState("")
+  const [inputTemplateName, setInputTemplateName] = useState("")
+  const [expectedTemplateName, setExpectedTemplateName] = useState("")
 
   const [users, setUsers] = useState<Client[]>([])
   const filteredUsers = useMemo(() => {
@@ -58,7 +58,7 @@ export default function Component() {
     });
     }, [search,users])
 
-    const [templateName, setTemplateName] = useState("")
+  const [templateName, setTemplateName] = useState("")
   const [googleDriveLink, setGoogleDriveLink] = useState("")
   const [date, setDate] = useState(new Date())
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -191,7 +191,7 @@ export default function Component() {
         setGoogleDriveLink(response.data.link);
         setDate(new Date(response.data.date));
         setTemplateName(response.data.name);
-        setExpectedGoogleDriveLink(response.data.link);
+        setExpectedTemplateName(response.data.name);
         setLoading(false)
 
       } catch (error) {
@@ -209,7 +209,7 @@ export default function Component() {
     }
   },[search]);
   function handleGoogleDriveLinkChange(e: ChangeEvent<HTMLInputElement>): void {
-    setInputGoogleDriveLink(e.target.value)
+    setInputTemplateName(e.target.value)
   }
 
   return (
@@ -316,7 +316,7 @@ export default function Component() {
             <CardHeader>
               <CardTitle>Delete Template</CardTitle>
               <CardDescription>
-                Type <strong>{ googleDriveLink }</strong> in the input field below to delete this template. This action cannot be undone.
+                Type <strong>{ templateName }</strong> in the input field below to delete this template. This action cannot be undone.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -324,14 +324,14 @@ export default function Component() {
                 <Input
                   placeholder="Template Link"
                   onChange={(e) => handleGoogleDriveLinkChange(e)}
-                  value={inputGoogleDriveLink}
+                  value={inputTemplateName}
                 />
                 <Button
                   variant="destructive"
                   className="w-auto"
                   size="sm"
                   onClick={deleteTemplate}
-                  disabled={!( inputGoogleDriveLink === expectedGoogleDriveLink && inputGoogleDriveLink !== "" && !loading)}
+                  disabled={!( inputTemplateName === expectedTemplateName && inputTemplateName !== "" && !loading)}
                 >
                   {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Delete
                 </Button>
