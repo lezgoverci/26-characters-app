@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 
-import {Client} from "@/types"
+import { Client } from "@/types"
 
 import { useParams } from "next/navigation"
 
@@ -39,15 +39,16 @@ export default function TemplatesCreate() {
   const [users, setUsers] = useState<Client[]>([])
 
   const filteredUsers = useMemo(() => {
-  return users.filter((user) => {
-    const fullName = `${user.first_name} ${user.last_name}`;
-    return (
-      fullName.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase())
-    );
-  });
-  }, [search,users])
+    return users.filter((user) => {
+      const fullName = `${user.first_name} ${user.last_name}`;
+      return (
+        fullName.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+  }, [search, users])
 
+  const [templateName, setTemplateName] = useState("")
   const [googleDriveLink, setGoogleDriveLink] = useState("")
   const [date, setDate] = useState(new Date())
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +62,7 @@ export default function TemplatesCreate() {
     setLoading(true)
     try {
       const response = await axios.get(`https://n8n.xponent.ph/webhook/api/clients`);
-  
+
       setUsers(response.data.data)
       setLoading(false)
     } catch (error) {
@@ -74,7 +75,7 @@ export default function TemplatesCreate() {
     setLoading(true)
     try {
       const response = await axios.get(`https://n8n.xponent.ph/webhook/api/clients?search=${search}`);
-  
+
       setUsers(response.data.data)
       setLoading(false)
     } catch (error) {
@@ -89,10 +90,11 @@ export default function TemplatesCreate() {
       const response = await axios.post(`https://n8n.xponent.ph/webhook/api/templates`, {
         link: googleDriveLink,
         date: date.toISOString(),
+        name: templateName
       });
       toast({
         description: "Successfully created template",
-        variant:"default"
+        variant: "default"
       });
       setLoading(false)
     } catch (error) {
@@ -100,23 +102,23 @@ export default function TemplatesCreate() {
       setLoading(false)
       toast({
         description: "Failed to create template",
-        variant:"destructive"
+        variant: "destructive"
       });
     }
   };
 
   useEffect(() => {
-     setLoading(false)
-     fetchUsers()
-    
+    setLoading(false)
+    fetchUsers()
+
   }, []);
 
-  useEffect(()=>{
-    if(search == ''){
+  useEffect(() => {
+    if (search == '') {
       fetchUsers()
     }
-  },[search]);
-  
+  }, [search]);
+
   return (
 
     <div className="flex flex-col">
@@ -135,12 +137,19 @@ export default function TemplatesCreate() {
             </CardHeader>
             <CardContent>
               <form className="grid gap-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label htmlFor="template-name">Template Name</Label>
+                  {loading ? <SkeletonOneRow /> :
+                    <Input id="template-name" placeholder="Enter name" value={templateName} onChange={(e) => setTemplateName(e.target.value)} />
+                  }
+                </div>
+              
                   <div className="space-y-1">
                     <Label htmlFor="google-drive-link">Google Drive Link</Label>
                     {loading ? <SkeletonOneRow /> :
                       <Input id="google-drive-link" placeholder="Enter link" value={googleDriveLink} onChange={(e) => setGoogleDriveLink(e.target.value)} />
                     }</div>
+                   
                   <div className="space-y-1">
                     <Label htmlFor="month-picker">Month</Label>
                     {loading ? <SkeletonOneRow /> :
@@ -166,7 +175,7 @@ export default function TemplatesCreate() {
                       </Popover>
                     }
                   </div>
-                </div>
+               
 
               </form>
             </CardContent>
@@ -182,7 +191,7 @@ export default function TemplatesCreate() {
               <div className="grid gap-4">
                 <div className="flex items-center gap-4">
                   <Input placeholder="Search users..." value={search}
-                    onChange={handleSearch} 
+                    onChange={handleSearch}
                     className="w-full"
                   />
                   <Button
@@ -194,23 +203,23 @@ export default function TemplatesCreate() {
                 </div>
                 <Separator />
                 <div className="grid gap-4">
-                { loading? <SkeletonListThumbnail /> :
-                  filteredUsers.map((user) => (
-                    <div
-                      key={user.id}
-                      className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
-                    // onClick={() => handleUserSelect(user)}
-                    >
-                      <Avatar>
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>{user.first_name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="font-medium">{user.first_name} {user.last_name}</div>
-                        <div className="text-sm text-muted-foreground">{user.email}</div>
+                  {loading ? <SkeletonListThumbnail /> :
+                    filteredUsers.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
+                      // onClick={() => handleUserSelect(user)}
+                      >
+                        <Avatar>
+                          <AvatarImage src="/placeholder-user.jpg" />
+                          <AvatarFallback>{user.first_name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium">{user.first_name} {user.last_name}</div>
+                          <div className="text-sm text-muted-foreground">{user.email}</div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
             </CardContent>
