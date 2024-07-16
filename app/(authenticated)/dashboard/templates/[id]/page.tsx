@@ -57,6 +57,7 @@ export default function Component() {
     });
     }, [search,users])
 
+    const [templateName, setTemplateName] = useState("")
   const [googleDriveLink, setGoogleDriveLink] = useState("")
   const [date, setDate] = useState(new Date())
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,6 +73,7 @@ export default function Component() {
     const data = {
       link: googleDriveLink,
       date: date.toISOString(),
+      name: templateName
     };
     axios.post(`https://n8n.xponent.ph/webhook/6cc085c7-f6bb-4744-bf8e-ce991c9450d6/api/templates/${params?.id}`, data)
       .then(response => {
@@ -153,6 +155,7 @@ export default function Component() {
         console.log(response.data);
         setGoogleDriveLink(response.data.link);
         setDate(new Date(response.data.date));
+        setTemplateName(response.data.name);
         setExpectedGoogleDriveLink(response.data.link);
         setLoading(false)
 
@@ -192,8 +195,13 @@ export default function Component() {
             </CardHeader>
             <CardContent>
               <form className="grid gap-4">
-
-                <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                  <Label htmlFor="template-name">Template Name</Label>
+                  {loading ? <SkeletonOneRow /> :
+                    <Input id="template-name" placeholder="Enter name" value={templateName} onChange={(e) => setTemplateName(e.target.value)} />
+                  }
+                </div>
+              
                   <div className="space-y-1">
                     <Label htmlFor="google-drive-link">Google Drive Link</Label>
                     {loading ? <SkeletonOneRow /> :
@@ -217,7 +225,7 @@ export default function Component() {
                       </Popover>
                     }
                   </div>
-                </div>
+               
 
               </form>
             </CardContent>
