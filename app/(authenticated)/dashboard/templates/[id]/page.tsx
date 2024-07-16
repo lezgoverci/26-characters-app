@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator"
 import { useParams } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
+import { ToastAction } from "@/components/ui/toast"
 
 import { useRouter } from 'next/navigation'
 
@@ -147,6 +148,40 @@ export default function Component() {
     }
   }
 
+  const handlePreviewTemplate = async (
+    user: Client,
+    googleDriveLink: string
+  ) => {
+
+    setLoading(true);
+    const data = {
+      user: user,
+      link: googleDriveLink,
+    };
+    axios.post(`https://n8n.xponent.ph/webhook/api/treasure-chest`, data)
+      .then(response => {
+        console.log(response.data);
+        setLoading(false);
+        toast({
+          title: "Template saved",
+          description: "Your template has been saved successfully.",
+          action: <ToastAction altText="View File" onClick={()=>{
+            window.open(response.data.link);
+          }} >View File</ToastAction>
+        });
+      })
+      .catch(error => {
+        console.error('Error updating data:', error);
+        setLoading(false);
+        // toast({
+        //   title: "Error saving template",
+        //   description: "An error occurred while saving your template.",
+        //   variant: "destructive"
+        // });
+      });
+  }
+
+
   useEffect(() => {
 
     const fetchData = async () => {
@@ -264,7 +299,7 @@ export default function Component() {
                           <AvatarImage src="/placeholder-user.jpg" />
                           <AvatarFallback>{user.first_name.charAt(0)}</AvatarFallback>
                         </Avatar>
-                        <div>
+                        <div onClick={() => handlePreviewTemplate(user, googleDriveLink)}>
                           <div className="font-medium">{user.first_name} {user.last_name}</div>
                           <div className="text-sm text-muted-foreground">{user.email}</div>
                         </div>
