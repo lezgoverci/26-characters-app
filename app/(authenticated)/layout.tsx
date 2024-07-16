@@ -1,5 +1,8 @@
+'use client'
 import SideMenu from "@/components/sidemenu"
 import { Toaster } from "@/components/ui/toaster"
+import GenerateTc from "@/components/generate-tc-dialog"
+
 
 
 export default function DashboardLayout({
@@ -7,6 +10,8 @@ export default function DashboardLayout({
   }: {
     children: React.ReactNode
   }) {
+
+
     return (
       <div className="grid min-h-screen w-full grid-cols-1 md:grid-cols-[280px_1fr]">
       <SideMenu />
@@ -15,6 +20,8 @@ export default function DashboardLayout({
        {children}
       </div>
       <Toaster/>
+
+
     </div>
     )
   }

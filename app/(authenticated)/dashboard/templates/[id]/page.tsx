@@ -31,6 +31,9 @@ import { SkeletonListThumbnail } from "@/components/skeleton-list-thumbnail"
 
 import { Client } from "@/types"
 
+// import useGenerateTc from "@/hooks/useGenerateTc"
+import GenerateTc from "@/components/generate-tc-dialog"
+
 export default function Component() {
 
   const router = useRouter()
@@ -39,9 +42,27 @@ export default function Component() {
   const [loading, setLoading] = useState<boolean>(true)
   const { toast } = useToast()
 
+  const [showDialog, setShowDialog] = useState<boolean>(false)
+
+  // const { user, tc, showDialog, openDialog, closeDialog } = useGenerateTc();
+
   // const id = searchParams.get("id")
   const [search, setSearch] = useState("")
   const [selectedUser, setSelectedUser] = useState(null)
+
+  const [selectedClient, setSelectedClient] = useState<Client>({
+    first_name: '',
+    last_name: '',
+    email: '',
+    company: '',
+    company_description: '',
+    role: '',
+    experience: '',
+    subscription: '',
+    writing_profile: '',
+    recruiting_profile: '',
+    treasure_chest_link: ''
+  })
 
 
   const [inputTemplateName, setInputTemplateName] = useState("")
@@ -147,39 +168,29 @@ export default function Component() {
       setLoading(false)
     }
   }
+  
 
-  const handlePreviewTemplate = async (
-    user: Client,
-    googleDriveLink: string
-  ) => {
 
-    setLoading(true);
-    const data = {
-      user: user,
-      link: googleDriveLink,
-    };
-    axios.post(`https://n8n.xponent.ph/webhook/api/treasure-chest`, data)
-      .then(response => {
-        console.log(response.data);
-        setLoading(false);
-        toast({
-          title: "Template saved",
-          description: "Your template has been saved successfully.",
-          action: <ToastAction altText="View File" onClick={()=>{
-            window.open(response.data.link);
-          }} >View File</ToastAction>
-        });
-      })
-      .catch(error => {
-        console.error('Error updating data:', error);
-        setLoading(false);
-        // toast({
-        //   title: "Error saving template",
-        //   description: "An error occurred while saving your template.",
-        //   variant: "destructive"
-        // });
-      });
+  const handlePreviewTemplate = (user: Client) => {
+    // previewTemplate(user, googleDriveLink)
+ 
+  // if(showDialog){
+  //   console.log("close dialog") 
+  //   closeDialog()
+  // }else{
+  //   console.log("open dialog") 
+  //   openDialog()
+  // }
+
+  setSelectedClient(user)
+
+  setShowDialog(true)
+  
+
+
   }
+
+  
 
 
   useEffect(() => {
@@ -214,6 +225,7 @@ export default function Component() {
 
   return (
 
+    <>
     <div className="flex flex-col">
       <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
         <h1 className="text-lg font-semibold">Templates</h1>
@@ -299,7 +311,7 @@ export default function Component() {
                           <AvatarImage src="/placeholder-user.jpg" />
                           <AvatarFallback>{user.first_name.charAt(0)}</AvatarFallback>
                         </Avatar>
-                        <div onClick={() => handlePreviewTemplate(user, googleDriveLink)}>
+                        <div onClick={() => handlePreviewTemplate(user)}>
                           <div className="font-medium">{user.first_name} {user.last_name}</div>
                           <div className="text-sm text-muted-foreground">{user.email}</div>
                         </div>
@@ -341,7 +353,8 @@ export default function Component() {
         </div>
       </main>
     </div>
-
+    <GenerateTc googleDriveLink={googleDriveLink} showDialog={showDialog} setShowDialog={setShowDialog} client={selectedClient}/>
+    </>
   )
 }
 
