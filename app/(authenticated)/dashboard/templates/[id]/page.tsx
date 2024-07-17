@@ -61,7 +61,8 @@ export default function Component() {
     subscription: '',
     writing_profile: '',
     recruiting_profile: '',
-    treasure_chest_link: ''
+    treasure_chest_link: '',
+    prompt:''
   })
 
 
