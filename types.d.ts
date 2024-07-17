@@ -11,6 +11,7 @@ export interface Client {
     writing_profile: string;
     recruiting_profile: string;
     treasure_chest_link: string;
+    prompt: string;
   };
 
   export interface Template {

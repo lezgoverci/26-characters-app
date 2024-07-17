@@ -61,9 +61,10 @@ export default function ClientCreate() {
     role: z.string().min(2).max(50),
     experience: z.string().min(1).max(50),
     subscription: z.string().min(2).max(50),
-    writing_profile: z.string().min(2).max(50),
-    recruiting_profile: z.string().min(2).max(50),
-    treasure_chest_link: z.string().min(2).max(50)
+    writing_profile: z.string().min(2).max(9999),
+    recruiting_profile: z.string().min(2).max(9999),
+    treasure_chest_link: z.string().min(2).max(9999),
+    prompt: z.string().min(2).max(9999)
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -79,7 +80,8 @@ export default function ClientCreate() {
       subscription: "",
       writing_profile: "",
       recruiting_profile: "",
-      treasure_chest_link: ""
+      treasure_chest_link: "",
+      prompt: ""
     },
   })
 
@@ -393,6 +395,25 @@ export default function ClientCreate() {
                               <Textarea
                                 id="recruiting-profile"
                                 placeholder="Enter your recruiting profile"
+                                {...field}
+                                className="w-full min-h-[100px] text-sm text-muted-foreground"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="prompt"
+                        render={({ field }) => (
+                          <FormItem className="space-y-1">
+                            <FormLabel htmlFor="prompt">Prompt</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                id="prompt"
+                                placeholder="Enter your prompt"
                                 {...field}
                                 className="w-full min-h-[100px] text-sm text-muted-foreground"
                               />

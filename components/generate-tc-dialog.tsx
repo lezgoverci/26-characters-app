@@ -36,7 +36,7 @@ export function GenerateTc({ showDialog, client, googleDriveLink, setShowDialog 
       user: user,
       link: googleDriveLink,
     };
-    axios.post(`https://n8n.xponent.ph/webhook/api/treasure-chest`, data)
+    axios.post(`https://n8n.xponent.ph/webhook-test/api/treasure-chest?type=premium`, data)
       .then(response => {
         console.log(response.data);
         setLoading(false);

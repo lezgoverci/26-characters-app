@@ -72,9 +72,10 @@ export default function ClientsDetails() {
     role: z.string().min(2).max(50),
     experience: z.string().min(1).max(50),
     subscription: z.string().min(2).max(50),
-    writing_profile: z.string().min(2).max(50),
-    recruiting_profile: z.string().min(2).max(50),
-    treasure_chest_link: z.string().min(2).max(50)
+    writing_profile: z.string().min(2).max(9999),
+    recruiting_profile: z.string().min(2).max(9999),
+    treasure_chest_link: z.string().min(2).max(9999),
+    prompt: z.string().min(2).max(9999),
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -90,7 +91,8 @@ export default function ClientsDetails() {
       subscription: client?.subscription || "",
       writing_profile: "",
       recruiting_profile: "",
-      treasure_chest_link: ""
+      treasure_chest_link: "",
+      prompt: "",
     },
   })
 
@@ -120,18 +122,18 @@ export default function ClientsDetails() {
   const deleteClient = async () => {
     setLoading(true)
     try {
-      const response = await axios.delete(`https://n8n.xponent.ph/webhook/api/clients`,{
-        data:{
+      const response = await axios.delete(`https://n8n.xponent.ph/webhook/api/clients`, {
+        data: {
           id: params?.id
         }
       });
-    toast({
-      title: "Client deleted",
-      description: "The client has been deleted successfully."
-    });
- 
+      toast({
+        title: "Client deleted",
+        description: "The client has been deleted successfully."
+      });
 
-    router.push('/dashboard/clients');
+
+      router.push('/dashboard/clients');
 
     } catch (error) {
       console.error(error);
@@ -147,13 +149,26 @@ export default function ClientsDetails() {
 
 
     console.log(values)
+    setLoading(true)
     try {
       const response = await axios.post(`https://n8n.xponent.ph/webhook/7cbc6da7-575d-4e36-90f6-25602514b561/api/clients/${params?.id}`, {
         values
       });
       //TODO: show success message
+      toast({
+        title: "Client updated",
+        description: "The client has been updated successfully."
+      });
+
+      setLoading(false);
+
     } catch (error) {
       console.error('Error updating data:', error);
+      toast({
+        title: "Error updating client",
+        description: "There was an error updating the client."
+      });
+      setLoading(false);
     }
   }
 
@@ -162,16 +177,20 @@ export default function ClientsDetails() {
   }
 
   useEffect(() => {
-  
+
     fetchClient()
-  },[])
+  }, [])
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit, onErorrs)}>
         <div className="flex flex-col">
           <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
             <h1 className="text-lg font-semibold">Client Details</h1>
-            <Button>Save</Button>
+            <Button disabled={
+               loading
+            }>
+               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Save</Button>
           </header>
           <main className="flex-1 overflow-auto p-4 md:p-6">
 
@@ -470,36 +489,55 @@ export default function ClientsDetails() {
                       )}
                     />
 
+                    <FormField
+                      control={form.control}
+                      name="prompt"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="prompt">Prompt</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              id="prompt"
+                              placeholder="Enter your prompt"
+                              {...field}
+                              className="w-full min-h-[100px] text-sm text-muted-foreground"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
 
                   </CardContent>
                 </Card>
 
                 <Card>
-            <CardHeader>
-              <CardTitle>Delete Client</CardTitle>
-              <CardDescription>
-                Type <strong>{ client?.email }</strong> in the input field below to delete this template. This action cannot be undone.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <Input
-                  placeholder="Enter client email to confirm deletion"
-                  onChange={(e) => handleClientEmailInput(e)}
-                  value={clientEmailInput}
-                />
-                <Button
-                  variant="destructive"
-                  className="w-auto"
-                  size="sm"
-                  onClick={deleteClient}
-                  disabled={!( clientEmailInput === client?.email && clientEmailInput !== "" && !loading)}
-                >
-                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Delete
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                  <CardHeader>
+                    <CardTitle>Delete Client</CardTitle>
+                    <CardDescription>
+                      Type <strong>{client?.email}</strong> in the input field below to delete this template. This action cannot be undone.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-col gap-4">
+                      <Input
+                        placeholder="Enter client email to confirm deletion"
+                        onChange={(e) => handleClientEmailInput(e)}
+                        value={clientEmailInput}
+                      />
+                      <Button
+                        variant="destructive"
+                        className="w-auto"
+                        size="sm"
+                        onClick={deleteClient}
+                        disabled={!(clientEmailInput === client?.email && clientEmailInput !== "" && !loading)}
+                      >
+                        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Delete
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
 
               </div>
             </div>
