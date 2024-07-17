@@ -24,9 +24,10 @@ export function GenerateTc({ showDialog, client, googleDriveLink, setShowDialog 
 
   const [loading, setLoading] = useState(false);
 
-  const [previewLink, setPreviewLink] = useState<string>('');
+  const [previewStandardLink, setPreviewStandardLink] = useState<string>('');
+  const [previewPremiumLink, setPreviewPremiumLink] = useState<string>('');
 
-  const generateStandardTC = async (
+  const generateTC = async (
     user: Client,
     googleDriveLink: string
   ) => {
@@ -36,11 +37,12 @@ export function GenerateTc({ showDialog, client, googleDriveLink, setShowDialog 
       user: user,
       link: googleDriveLink,
     };
-    axios.post(`https://n8n.xponent.ph/webhook-test/api/treasure-chest?type=premium`, data)
+    axios.post(`https://n8n.xponent.ph/webhook/api/treasure-chest?type=premium`, data)
       .then(response => {
         console.log(response.data);
         setLoading(false);
-        setPreviewLink(response.data.link);
+        setPreviewStandardLink(response.data["standard-link"]);
+        setPreviewPremiumLink(response.data["premium-link"]);
 
       })
       .catch(error => {
@@ -54,7 +56,8 @@ export function GenerateTc({ showDialog, client, googleDriveLink, setShowDialog 
     setShowDialog(isOpen);
 
     if (!isOpen) {
-      setPreviewLink('');
+      setPreviewStandardLink('');
+      setPreviewPremiumLink('');
     }
   }
 
@@ -65,17 +68,21 @@ export function GenerateTc({ showDialog, client, googleDriveLink, setShowDialog 
       </DialogTrigger> */}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Preview Standard TC for {client.first_name} {client.last_name}</DialogTitle>
+          <DialogTitle>Preview TC</DialogTitle>
           <DialogDescription>
-            Preview the generated TC before sending it to the client.
+            Preview the generated TC before sending it to {client.first_name} {client.last_name}.
           </DialogDescription>
         </DialogHeader>
   
         <DialogFooter>
           <Button onClick={() => setShowDialog(false)} variant="outline">Cancel</Button>
-          {!previewLink &&  <Button onClick={() =>  generateStandardTC(client, googleDriveLink)} disabled={loading} >{loading ? 'Generating...' : 'Generate'}</Button>}
-          {previewLink && (
-            <Button onClick={() => window.open(previewLink, '_blank')} variant="outline">Preview</Button>
+          {!previewStandardLink &&  <Button onClick={() =>  generateTC(client, googleDriveLink)} disabled={loading} >{loading ? 'Generating...' : 'Generate'}</Button>}
+          {previewStandardLink && (
+            <Button onClick={() => window.open(previewStandardLink, '_blank')} variant="outline">Preview Standard</Button>
+          )}
+
+          {previewPremiumLink && (
+            <Button onClick={() => window.open(previewPremiumLink, '_blank')} variant="outline">Preview Premium</Button>
           )}
           
         </DialogFooter>
