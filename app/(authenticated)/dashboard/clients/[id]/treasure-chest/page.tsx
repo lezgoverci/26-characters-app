@@ -16,10 +16,11 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Pagination } from "@/components/ui/pagination"
 import { Loader2 } from "lucide-react"
-import { Client, Template } from "@/types"
+import { Client, Template, File } from "@/types"
 import axios from "axios"
 import { useEffect } from "react"
 import SkeletonCardGridSimple from '@/components/skeleton-card-grid-simple';
+import { useParams } from "next/navigation"
 
 import {
   Select,
@@ -31,60 +32,26 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-interface File {
-  name: string;
-}
+
 
 export default function Component() {
+  const params = useParams<{ id: string }>()
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [templates, setTemplates] = useState<Template[]>([])
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
-  const [files, setFiles] = useState([
-    {
-      id: 1,
-      name: "OpenAI Roadmap.pdf",
-      type: "pdf",
-      size: "2.3 MB",
-      modifiedAt: "2023-05-15",
-    },
-    {
-      id: 2,
-      name: "OpenAI Pricing.xlsx",
-      type: "xlsx",
-      size: "1.5 MB",
-      modifiedAt: "2023-04-20",
-    },
-    {
-      id: 3,
-      name: "OpenAI Product Overview.pptx",
-      type: "pptx",
-      size: "4.1 MB",
-      modifiedAt: "2023-06-01",
-    },
-    {
-      id: 4,
-      name: "OpenAI API Documentation.docx",
-      type: "docx",
-      size: "3.7 MB",
-      modifiedAt: "2023-03-10",
-    },
-    {
-      id: 5,
-      name: "OpenAI Case Studies.pdf",
-      type: "pdf",
-      size: "5.2 MB",
-      modifiedAt: "2023-02-28",
-    },
-  ])
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("")
+
+  const [client, setClient] = useState<Client | null>(null)
+
+  const [files, setFiles] = useState<File[] | null>()
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(9)
   const filteredFiles = useMemo(() => {
-    return files.filter((file) => file.name.toLowerCase().includes(search.toLowerCase()))
+    return files?.filter((file) => file.filename.toLowerCase().includes(search.toLowerCase()))
   }, [search, files])
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = filteredFiles.slice(indexOfFirstItem, indexOfLastItem)
+  const currentItems = filteredFiles?.slice(indexOfFirstItem, indexOfLastItem)
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setSearch(target.value);
@@ -92,7 +59,7 @@ export default function Component() {
   };
 
   const handleDownload = (file: File) => {
-    console.log(`Downloading ${file.name}`);
+    console.log(`Downloading ${file.filename}`);
   };
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
@@ -109,9 +76,73 @@ export default function Component() {
     }
   }
 
+  const fetchFiles = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/files?client=${params?.id}`);
+      setFiles(response.data.data)
+      setLoading(false)
+    } catch (error) {
+      console.error(error);
+      setLoading(false)
+    }
+  }
+
+
+  const fetchClient = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/2f4bc294-6be4-4da2-ba85-9f681a8e93b4/api/clients/${params?.id}`);
+
+      setClient(response.data)
+      setLoading(false)
+
+    } catch (error) {
+      console.error(error);
+      setLoading(false)
+    }
+  };
+
+  const getTemplate = async (id: string) => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/templates/${id}`);
+      setLoading(false)
+      return response.data.link
+    } catch (error) {
+      console.error(error);
+      setLoading(false)
+    }
+  }
+
+
+  const handleGenerate = async () => {
+
+    const googleDriveLink = (templates.find((template) => template.id.toString() === selectedTemplate))?.link
+
+    setLoading(true);
+    const data = {
+      user: client,
+      link: googleDriveLink,
+      template: selectedTemplate
+    };
+    axios.post(`https://n8n.xponent.ph/webhook-test/api/treasure-chest?type=premium`, data)
+      .then(response => {
+        console.log(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error updating data:', error);
+        setLoading(false);
+
+      });
+  }
+
   useEffect(() => {
 
 
+    fetchFiles()
+    fetchClient()
     fetchTemplates()
   }, [])
   return (
@@ -160,44 +191,58 @@ export default function Component() {
       </header>
       <main className="flex-1 overflow-auto p-4 md:p-6">
 
-        <div className="flex justify-start mb-4 gap-2">
-          <Select onValueChange={(value) => setSelectedTemplate(value)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select a template" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {/* <SelectLabel>Templates</SelectLabel> */}
-                {templates.map((template) => (
-                  <SelectItem key={template.id} value={template.name}>
-                    {template.name}
-                  </SelectItem>
-                ))}
+        <div className="flex justify-between mb-4 gap-2">
+          <div className='flex gap-2'>
+            <Select onValueChange={(value) => setSelectedTemplate(value)} value={selectedTemplate}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a template" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {/* <SelectLabel>Templates</SelectLabel> */}
+                  {templates.map((template) => (
+                    <SelectItem key={template.id} value={template.id.toString()}>
+                      {template.name}
+                    </SelectItem>
+                  ))}
 
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Button onClick={(e) => { e.preventDefault(); handleGenerate() }} variant="outline" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
+
+          </div>
+          <div>
+            <Button variant="outline" onClick={fetchFiles} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Refresh List</Button>
+          </div>
         </div>
         {
           loading ? <SkeletonCardGridSimple /> :
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {currentItems.map((file) => (
+              {currentItems?.map((file) => (
                 <Card key={file.id}>
 
                   <CardHeader className="flex">
-                    <div className="font-medium">{file.name}</div>
+                    <div className="font-medium">{file.filename}</div>
+
                   </CardHeader>
                   <CardContent className="flex items-center gap-4">
                     <div className="flex-1">
 
-                      <div className="text-sm text-muted-foreground">
-                        {file.type} - {file.size}
-                      </div>
-                      <div className="text-sm text-muted-foreground">Modified: {file.modifiedAt}</div>
+
+                      <div className="text-sm text-muted-foreground">Created: {new Date(file.created_at)?.toLocaleDateString()}</div>
+                      <div className="text-sm text-muted-foreground">Status: {file.status}</div>
                     </div>
-                    <Button variant="outline" size="sm" onClick={() => handleDownload(file)}>
-                      Download
+                    <Button disabled={
+                      !["completed", "failed"].includes(file.status)
+                    } variant="outline" size="sm" onClick={() => handleDownload(file)}>
+                      {
+                        file.status === "processing" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null
+                      }
+                      {
+                        file.status === "processing" ? "Processing" : "Download"
+                      }
+
                     </Button>
                   </CardContent>
                 </Card>

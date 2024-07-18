@@ -15,10 +15,21 @@ export interface Client {
   };
 
   export interface Template {
-    id: number
-    name: string
-    date: string
-    link: string
-    created_at: string
-    updated_at: string
+    id: number;
+    name: string;
+    date: string;
+    link: string;
+    created_at: string;
+    updated_at: string;
+  }
+
+  export interface File {
+    id: number;
+    client: number;
+    template: number;
+    link: string;
+    status: string;
+    filename: string;
+    created_at: string;
+    updated_at: string;
   }
