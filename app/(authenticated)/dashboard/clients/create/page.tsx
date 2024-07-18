@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
@@ -103,7 +103,7 @@ export default function ClientCreate() {
       });
       toast({
         description: "Successfully created client",
-        variant:"default"
+        variant: "default"
       });
       setLoading(false)
     } catch (error) {
@@ -111,7 +111,7 @@ export default function ClientCreate() {
       setLoading(false)
       toast({
         description: "Failed to create client",
-        variant:"destructive"
+        variant: "destructive"
       });
     }
   }
@@ -129,315 +129,314 @@ export default function ClientCreate() {
   };
 
   return (
-    <>
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
-          <h1 className="text-lg font-semibold">New Client</h1>
-          {/* <Button type="submit">Save</Button> */}
-        </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6">
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit, onErorrs)}>
-              <div className="grid gap-6">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit, onErorrs)}>
+        <div className="flex flex-col">
+          <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
+            <h1 className="text-lg font-semibold">New Client</h1>
+            <Button size="sm" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Submit</Button>
+          </header>
+          <main className="grid gap-4 lg:grid-cols-2 overflow-auto p-4 md:p-6">
 
 
-                  <Card>
-                    <CardContent className="space-y-4">
 
 
-                      <FormField
-                        control={form.control}
-                        name="first_name"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="first_name">First Name</FormLabel>
-                            <FormControl>
-                              <Input
-                                id="first_name"
-                                type="text"
-                                placeholder="Enter your first name"
-                                {...field}
-                                className="w-full text-sm font-medium"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+            <Card>
+              <CardHeader>
+                <CardTitle>Personal</CardTitle>
+                <CardDescription>
+                  Add personal details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
 
-                      <FormField
-                        control={form.control}
-                        name="last_name"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="last_name">Last Name</FormLabel>
-                            <FormControl>
-                              <Input
-                                id="last_name"
-                                type="text"
-                                placeholder="Enter your last name"
-                                {...field}
-                                className="w-full text-sm font-medium"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
 
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="email">Email</FormLabel>
-                            <FormControl>
-                              <Input
-                                id="email"
-                                type="email"
-                                placeholder="Enter your email"
-                                {...field}
-                                className="w-full text-sm text-muted-foreground"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                <FormField
+                  control={form.control}
+                  name="first_name"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="first_name">First Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="first_name"
+                          type="text"
+                          placeholder="Enter your first name"
+                          {...field}
+                          className="w-full text-sm font-medium"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                      <FormField
-                        control={form.control}
-                        name="company"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="company">Company</FormLabel>
-                            <FormControl>
-                              <Input
-                                id="company"
-                                type="text"
-                                placeholder="Enter your company name"
-                                {...field}
-                                className="w-full text-sm font-medium"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                <FormField
+                  control={form.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="last_name">Last Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="last_name"
+                          type="text"
+                          placeholder="Enter your last name"
+                          {...field}
+                          className="w-full text-sm font-medium"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                      <FormField
-                        control={form.control}
-                        name="company_description"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="company-description">Company Description</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                id="company-description"
-                                placeholder="Enter your company description"
-                                {...field}
-                                className="w-full text-sm text-muted-foreground"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="email">Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="Enter your email"
+                          {...field}
+                          className="w-full text-sm text-muted-foreground"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                    </CardContent>
-                  </Card>
 
-                  <Card>
-                    <CardContent className="space-y-4">
 
-                      <FormField
-                        control={form.control}
-                        name="role"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="role">Role</FormLabel>
-                            <FormControl>
-                              <Input
-                                id="role"
-                                type="text"
-                                placeholder="Enter your role"
-                                {...field}
-                                className="w-full text-sm text-muted-foreground"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+              </CardContent>
+            </Card>
 
-                      <FormField
-                        control={form.control}
-                        name="experience"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="experience">Experience</FormLabel>
-                            <FormControl>
-                              <Input
-                                id="experience"
-                                type="text"
-                                placeholder="5 years of experience"
-                                {...field}
-                                className="w-full text-sm text-muted-foreground"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+            <Card>
+              <CardHeader>
+                <CardTitle>Company</CardTitle>
+                <CardDescription>
+                  Add company details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
 
-                      <FormField
-                        control={form.control}
-                        name="subscription"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Subscription</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select a client subscription" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="standard">Standard</SelectItem>
-                                <SelectItem value="premium">Premium</SelectItem>
+                <FormField
+                  control={form.control}
+                  name="company"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="company">Company</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="company"
+                          type="text"
+                          placeholder="Enter your company name"
+                          {...field}
+                          className="w-full text-sm font-medium"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                              </SelectContent>
-                            </Select>
+                <FormField
+                  control={form.control}
+                  name="company_description"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="company-description">Company Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          id="company-description"
+                          placeholder="Enter your company description"
+                          {...field}
+                          className="w-full text-sm text-muted-foreground"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="role">Role</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="role"
+                          type="text"
+                          placeholder="Enter your role"
+                          {...field}
+                          className="w-full text-sm text-muted-foreground"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                          </FormItem>
-                        )}
-                      />
+                <FormField
+                  control={form.control}
+                  name="experience"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="experience">Experience</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="experience"
+                          type="text"
+                          placeholder="5 years of experience"
+                          {...field}
+                          className="w-full text-sm text-muted-foreground"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                      {/* <div className="grid gap-2">
 
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Treasure Chest</span>
-                          <input
+
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Treasure Chest</CardTitle>
+                <CardDescription>
+                  Add treasure chest profile
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="subscription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Subscription</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a client subscription" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="standard">Standard</SelectItem>
+                          <SelectItem value="premium">Premium</SelectItem>
+
+                        </SelectContent>
+                      </Select>
+
+                    </FormItem>
+                  )}
+                />
+
+
+
+                <FormField
+                  control={form.control}
+                  name="treasure_chest_link"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="role">Treasure Chest</FormLabel>
+                      <FormControl>
+                        <div className="flex w-full text-sm items-center space-x-2">
+                          <Input
+                            id="treasure_chest_link"
                             type="text"
+                            // placeholder="Enter your role"
+                            {...field}
                             value={url}
-                            onChange={(e) => setUrl(e.target.value)}
-                            className="mr-2 border rounded p-1"
-                            placeholder="Generated URL"
+                            className=" text-muted-foreground"
                           />
                           <Button variant="outline" size="sm" onClick={(event) => { event.preventDefault(); handleGenerateClick(); }}>
                             <GiftIcon className="h-4 w-4 mr-2" />
                             Generate
                           </Button>
                         </div>
-                      </div> */}
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="writing_profile"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="writing-profile">Writing Profile</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          id="writing-profile"
+                          placeholder="Enter your writing profile"
+                          {...field}
+                          className="w-full min-h-[100px] text-sm text-muted-foreground"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                      <FormField
-                        control={form.control}
-                        name="treasure_chest_link"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="role">Treasure Chest</FormLabel>
-                            <FormControl>
-                              <div className="flex w-full text-sm items-center space-x-2">
-                                <Input
-                                  id="treasure_chest_link"
-                                  type="text"
-                                  // placeholder="Enter your role"
-                                  {...field}
-                                  value={url}
-                                  className=" text-muted-foreground"
-                                />
-                                <Button variant="outline" size="sm" onClick={(event) => { event.preventDefault(); handleGenerateClick(); }}>
-                                  <GiftIcon className="h-4 w-4 mr-2" />
-                                  Generate
-                                </Button>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                <FormField
+                  control={form.control}
+                  name="recruiting_profile"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="recruiting-profile">Recruiting Profile</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          id="recruiting-profile"
+                          placeholder="Enter your recruiting profile"
+                          {...field}
+                          className="w-full min-h-[100px] text-sm text-muted-foreground"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="space-y-4">
-
-                      <FormField
-                        control={form.control}
-                        name="writing_profile"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="writing-profile">Writing Profile</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                id="writing-profile"
-                                placeholder="Enter your writing profile"
-                                {...field}
-                                className="w-full min-h-[100px] text-sm text-muted-foreground"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="recruiting_profile"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="recruiting-profile">Recruiting Profile</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                id="recruiting-profile"
-                                placeholder="Enter your recruiting profile"
-                                {...field}
-                                className="w-full min-h-[100px] text-sm text-muted-foreground"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="prompt"
-                        render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel htmlFor="prompt">Prompt</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                id="prompt"
-                                placeholder="Enter your prompt"
-                                {...field}
-                                className="w-full min-h-[100px] text-sm text-muted-foreground"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button size="sm" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Submit</Button>
-                    </CardContent>
-                  </Card>
+                <FormField
+                  control={form.control}
+                  name="prompt"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel htmlFor="prompt">Prompt</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          id="prompt"
+                          placeholder="Enter your prompt"
+                          {...field}
+                          className="w-full min-h-[100px] text-sm text-muted-foreground"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              
+              </CardContent>
+            </Card>
 
 
 
 
 
-                </div>
-              </div>
 
-            </form>
-          </Form>
-        </main>
-      </div>
-    </>
+          </main>
+        </div>
+
+      </form>
+    </Form>
   )
 }
 

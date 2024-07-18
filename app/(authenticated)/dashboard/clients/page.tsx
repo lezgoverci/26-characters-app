@@ -10,7 +10,7 @@ import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationEllipsis, PaginationNext } from "@/components/ui/pagination"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -28,9 +28,9 @@ export default function Clients() {
 
   const [searchInput, setSearchInput] = useState<string>("")
 
-  const viewDetails = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    router.push("/dashboard/clients/1")
+  const viewDetails = (id: string) => {
+
+    router.push(`/dashboard/clients/${id}/treasure-chest`)
   }
 
   const fetchClients = async () => {
@@ -110,22 +110,27 @@ export default function Clients() {
                   clients.map((client, index) => {
                     return (
                       <Card key={index}>
+                        <CardHeader className="flex items-center">
+                          <Avatar className="h-16 w-16">
+                            <AvatarImage src="/placeholder-user.jpg" />
+                            <AvatarFallback>
+                              {client.first_name[0].toUpperCase() + client.last_name[0].toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                        </CardHeader>
                         <CardContent>
                           <div className="flex flex-col items-center gap-4">
-                            <Avatar className="h-16 w-16">
-                              <AvatarImage src="/placeholder-user.jpg" />
-                              <AvatarFallback>JP</AvatarFallback>
-                            </Avatar>
+
                             <div className="text-center">
                               <h3 className="text-lg font-semibold">{client.first_name + " " + client.last_name}</h3>
                               <p className="text-sm text-muted-foreground">{client.email}</p>
                             </div>
                             <div className="flex gap-2">
-                              <Button onClick={viewDetails} variant="outline" size="sm">
-                                View TC
+                              <Button onClick={() => viewDetails(client.id ?? "")} variant="outline" size="sm">
+                                Treasure Chest
                               </Button>
                               <Button onClick={(e) => { e.preventDefault(); editDetails(client.id ?? "") }} variant="outline" size="sm">
-                                Edit
+                                Details
                               </Button>
                             </div>
                           </div>

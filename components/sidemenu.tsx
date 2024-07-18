@@ -81,14 +81,7 @@ export default function SideMenu() {
             <UsersIcon className="h-4 w-4" />
             Clients
           </Link>
-          <Link
-            href="/dashboard/files"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
-            prefetch={false}
-          >
-            <FileIcon className="h-4 w-4" />
-            Files
-          </Link>
+    
 
         </nav>
       </div>

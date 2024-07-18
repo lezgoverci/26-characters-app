@@ -187,19 +187,19 @@ export default function ClientsDetails() {
           <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
             <h1 className="text-lg font-semibold">Client Details</h1>
             <Button disabled={
-               loading
+              loading
             }>
-               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Save</Button>
           </header>
-          <main className="flex-1 overflow-auto p-4 md:p-6">
-
-            <div className="grid gap-6">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2">
-
-
-
+          <main className="grid gap-4 lg:grid-cols-2 overflow-auto p-4 md:p-6">
                 <Card>
+                  <CardHeader>
+                    <CardTitle>Personal</CardTitle>
+                    <CardDescription>
+                      Update personal details
+                    </CardDescription>
+                  </CardHeader>
                   <CardContent className="space-y-4">
                     <FormField
                       control={form.control}
@@ -262,6 +262,17 @@ export default function ClientsDetails() {
                       )}
                     />
 
+
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Company</CardTitle>
+                    <CardDescription>
+                      Update company details
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <FormField
                       control={form.control}
                       name="company"
@@ -302,10 +313,6 @@ export default function ClientsDetails() {
                         </FormItem>
                       )}
                     />
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="space-y-4">
                     <FormField
                       control={form.control}
                       name="role"
@@ -346,6 +353,18 @@ export default function ClientsDetails() {
                         </FormItem>
                       )}
                     />
+
+
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Treasure Chest</CardTitle>
+                    <CardDescription>
+                      Update treasure chest profile
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <FormField
                       control={form.control}
                       name="subscription"
@@ -394,41 +413,6 @@ export default function ClientsDetails() {
                         </FormItem>
                       )}
                     />
-                    {/* <div className="grid gap-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Subscription</span>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button variant="outline" size="sm">
-                                Standard <ChevronDownIcon className="h-4 w-4 ml-2" />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="p-0" align="end">
-                              <Command>
-                                <CommandList>
-                                  <CommandItem className="px-4 py-2 hover:bg-accent hover:text-accent-foreground">
-                                    Standard
-                                  </CommandItem>
-                                  <CommandItem className="px-4 py-2 hover:bg-accent hover:text-accent-foreground">
-                                    Premium
-                                  </CommandItem>
-                                </CommandList>
-                              </Command>
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Treasure Chest</span>
-                          <Button variant="outline" size="sm">
-                            <GiftIcon className="h-4 w-4 mr-2" />
-                            Generate
-                          </Button>
-                        </div>
-                      </div> */}
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="space-y-4">
                     {/* <div className="space-y-1">
                         <Label htmlFor="writing-profile" className="text-sm">
                           Writing Profile
@@ -539,8 +523,8 @@ export default function ClientsDetails() {
                   </CardContent>
                 </Card>
 
-              </div>
-            </div>
+          
+       
 
           </main>
         </div>
