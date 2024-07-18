@@ -100,9 +100,6 @@ export default function SideMenu() {
           Settings
         </Link>
 
-        </nav>
-      </div>
-      <div className="mt-auto border-t p-4 lg:block">
         <Link
           href="#"
           onClick={handleLogout}
@@ -113,7 +110,20 @@ export default function SideMenu() {
           Logout
         </Link>
 
+        </nav>
       </div>
+      {/* <div className="mt-auto border-t p-4 lg:block">
+        <Link
+          href="#"
+          onClick={handleLogout}
+          className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
+          prefetch={false}
+        >
+          <LogoutIcon className="h-4 w-4" />
+          Logout
+        </Link>
+
+      </div> */}
     </div>
   )
 }
