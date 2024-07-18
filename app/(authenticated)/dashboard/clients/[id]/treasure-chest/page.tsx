@@ -126,16 +126,19 @@ export default function Component() {
       link: googleDriveLink,
       template: selectedTemplate
     };
-    axios.post(`https://n8n.xponent.ph/webhook-test/api/treasure-chest?type=premium`, data)
+    axios.post(`https://n8n.xponent.ph/webhook/api/treasure-chest?type=premium`, data)
       .then(response => {
         console.log(response.data);
+        fetchFiles()
         setLoading(false);
       })
       .catch(error => {
         console.error('Error updating data:', error);
+        fetchFiles()
         setLoading(false);
 
       });
+
   }
 
   useEffect(() => {
@@ -150,48 +153,53 @@ export default function Component() {
     <div className="flex flex-col">
       <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
         <h1 className="text-lg font-semibold">Files</h1>
-        <div className="flex items-center gap-4">
-          <Input
-            type="search"
-            placeholder="Search files..."
-            value={search}
-            onChange={handleSearch}
-            className="w-full max-w-[300px]"
-          />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <FilterIcon className="h-4 w-4 mr-2" />
-                Filter
-                <ChevronDownIcon className="h-4 w-4 ml-auto" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[300px] p-2">
-              <div className="grid gap-2">
-                <div className="flex items-center gap-2">
-                  <Checkbox id="filter-pdf" />
-                  <Label htmlFor="filter-pdf">PDF</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox id="filter-xlsx" />
-                  <Label htmlFor="filter-xlsx">XLSX</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox id="filter-pptx" />
-                  <Label htmlFor="filter-pptx">PPTX</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox id="filter-docx" />
-                  <Label htmlFor="filter-docx">DOCX</Label>
-                </div>
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+
       </header>
       <main className="flex-1 overflow-auto p-4 md:p-6">
 
         <div className="flex justify-between mb-4 gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <Input
+                type="search"
+                placeholder="Search files..."
+                value={search}
+                onChange={handleSearch}
+                className="w-full max-w-[300px]"
+              />
+              {/* <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" >
+                    <FilterIcon className="h-4 w-4 mr-2" />
+                    Filter
+                    <ChevronDownIcon className="h-4 w-4 ml-auto" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[300px] p-2">
+                  <div className="grid gap-2">
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="filter-pdf" />
+                      <Label htmlFor="filter-pdf">PDF</Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="filter-xlsx" />
+                      <Label htmlFor="filter-xlsx">XLSX</Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="filter-pptx" />
+                      <Label htmlFor="filter-pptx">PPTX</Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="filter-docx" />
+                      <Label htmlFor="filter-docx">DOCX</Label>
+                    </div>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu> */}
+              <Button variant="outline" onClick={fetchFiles} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Refresh List</Button>
+            </div>
+            
+          </div>
           <div className='flex gap-2'>
             <Select onValueChange={(value) => setSelectedTemplate(value)} value={selectedTemplate}>
               <SelectTrigger className="w-[180px]">
@@ -209,16 +217,17 @@ export default function Component() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Button onClick={(e) => { e.preventDefault(); handleGenerate() }} variant="outline" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
+            <Button onClick={(e) => { e.preventDefault(); handleGenerate() }} variant="default" disabled={loading || selectedTemplate == ""}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
 
           </div>
-          <div>
-            <Button variant="outline" onClick={fetchFiles} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Refresh List</Button>
-          </div>
+
         </div>
         {
           loading ? <SkeletonCardGridSimple /> :
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {
+                (currentItems?.length == 0 || currentItems == undefined) && !loading ? <div className="text-start">No files found</div> : null
+              }
               {currentItems?.map((file) => (
                 <Card key={file.id}>
 
@@ -231,8 +240,16 @@ export default function Component() {
 
 
                       <div className="text-sm text-muted-foreground">Created: {new Date(file.created_at)?.toLocaleDateString()}</div>
-                      <div className="text-sm text-muted-foreground">Status: {file.status}</div>
+                      <div className="text-sm text-muted-foreground">Template: {templates.find((template) => template.id == file.template)?.name}</div>
                     </div>
+                    {file.status === "completed" ?
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          console.log(`Viewing ${file.filename}`);
+                        }}
+                      >View</Button> : null}
                     <Button disabled={
                       !["completed", "failed"].includes(file.status)
                     } variant="outline" size="sm" onClick={() => handleDownload(file)}>
