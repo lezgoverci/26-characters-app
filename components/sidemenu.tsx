@@ -18,8 +18,10 @@ export default function SideMenu() {
     e.preventDefault(); // Prevent default link behavior
   
     // Clear cookies
-    document.cookie = 'sb-access-token=; Max-Age=0; path=/;';
-    document.cookie = 'sb-refresh-token=; Max-Age=0; path=/;';
+    document.cookie = 'sb-access-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'sb-refresh-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+
   
     // Clear local storage items
     localStorage.removeItem('sb-access-token');
@@ -42,7 +44,7 @@ export default function SideMenu() {
             <span className="">26 Characters</span>
           </Link>
         </div>
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar className="h-9 w-9">
               <AvatarImage src="/placeholder-user.jpg" />
@@ -52,8 +54,7 @@ export default function SideMenu() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>My Account</DropdownMenuItem>
-            {/* <DropdownMenuItem>Notifications</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem> */}
+     
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link onClick={handleLogout} href="/login" prefetch={false}>
@@ -61,7 +62,7 @@ export default function SideMenu() {
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
       <div className="flex-1 overflow-auto py-4 lg:block">
         <nav className="grid gap-1 px-4 text-sm font-medium">
@@ -81,12 +82,15 @@ export default function SideMenu() {
             <UsersIcon className="h-4 w-4" />
             Clients
           </Link>
-    
-
-        </nav>
-      </div>
-      <div className="mt-auto border-t p-4 lg:block">
-        <Link
+          <Link
+          href="/dashboard/account"
+          className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
+          prefetch={false}
+        >
+          <AccountIcon className="h-4 w-4" />
+          Account
+        </Link>
+          <Link
           href="/dashboard/settings"
           className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
           prefetch={false}
@@ -94,6 +98,20 @@ export default function SideMenu() {
           <SettingsIcon className="h-4 w-4" />
           Settings
         </Link>
+
+        </nav>
+      </div>
+      <div className="mt-auto border-t p-4 lg:block">
+        <Link
+          href="#"
+          onClick={handleLogout}
+          className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-accent-foreground"
+          prefetch={false}
+        >
+          <LogoutIcon className="h-4 w-4" />
+          Logout
+        </Link>
+
       </div>
     </div>
   )
@@ -299,6 +317,47 @@ function UsersIcon(props: React.SVGProps<SVGSVGElement>) {
       <circle cx="9" cy="7" r="4" />
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  )
+}
+
+function AccountIcon(props: React.SVGProps<SVGSVGElement>) {
+  return(
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  )
+}
+
+function LogoutIcon(props: React.SVGProps<SVGSVGElement>) {
+  return(
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
     </svg>
   )
 }
