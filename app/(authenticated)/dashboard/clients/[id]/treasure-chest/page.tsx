@@ -19,6 +19,7 @@ import { Loader2 } from "lucide-react"
 import { Client, Template } from "@/types"
 import axios from "axios"
 import { useEffect } from "react"
+import SkeletonCardGridSimple from '@/components/skeleton-card-grid-simple';
 
 import {
   Select,
@@ -35,9 +36,9 @@ interface File {
 }
 
 export default function Component() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
-  const [templates, setTemplates] = useState< Template[]>([])
+  const [templates, setTemplates] = useState<Template[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
   const [files, setFiles] = useState([
     {
@@ -97,11 +98,14 @@ export default function Component() {
     setCurrentPage(pageNumber)
   }
   const fetchTemplates = async () => {
+    setLoading(true)
     try {
       const response = await axios.get(`https://n8n.xponent.ph/webhook/api/templates`);
       setTemplates(response.data.data)
+      setLoading(false)
     } catch (error) {
       console.error(error);
+      setLoading(false)
     }
   }
 
@@ -155,25 +159,28 @@ export default function Component() {
         </div>
       </header>
       <main className="flex-1 overflow-auto p-4 md:p-6">
-      <div className="flex justify-start mb-4 gap-2">
-        <Select onValueChange={(value) => setSelectedTemplate(value)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select a template" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {/* <SelectLabel>Templates</SelectLabel> */}
-              {templates.map((template) => (
-                <SelectItem key={template.id} value={template.name}>
-                  {template.name}
-                </SelectItem>
-              ))}
-      
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Button variant="outline" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
+       
+        <div className="flex justify-start mb-4 gap-2">
+          <Select onValueChange={(value) => setSelectedTemplate(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select a template" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {/* <SelectLabel>Templates</SelectLabel> */}
+                {templates.map((template) => (
+                  <SelectItem key={template.id} value={template.name}>
+                    {template.name}
+                  </SelectItem>
+                ))}
+
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button variant="outline" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
         </div>
+        {
+          loading ? <SkeletonCardGridSimple /> : 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {currentItems.map((file) => (
             <Card key={file.id}>
@@ -192,6 +199,7 @@ export default function Component() {
             </Card>
           ))}
         </div>
+        }
         <div className="flex justify-center mt-6">
           <Pagination
           // currentPage={currentPage}
