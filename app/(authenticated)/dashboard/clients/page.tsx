@@ -99,7 +99,7 @@ export default function Clients() {
 
         <main className="flex-1 overflow-auto p-4 md:p-6">
           <div className="flex justify-start mb-4 gap-2">
-            <Input type="search" onChange={handleSearchClientInput} placeholder="Search clients..." className="max-w-[200px]" />
+            <Input type="search" onChange={handleSearchClientInput} placeholder="Search clients..." className="max-w-[200px]" ></Input>
             <Button onClick={searchClients} variant="outline" >Search</Button>
           </div>
 

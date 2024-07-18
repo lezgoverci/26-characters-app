@@ -15,13 +15,30 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Pagination } from "@/components/ui/pagination"
+import { Loader2 } from "lucide-react"
+import { Client, Template } from "@/types"
+import axios from "axios"
+import { useEffect } from "react"
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface File {
   name: string;
 }
 
 export default function Component() {
+  const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState("")
+  const [templates, setTemplates] = useState< Template[]>([])
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
   const [files, setFiles] = useState([
     {
       id: 1,
@@ -67,92 +84,125 @@ export default function Component() {
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentItems = filteredFiles.slice(indexOfFirstItem, indexOfLastItem)
-  const handleSearch = (e:ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     setSearch(target.value);
     setCurrentPage(1);
-};
-  
-const handleDownload = (file: File) => {
-  console.log(`Downloading ${file.name}`);
-};
-  const handlePageChange = (pageNumber:number) => {
+  };
+
+  const handleDownload = (file: File) => {
+    console.log(`Downloading ${file.name}`);
+  };
+  const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
   }
+  const fetchTemplates = async () => {
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/templates`);
+      setTemplates(response.data.data)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+
+
+    fetchTemplates()
+  }, [])
   return (
-   
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
-          <h1 className="text-lg font-semibold">Files</h1>
-          <div className="flex items-center gap-4">
-            <Input
-              type="search"
-              placeholder="Search files..."
-              value={search}
-              onChange={handleSearch}
-              className="w-full max-w-[300px]"
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <FilterIcon className="h-4 w-4 mr-2" />
-                  Filter
-                  <ChevronDownIcon className="h-4 w-4 ml-auto" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[300px] p-2">
-                <div className="grid gap-2">
-                  <div className="flex items-center gap-2">
-                    <Checkbox id="filter-pdf" />
-                    <Label htmlFor="filter-pdf">PDF</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox id="filter-xlsx" />
-                    <Label htmlFor="filter-xlsx">XLSX</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox id="filter-pptx" />
-                    <Label htmlFor="filter-pptx">PPTX</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox id="filter-docx" />
-                    <Label htmlFor="filter-docx">DOCX</Label>
-                  </div>
+
+    <div className="flex flex-col">
+      <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
+        <h1 className="text-lg font-semibold">Files</h1>
+        <div className="flex items-center gap-4">
+          <Input
+            type="search"
+            placeholder="Search files..."
+            value={search}
+            onChange={handleSearch}
+            className="w-full max-w-[300px]"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <FilterIcon className="h-4 w-4 mr-2" />
+                Filter
+                <ChevronDownIcon className="h-4 w-4 ml-auto" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[300px] p-2">
+              <div className="grid gap-2">
+                <div className="flex items-center gap-2">
+                  <Checkbox id="filter-pdf" />
+                  <Label htmlFor="filter-pdf">PDF</Label>
                 </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {currentItems.map((file) => (
-              <Card key={file.id}>
-                <CardContent className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <div className="font-medium">{file.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {file.type} - {file.size}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Modified: {file.modifiedAt}</div>
+                <div className="flex items-center gap-2">
+                  <Checkbox id="filter-xlsx" />
+                  <Label htmlFor="filter-xlsx">XLSX</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox id="filter-pptx" />
+                  <Label htmlFor="filter-pptx">PPTX</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox id="filter-docx" />
+                  <Label htmlFor="filter-docx">DOCX</Label>
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+      <main className="flex-1 overflow-auto p-4 md:p-6">
+      <div className="flex justify-start mb-4 gap-2">
+        <Select onValueChange={(value) => setSelectedTemplate(value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select a template" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {/* <SelectLabel>Templates</SelectLabel> */}
+              {templates.map((template) => (
+                <SelectItem key={template.id} value={template.name}>
+                  {template.name}
+                </SelectItem>
+              ))}
+      
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button variant="outline" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {currentItems.map((file) => (
+            <Card key={file.id}>
+              <CardContent className="flex items-center gap-4">
+                <div className="flex-1">
+                  <div className="font-medium">{file.name}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {file.type} - {file.size}
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => handleDownload(file)}>
-                    Download
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          <div className="flex justify-center mt-6">
-            <Pagination
-              // currentPage={currentPage}
-              // totalItems={filteredFiles.length}
-              // itemsPerPage={itemsPerPage}
-              // onPageChange={handlePageChange}
-            />
-          </div>
-        </main>
-      </div>
-   
+                  <div className="text-sm text-muted-foreground">Modified: {file.modifiedAt}</div>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => handleDownload(file)}>
+                  Download
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="flex justify-center mt-6">
+          <Pagination
+          // currentPage={currentPage}
+          // totalItems={filteredFiles.length}
+          // itemsPerPage={itemsPerPage}
+          // onPageChange={handlePageChange}
+          />
+        </div>
+      </main>
+    </div>
+
   )
 }
 

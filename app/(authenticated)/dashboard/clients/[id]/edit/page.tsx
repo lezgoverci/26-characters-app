@@ -25,7 +25,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
-import { Client } from "@/types"
+import { Client, Template } from "@/types"
 
 import {
   Select,
@@ -58,6 +58,7 @@ export default function ClientsDetails() {
   const [url, setUrl] = useState<string>("")
   const [clientEmailInput, setClientEmailInput] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(false)
+  const [templates, setTemplates] = useState< Template[]>([])
 
   const router = useRouter()
 
@@ -106,6 +107,15 @@ export default function ClientsDetails() {
       console.error(error);
     }
   };
+
+  const fetchTemplates = async () => {
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/templates`);
+      setTemplates(response.data.data)
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const handleGenerateClick = () => {
 
@@ -179,6 +189,7 @@ export default function ClientsDetails() {
   useEffect(() => {
 
     fetchClient()
+    fetchTemplates()
   }, [])
   return (
     <Form {...form}>
@@ -387,6 +398,12 @@ export default function ClientsDetails() {
                         </FormItem>
                       )}
                     />
+
+                    
+
+                    
+
+
                     <FormField
                       control={form.control}
                       name="treasure_chest_link"
