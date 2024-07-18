@@ -12,6 +12,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { useRouter } from 'next/navigation';
 
+
 export default function SideMenu() {
   const router = useRouter();
   const handleLogout = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {

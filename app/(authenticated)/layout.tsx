@@ -18,8 +18,9 @@ export default function DashboardLayout({
       <div className="flex flex-col">
  
        {children}
+       <Toaster/>
       </div>
-      <Toaster/>
+    
 
 
     </div>
