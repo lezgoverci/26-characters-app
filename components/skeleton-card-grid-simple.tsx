@@ -8,8 +8,10 @@ function SkeletonCardGridSimple() {
                     <div className="flex flex-col items-center space-y-4 p-4">
              
                         <div className="flex flex-col space-y-2 w-full">
-                            <Skeleton className="h-4 w-3/6 " />
                             <Skeleton className="h-4 w-5/6 " />
+                            <Skeleton className="h-4 w-3/6 " />
+                            <Skeleton className="h-4 w-4/6 " />
+                            
                         </div>
                     </div>
                 </div>

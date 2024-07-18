@@ -13,7 +13,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Pagination } from "@/components/ui/pagination"
 import { Loader2 } from "lucide-react"
 import { Client, Template } from "@/types"
@@ -159,7 +159,7 @@ export default function Component() {
         </div>
       </header>
       <main className="flex-1 overflow-auto p-4 md:p-6">
-       
+
         <div className="flex justify-start mb-4 gap-2">
           <Select onValueChange={(value) => setSelectedTemplate(value)}>
             <SelectTrigger className="w-[180px]">
@@ -180,25 +180,29 @@ export default function Component() {
           <Button variant="outline" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
         </div>
         {
-          loading ? <SkeletonCardGridSimple /> : 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {currentItems.map((file) => (
-            <Card key={file.id}>
-              <CardContent className="flex items-center gap-4">
-                <div className="flex-1">
-                  <div className="font-medium">{file.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {file.type} - {file.size}
-                  </div>
-                  <div className="text-sm text-muted-foreground">Modified: {file.modifiedAt}</div>
-                </div>
-                <Button variant="outline" size="sm" onClick={() => handleDownload(file)}>
-                  Download
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+          loading ? <SkeletonCardGridSimple /> :
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {currentItems.map((file) => (
+                <Card key={file.id}>
+
+                  <CardHeader className="flex">
+                    <div className="font-medium">{file.name}</div>
+                  </CardHeader>
+                  <CardContent className="flex items-center gap-4">
+                    <div className="flex-1">
+
+                      <div className="text-sm text-muted-foreground">
+                        {file.type} - {file.size}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Modified: {file.modifiedAt}</div>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => handleDownload(file)}>
+                      Download
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
         }
         <div className="flex justify-center mt-6">
           <Pagination
