@@ -19,6 +19,7 @@ export interface Client {
     name: string;
     date: string;
     link: string;
+    drive_id: string;
     created_at: string;
     updated_at: string;
   }
@@ -30,6 +31,7 @@ export interface Client {
     link: string;
     status: string;
     filename: string;
+    drive_id: string;
     created_at: string;
     updated_at: string;
   }

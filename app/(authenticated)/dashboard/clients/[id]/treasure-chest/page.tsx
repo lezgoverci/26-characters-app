@@ -39,7 +39,7 @@ export default function Component() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [templates, setTemplates] = useState<Template[]>([])
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("")
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
 
   const [client, setClient] = useState<Client | null>(null)
 
@@ -60,6 +60,7 @@ export default function Component() {
 
   const handleDownload = (file: File) => {
     console.log(`Downloading ${file.filename}`);
+    window.open(file.link +"/export/pdf", "_blank");
   };
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
@@ -118,15 +119,13 @@ export default function Component() {
 
   const handleGenerate = async () => {
 
-    const googleDriveLink = (templates.find((template) => template.id.toString() === selectedTemplate))?.link
-
     setLoading(true);
     const data = {
-      user: client,
-      link: googleDriveLink,
+      client: client,
+      type: client?.subscription,
       template: selectedTemplate
     };
-    axios.post(`https://n8n.xponent.ph/webhook/api/treasure-chest?type=premium`, data)
+    axios.post(`https://n8n.xponent.ph/webhook-test/api/treasure-chest?type=${data.type}`, data)
       .then(response => {
         console.log(response.data);
         fetchFiles()
@@ -140,6 +139,12 @@ export default function Component() {
       });
 
   }
+
+  const handleSelectTemplate = (value: string) => {
+    const template = templates.find(template => template.id.toString() === value) || null;
+    setSelectedTemplate(template);
+  }
+  
 
   useEffect(() => {
 
@@ -198,10 +203,10 @@ export default function Component() {
               </DropdownMenu> */}
               <Button variant="outline" onClick={fetchFiles} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Refresh List</Button>
             </div>
-            
+
           </div>
           <div className='flex gap-2'>
-            <Select onValueChange={(value) => setSelectedTemplate(value)} value={selectedTemplate}>
+            <Select onValueChange={(value) => {handleSelectTemplate(value)}} value={selectedTemplate?.id.toString()}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a template" />
               </SelectTrigger>
@@ -217,7 +222,7 @@ export default function Component() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Button onClick={(e) => { e.preventDefault(); handleGenerate() }} variant="default" disabled={loading || selectedTemplate == ""}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
+            <Button onClick={(e) => { e.preventDefault(); handleGenerate() }} variant="default" disabled={loading || selectedTemplate == null}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Generate</Button>
 
           </div>
 
@@ -248,6 +253,7 @@ export default function Component() {
                         size="sm"
                         onClick={() => {
                           console.log(`Viewing ${file.filename}`);
+                          window.open(file.link, "_blank");
                         }}
                       >View</Button> : null}
                     <Button disabled={
@@ -257,7 +263,7 @@ export default function Component() {
                         file.status === "processing" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null
                       }
                       {
-                        file.status === "processing" ? "Processing" : "Download"
+                        file.status === "processing" ? "Processing" : "Download PDF"
                       }
 
                     </Button>
