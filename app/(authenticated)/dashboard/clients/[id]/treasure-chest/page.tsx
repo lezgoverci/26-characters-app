@@ -21,6 +21,7 @@ import axios from "axios"
 import { useEffect } from "react"
 import SkeletonCardGridSimple from '@/components/skeleton-card-grid-simple';
 import { useParams } from "next/navigation"
+import { Trash } from "lucide-react"
 
 import {
   Select,
@@ -63,7 +64,7 @@ export default function Component() {
 
   const handleDownload = (file: File) => {
     console.log(`Downloading ${file.filename}`);
-    window.open(file.link +"/export/pdf", "_blank");
+    window.open(file.link + "/export/pdf", "_blank");
   };
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
@@ -128,7 +129,7 @@ export default function Component() {
       type: client?.subscription,
       template: selectedTemplate
     };
-    axios.post(`https://n8n.xponent.ph/webhook-test/api/treasure-chest?type=${data.type}`, data)
+    axios.post(`https://n8n.xponent.ph/webhook/api/treasure-chest?type=${data.type}`, data)
       .then(response => {
         console.log(response.data);
         fetchFiles()
@@ -147,7 +148,7 @@ export default function Component() {
     const template = templates.find(template => template.id.toString() === value) || null;
     setSelectedTemplate(template);
   }
-  
+
 
   useEffect(() => {
 
@@ -156,6 +157,18 @@ export default function Component() {
     fetchClient()
     fetchTemplates()
   }, [])
+  function handleDelete(file: File): void {
+    axios.delete(`https://n8n.xponent.ph/webhook/api/files?id=${file.id}`)
+      .then(response => {
+        console.log(response.data);
+        fetchFiles()
+      })
+      .catch(error => {
+        console.error('Error updating data:', error);
+        fetchFiles()
+      });
+  }
+
   return (
 
     <div className="flex flex-col">
@@ -209,7 +222,7 @@ export default function Component() {
 
           </div>
           <div className='flex gap-2'>
-            <Select onValueChange={(value) => {handleSelectTemplate(value)}} value={selectedTemplate?.id.toString()}>
+            <Select onValueChange={(value) => { handleSelectTemplate(value) }} value={selectedTemplate?.id.toString()}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a template" />
               </SelectTrigger>
@@ -239,9 +252,9 @@ export default function Component() {
               {currentItems?.map((file) => (
                 <Card key={file.id}>
 
-                  <CardHeader className="flex">
+                  <CardHeader className="flex flex-row justify-between">
                     <div className="font-medium">{file.filename}</div>
-
+                    <Trash onClick={() => handleDelete(file)} size={16} />
                   </CardHeader>
                   <CardContent className="flex items-center gap-4">
                     <div className="flex-1">
