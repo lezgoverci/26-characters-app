@@ -17,6 +17,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { Client } from "@/types"
 import SkeletonCardGrid from "@/components/skeleton-card-grid"
+import { Badge } from "@/components/ui/badge"
 
 
 export default function Clients() {
@@ -119,11 +120,18 @@ export default function Clients() {
                           </Avatar>
                         </CardHeader>
                         <CardContent>
-                          <div className="flex flex-col items-center gap-4">
+                          <div className="flex flex-col items-center gap-4 ">
 
-                            <div className="text-center">
+                            <div className="flex flex-col gap-2 text-center">
                               <h3 className="text-lg font-semibold">{client.first_name + " " + client.last_name}</h3>
+
+
                               <p className="text-sm text-muted-foreground">{client.email}</p>
+                              <div>
+                                <Badge className={client.subscription == "premium" ? "bg-amber-500" : "bg-sky-400"} variant="default">{client.subscription}</Badge>
+                              </div>
+
+
                             </div>
                             <div className="flex gap-2">
                               <Button onClick={() => viewDetails(client.id ?? "")} variant="outline" size="sm">
