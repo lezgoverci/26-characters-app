@@ -47,7 +47,10 @@ export default function Component() {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(9)
   const filteredFiles = useMemo(() => {
-    return files?.filter((file) => file.filename.toLowerCase().includes(search.toLowerCase()))
+    return files?.filter((file) => {
+      return file.filename.toLowerCase().includes(search.toLowerCase()) ||
+        templates.find((template) => template.id == file.template)?.name.toLowerCase().includes(search.toLowerCase())
+    })
   }, [search, files])
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
