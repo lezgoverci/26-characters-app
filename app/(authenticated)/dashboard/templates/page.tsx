@@ -26,14 +26,28 @@ export default function Templates() {
   const [templates, setTemplates] = useState<Template[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    // setLoading(true)
-    axios.get("https://n8n.xponent.ph/webhook/api/templates/").then((res) => {
-      console.log(res.data)
+  const fetchTemplates = async () => {
+    try {
+      const res = await axios.get("https://n8n.xponent.ph/webhook/api/templates/")
+      console.log(res)
+      if (res.status !== 200) {
+        console.error(res.data.error)
+        return
+      }
       setTemplates(res.data.data)
       setLoading(false)
-    })
-  }, [])
+    } catch (error) {
+      console.error(error)
+      setLoading(false)
+    }
+  }
+
+  useEffect(
+    () => {
+      fetchTemplates()
+    },
+    []
+  )
   return (
     <>
       <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
@@ -49,33 +63,45 @@ export default function Templates() {
                 <TableHead>Name</TableHead>
                 <TableHead>Link</TableHead>
                 <TableHead>Date</TableHead>
+                <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
 
+              {
+                templates.length === 0 &&
+                <TableRow>
+                  <TableCell colSpan={3} className="text-start">No templates found</TableCell>
+                </TableRow>
+              }
               {templates.map((template) => (
                 <TableRow key={template.id}>
-                  <TableCell>{template.name}</TableCell>
+                  <TableCell><Link href={`/dashboard/templates/${template.id}`} className="font-medium underline" prefetch={false}>
+                      {template.name}
+                    </Link></TableCell>
                   <TableCell>
-                    <Link href={`/dashboard/templates/${template.id}`} className="font-medium underline" prefetch={false}>
-                      {template.link}
-                    </Link>
+                    <Button variant="outline" size="sm" onClick={() => window.open(template.link, "_blank")}>Open with Google Slides</Button>
                   </TableCell>
                   <TableCell>{template.date}</TableCell>
+                  <TableCell>{template.status}</TableCell>
                 </TableRow>
               ))}
 
 
             </TableBody>
           </Table>
-          <div className="mt-6 flex justify-between">
-            <Button variant="outline" size="sm">
-              Previous
-            </Button>
-            <Button variant="outline" size="sm">
-              Next
-            </Button>
-          </div>
+          {
+            templates.length > 0 &&
+            <div className="mt-6 flex justify-between">
+              <Button variant="outline" size="sm">
+                Previous
+              </Button>
+              <Button variant="outline" size="sm">
+                Next
+              </Button>
+            </div>
+          }
+  
         </>
         }
       </main>
