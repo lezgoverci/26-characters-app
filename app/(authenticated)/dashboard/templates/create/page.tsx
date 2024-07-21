@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, ChangeEvent } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
@@ -19,7 +19,17 @@ import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 
-import { Client } from "@/types"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+import { Client, Template } from "@/types"
 
 import { useParams } from "next/navigation"
 
@@ -48,9 +58,11 @@ export default function TemplatesCreate() {
     });
   }, [search, users])
 
-  const [templateName, setTemplateName] = useState("")
-  const [googleDriveLink, setGoogleDriveLink] = useState("")
-  const [date, setDate] = useState(new Date())
+  const [template, setTemplate] = useState<Template | null>(null)
+
+  // const [templateName, setTemplateName] = useState("")
+  // const [googleDriveLink, setGoogleDriveLink] = useState("")
+  // const [date, setDate] = useState(new Date())
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
   }
@@ -88,9 +100,10 @@ export default function TemplatesCreate() {
     setLoading(true)
     try {
       const response = await axios.post(`https://n8n.xponent.ph/webhook/api/templates`, {
-        link: googleDriveLink,
-        date: date.toISOString(),
-        name: templateName
+        link: template?.link,
+        name: template?.name,
+        month: template?.month,
+        year: template?.year
       });
       toast({
         description: "Successfully created template",
@@ -106,6 +119,16 @@ export default function TemplatesCreate() {
       });
     }
   };
+
+  const handleSetTemplate = (e: ChangeEvent<HTMLInputElement>) => {
+    setTemplate(
+      {
+        ...template,
+        [e.target.name]: e.target.value
+
+      } as Template
+    )
+  }
 
   useEffect(() => {
     setLoading(false)
@@ -136,48 +159,74 @@ export default function TemplatesCreate() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form className="grid gap-4">
-                <div className="space-y-1">
-                  <Label htmlFor="template-name">Template Name</Label>
-                  {loading ? <SkeletonOneRow /> :
-                    <Input id="template-name" placeholder="Enter name" value={templateName} onChange={(e) => setTemplateName(e.target.value)} />
-                  }
-                </div>
-              
+            <form className="grid gap-4">
+                  <div className="space-y-1">
+                    <Label htmlFor="template-name">Template Name</Label>
+                    {loading ? <SkeletonOneRow /> :
+                      <Input name="name" id="template-name" placeholder="Enter name" value={template?.name} onChange={(e) => handleSetTemplate(e)} />
+                    }
+                  </div>
+
                   <div className="space-y-1">
                     <Label htmlFor="google-drive-link">Google Drive Link</Label>
                     {loading ? <SkeletonOneRow /> :
-                      <Input id="google-drive-link" placeholder="Enter link" value={googleDriveLink} onChange={(e) => setGoogleDriveLink(e.target.value)} />
-                    }</div>
-                   
-                  <div className="space-y-1">
-                    <Label htmlFor="month-picker">Month</Label>
-                    {loading ? <SkeletonOneRow /> :
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" className="w-full justify-between">
-                            <span>{date.toLocaleDateString()}</span>
-                            <ChevronDownIcon className="w-4 h-4" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="p-2">
-                          <Calendar mode="single"
-                            // defaultValue={new Date("2023-06-01")} 
-                            selected={new Date(date)}
-                            onSelect={(day) => {
+                      <Input name="link" id="google-drive-link" placeholder="Enter link" value={template?.link} onChange={(e) => handleSetTemplate(e)} />
+                    } </div>
+                  <div className="flex ">
+                    <div className="space-y-1 w-full flex flex-col">  
+                      <Label htmlFor="month-picker">Month</Label>
+                      {loading ? <SkeletonOneRow /> :
+                        <Select value={template?.month} onValueChange={(e) => setTemplate({ ...template, month: e } as Template)}>
+                          <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Select Month" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
 
-                              if (day) {
-                                setDate(day)
-                              }
-                            }}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    }
+                              <SelectItem value="1">January</SelectItem>
+                              <SelectItem value="2">February</SelectItem>
+                              <SelectItem value="3">March</SelectItem>
+                              <SelectItem value="4">April</SelectItem>
+                              <SelectItem value="5">May</SelectItem>
+                              <SelectItem value="6">June</SelectItem>
+                              <SelectItem value="7">July</SelectItem>
+                              <SelectItem value="8">August</SelectItem>
+                              <SelectItem value="9">September</SelectItem>
+                              <SelectItem value="10">October</SelectItem>
+                              <SelectItem value="11">November</SelectItem>
+                              <SelectItem value="12">December</SelectItem>
+
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      }
+                    </div>
+                    <div className="space-y-1 ml-4 w-full flex flex-col">
+                      <Label htmlFor="year-picker">Year</Label>
+                      {loading ? <SkeletonOneRow /> :
+                        <Select defaultValue={template?.year} value={template?.year} onValueChange={(e) => setTemplate({ ...template, year: e } as Template)}>
+                          <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Select Year" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="2024">2024</SelectItem>
+                              <SelectItem value="2025">2025</SelectItem>
+                              <SelectItem value="2026">2026</SelectItem>
+                              <SelectItem value="2027">2027</SelectItem>
+                              <SelectItem value="2028">2028</SelectItem>
+                              <SelectItem value="2029">2029</SelectItem>
+                              <SelectItem value="2030">2030</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      }
+                    </div>
                   </div>
-               
 
-              </form>
+
+
+                </form>
             </CardContent>
           </Card>
         </div>

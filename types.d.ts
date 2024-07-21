@@ -17,7 +17,8 @@ export interface Client {
   export interface Template {
     id: number;
     name: string;
-    date: string;
+    month: string;
+    year: string;
     link: string;
     drive_id: string;
     raw_template_id: string;

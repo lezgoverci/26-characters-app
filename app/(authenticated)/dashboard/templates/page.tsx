@@ -62,8 +62,9 @@ export default function Templates() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Link</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Month</TableHead>
+                <TableHead>Year</TableHead>
+                <TableHead>Premium Template</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -82,7 +83,8 @@ export default function Templates() {
                   <TableCell>
                     <Button variant="outline" size="sm" onClick={() => window.open(template.link, "_blank")}>Open with Google Slides</Button>
                   </TableCell>
-                  <TableCell>{template.date}</TableCell>
+                  <TableCell>{template.month}</TableCell>
+                  <TableCell>{template.year}</TableCell>
                   <TableCell>{template.status}</TableCell>
                 </TableRow>
               ))}

@@ -22,6 +22,16 @@ import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 import { ToastAction } from "@/components/ui/toast"
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import { useRouter } from 'next/navigation'
 
 import axios from "axios"
@@ -29,7 +39,7 @@ import axios from "axios"
 import { SkeletonOneRow } from "@/components/skeleton-one-row"
 import { SkeletonListThumbnail } from "@/components/skeleton-list-thumbnail"
 
-import { Client } from "@/types"
+import { Client, Template } from "@/types"
 
 // import useGenerateTc from "@/hooks/useGenerateTc"
 import GenerateTc from "@/components/generate-tc-dialog"
@@ -41,6 +51,8 @@ export default function Component() {
   const params = useParams<{ id: string }>()
   const [loading, setLoading] = useState<boolean>(true)
   const { toast } = useToast()
+
+  const [template, setTemplate] = useState<Template | null>(null)
 
   const [showDialog, setShowDialog] = useState<boolean>(false)
 
@@ -62,12 +74,12 @@ export default function Component() {
     writing_profile: '',
     recruiting_profile: '',
     treasure_chest_link: '',
-    prompt:''
+    prompt: ''
   })
 
 
-  const [inputTemplateName, setInputTemplateName] = useState("")
-  const [expectedTemplateName, setExpectedTemplateName] = useState("")
+
+  const [deleteTemplateInput, setDeleteTemplateInput] = useState("")
 
   const [users, setUsers] = useState<Client[]>([])
   const filteredUsers = useMemo(() => {
@@ -78,10 +90,9 @@ export default function Component() {
         user.email.toLowerCase().includes(search.toLowerCase())
       );
     });
-    }, [search,users])
+  }, [search, users])
 
-  const [templateName, setTemplateName] = useState("")
-  const [googleDriveLink, setGoogleDriveLink] = useState("")
+
   const [date, setDate] = useState(new Date())
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
@@ -94,9 +105,10 @@ export default function Component() {
     event.preventDefault();
     setLoading(true);
     const data = {
-      link: googleDriveLink,
-      date: date.toISOString(),
-      name: templateName
+      link: template?.link,
+      name: template?.name,
+      month: template?.month,
+      year: template?.year
     };
     axios.post(`https://n8n.xponent.ph/webhook/6cc085c7-f6bb-4744-bf8e-ce991c9450d6/api/templates/${params?.id}`, data)
       .then(response => {
@@ -118,11 +130,14 @@ export default function Component() {
       });
   }
 
-  const deleteTemplate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) => {
+  const deleteTemplate = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     setLoading(true);
-    await axios.delete(`https://n8n.xponent.ph/webhook/api/templates`,{
-      data: { id: params?.id }
+    await axios.delete(`https://n8n.xponent.ph/webhook/api/templates`, {
+      data: {
+        id: params?.id,
+        raw_template_id: template?.raw_template_id
+      }
     })
       .then(response => {
         console.log(response.data);
@@ -148,7 +163,7 @@ export default function Component() {
     setLoading(true)
     try {
       const response = await axios.get(`https://n8n.xponent.ph/webhook/api/clients`);
-  
+
       setUsers(response.data.data)
       setLoading(false)
     } catch (error) {
@@ -161,7 +176,7 @@ export default function Component() {
     setLoading(true)
     try {
       const response = await axios.get(`https://n8n.xponent.ph/webhook/api/clients?search=${search}`);
-  
+
       setUsers(response.data.data)
       setLoading(false)
     } catch (error) {
@@ -169,192 +184,234 @@ export default function Component() {
       setLoading(false)
     }
   }
-  
+
 
 
   const handlePreviewTemplate = (user: Client) => {
     // previewTemplate(user, googleDriveLink)
- 
-  // if(showDialog){
-  //   console.log("close dialog") 
-  //   closeDialog()
-  // }else{
-  //   console.log("open dialog") 
-  //   openDialog()
-  // }
 
-  setSelectedClient(user)
+    // if(showDialog){
+    //   console.log("close dialog") 
+    //   closeDialog()
+    // }else{
+    //   console.log("open dialog") 
+    //   openDialog()
+    // }
 
-  setShowDialog(true)
-  
+    setSelectedClient(user)
+
+    setShowDialog(true)
+
 
 
   }
 
-  
+  const fetchTemplate = async () => {
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/c1491c73-4ff5-42ef-971f-1e15d2466730/api/templates/${params?.id}`);
+
+      setTemplate(response.data)
+
+      setLoading(false)
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false)
+    }
+  }
+
+  const handleSetTemplate = (e: ChangeEvent<HTMLInputElement>) => {
+    setTemplate(
+      {
+        ...template,
+        [e.target.name]: e.target.value
+
+      } as Template
+    )
+  }
+
+
 
 
   useEffect(() => {
 
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`https://n8n.xponent.ph/webhook/c1491c73-4ff5-42ef-971f-1e15d2466730/api/templates/${params?.id}`);
-        console.log(response.data);
-        setGoogleDriveLink(response.data.link);
-        setDate(new Date(response.data.date));
-        setTemplateName(response.data.name);
-        setExpectedTemplateName(response.data.name);
-        setLoading(false)
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
+    fetchTemplate()
     fetchUsers()
   }, []
   );
 
-  useEffect(()=>{
-    if(search == ''){
+  useEffect(() => {
+    if (search == '') {
       fetchUsers()
     }
-  },[search]);
-  function handleGoogleDriveLinkChange(e: ChangeEvent<HTMLInputElement>): void {
-    setInputTemplateName(e.target.value)
-  }
+  }, [search]);
+
 
   return (
 
     <>
-    <div className="flex flex-col">
-      <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
-        <h1 className="text-lg font-semibold">Templates</h1>
-        <Button size="sm" onClick={handleSave} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Save</Button>
-      </header>
-      <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
-        <div className="grid gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Template Details</CardTitle>
-              <CardDescription>
-                Make changes to your template here. Click save when you&apos;re done.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form className="grid gap-4">
-              <div className="space-y-1">
-                  <Label htmlFor="template-name">Template Name</Label>
-                  {loading ? <SkeletonOneRow /> :
-                    <Input id="template-name" placeholder="Enter name" value={templateName} onChange={(e) => setTemplateName(e.target.value)} />
-                  }
-                </div>
-              
+      <div className="flex flex-col">
+        <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
+          <h1 className="text-lg font-semibold">Templates</h1>
+          <Button size="sm" onClick={handleSave} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Save</Button>
+        </header>
+        <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
+          <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Template Details</CardTitle>
+                <CardDescription>
+                  Make changes to your template here. Click save when you&apos;re done.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form className="grid gap-4">
+                  <div className="space-y-1">
+                    <Label htmlFor="template-name">Template Name</Label>
+                    {loading ? <SkeletonOneRow /> :
+                      <Input name="name" id="template-name" placeholder="Enter name" value={template?.name} onChange={(e) => handleSetTemplate(e)} />
+                    }
+                  </div>
+
                   <div className="space-y-1">
                     <Label htmlFor="google-drive-link">Google Drive Link</Label>
                     {loading ? <SkeletonOneRow /> :
-                      <Input id="google-drive-link" placeholder="Enter link" value={googleDriveLink} onChange={(e) => setGoogleDriveLink(e.target.value)} />
+                      <Input name="link" id="google-drive-link" placeholder="Enter link" value={template?.link} onChange={(e) => handleSetTemplate(e)} />
                     } </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="month-picker">Month</Label>
-                    {loading ? <SkeletonOneRow /> :
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" className="w-full justify-between">
-                            <span>{date.toLocaleDateString()}</span>
-                            <ChevronDownIcon className="w-4 h-4" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="p-2">
-                          <Calendar mode="single"
-                          // defaultValue={new Date("2023-06-01")} 
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    }
-                  </div>
-               
+                  <div className="flex ">
+                    <div className="space-y-1 w-full flex flex-col">  
+                      <Label htmlFor="month-picker">Month</Label>
+                      {loading ? <SkeletonOneRow /> :
+                        <Select value={template?.month} onValueChange={(e) => setTemplate({ ...template, month: e } as Template)}>
+                          <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Select Month" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
 
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-        <div className="grid gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Preview Users</CardTitle>
-              <CardDescription>Search and preview users to use in your project.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4">
-                <div className="flex items-center gap-4">
-                  <Input placeholder="Search users..." value={search}
-                    onChange={handleSearch} 
-                    className="w-full"
+                              <SelectItem value="1">January</SelectItem>
+                              <SelectItem value="2">February</SelectItem>
+                              <SelectItem value="3">March</SelectItem>
+                              <SelectItem value="4">April</SelectItem>
+                              <SelectItem value="5">May</SelectItem>
+                              <SelectItem value="6">June</SelectItem>
+                              <SelectItem value="7">July</SelectItem>
+                              <SelectItem value="8">August</SelectItem>
+                              <SelectItem value="9">September</SelectItem>
+                              <SelectItem value="10">October</SelectItem>
+                              <SelectItem value="11">November</SelectItem>
+                              <SelectItem value="12">December</SelectItem>
+
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      }
+                    </div>
+                    <div className="space-y-1 ml-4 w-full flex flex-col">
+                      <Label htmlFor="year-picker">Year</Label>
+                      {loading ? <SkeletonOneRow /> :
+                        <Select defaultValue={template?.year} value={template?.year} onValueChange={(e) => setTemplate({ ...template, year: e } as Template)}>
+                          <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Select Year" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="2024">2024</SelectItem>
+                              <SelectItem value="2025">2025</SelectItem>
+                              <SelectItem value="2026">2026</SelectItem>
+                              <SelectItem value="2027">2027</SelectItem>
+                              <SelectItem value="2028">2028</SelectItem>
+                              <SelectItem value="2029">2029</SelectItem>
+                              <SelectItem value="2030">2030</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      }
+                    </div>
+                  </div>
+
+
+
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Preview Users</CardTitle>
+                <CardDescription>Search and preview users to use in your project.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  <div className="flex items-center gap-4">
+                    <Input placeholder="Search users..." value={search}
+                      onChange={handleSearch}
+                      className="w-full"
+                    />
+                    <Button
+                      onClick={searchUsers}
+                      variant="outline"
+                      size="sm" disabled={loading}>
+                      Search
+                    </Button>
+                  </div>
+                  <Separator />
+                  <div className="grid gap-4">
+                    {loading ? <SkeletonListThumbnail /> :
+                      filteredUsers.map((user) => (
+                        <div
+                          key={user.id}
+                          className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
+                        // onClick={() => handleUserSelect(user)}
+                        >
+                          <Avatar>
+                            <AvatarImage src="/placeholder-user.jpg" />
+                            <AvatarFallback>{user.first_name.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div onClick={() => handlePreviewTemplate(user)}>
+                            <div className="font-medium">{user.first_name} {user.last_name}</div>
+                            <div className="text-sm text-muted-foreground">{user.email}</div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Delete Template</CardTitle>
+                <CardDescription>
+                  Type <strong>{template?.name}</strong> in the input field below to delete this template. This action cannot be undone.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-4">
+                  <Input
+                    placeholder="Template Link"
+                    onChange={(e) => setDeleteTemplateInput(e.target.value)}
+                    value={deleteTemplateInput}
                   />
                   <Button
-                    onClick={searchUsers}
-                    variant="outline"
-                    size="sm" disabled={loading}>
-                    Search
+                    variant="destructive"
+                    className="w-auto"
+                    size="sm"
+                    onClick={deleteTemplate}
+                    disabled={!(deleteTemplateInput === template?.name && deleteTemplateInput !== "" && !loading)}
+                  >
+                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Delete
                   </Button>
                 </div>
-                <Separator />
-                <div className="grid gap-4">
-                  {loading ? <SkeletonListThumbnail /> :
-                    filteredUsers.map((user) => (
-                      <div
-                        key={user.id}
-                        className="flex items-center gap-4 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
-                      // onClick={() => handleUserSelect(user)}
-                      >
-                        <Avatar>
-                          <AvatarImage src="/placeholder-user.jpg" />
-                          <AvatarFallback>{user.first_name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div onClick={() => handlePreviewTemplate(user)}>
-                          <div className="font-medium">{user.first_name} {user.last_name}</div>
-                          <div className="text-sm text-muted-foreground">{user.email}</div>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Delete Template</CardTitle>
-              <CardDescription>
-                Type <strong>{ templateName }</strong> in the input field below to delete this template. This action cannot be undone.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <Input
-                  placeholder="Template Link"
-                  onChange={(e) => handleGoogleDriveLinkChange(e)}
-                  value={inputTemplateName}
-                />
-                <Button
-                  variant="destructive"
-                  className="w-auto"
-                  size="sm"
-                  onClick={deleteTemplate}
-                  disabled={!( inputTemplateName === expectedTemplateName && inputTemplateName !== "" && !loading)}
-                >
-                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Delete
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
-    </div>
-    <GenerateTc googleDriveLink={googleDriveLink} showDialog={showDialog} setShowDialog={setShowDialog} client={selectedClient}/>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </div>
+      <GenerateTc googleDriveLink={template?.link as string} showDialog={showDialog} setShowDialog={setShowDialog} client={selectedClient} />
     </>
   )
 }
