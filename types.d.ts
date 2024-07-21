@@ -20,6 +20,8 @@ export interface Client {
     date: string;
     link: string;
     drive_id: string;
+    raw_template_id: string;
+    status: string;
     created_at: string;
     updated_at: string;
   }
