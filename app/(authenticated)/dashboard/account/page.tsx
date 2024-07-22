@@ -5,12 +5,13 @@
  */
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
+import axios from "axios"
 
 export default function Component() {
 
@@ -71,6 +72,23 @@ export default function Component() {
     const validateEmail = (email: string) => {
         return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
     }
+
+
+    const fetchLoggedInUser = async () => {
+        const access_token = localStorage.getItem("accessToken")
+        try {
+            const response = await axios.get(`https://n8n.xponent.ph/webhook/api/account?access_token=${access_token}`);
+            console.log(response.data);
+            setFormData({...formData, email: response.data.email});
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchLoggedInUser();
+    }, []);
     return (
         <>
             <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
@@ -82,7 +100,7 @@ export default function Component() {
                 </div>
             </header>
 
-            <div className="w-full max-w-4xl mx-auto p-8 grid lg:grid-cols-2 gap-8">
+            <div className="w-full max-w-2xl mx-auto p-8 grid  gap-8">
 
                 <Card>
                     <CardHeader>
@@ -127,6 +145,17 @@ export default function Component() {
                                 />
                                 {errors.email && <p className="text-red-500 text-sm">Invalid email address</p>}
                             </div>
+
+                        </form>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Change Password</CardTitle>
+                        <CardDescription>Update your password details.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="password">Current Password</Label>
                                 <Input
@@ -163,6 +192,11 @@ export default function Component() {
                                 />
                                 {errors.confirmPassword && <p className="text-red-500 text-sm">Passwords do not match</p>}
                             </div>
+
+
+                            <Button variant="secondary" type="submit" className="w-full">
+                                Update Password
+                            </Button>
                         </form>
                     </CardContent>
                 </Card>
@@ -173,30 +207,6 @@ export default function Component() {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="phone">Phone</Label>
-                                <Input
-                                    id="phone"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleInputChange}
-                                    className={errors.phone ? "border-red-500" : ""}
-                                />
-                                {errors.phone && <p className="text-red-500 text-sm">Phone number is required</p>}
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="address">Address</Label>
-                                <Input
-                                    id="address"
-                                    name="address"
-                                    value={formData.address}
-                                    onChange={handleInputChange}
-                                    className={errors.address ? "border-red-500" : ""}
-                                />
-                                {errors.address && <p className="text-red-500 text-sm">Address is required</p>}
-                            </div>
-
-
                             <div className="space-y-2">
                                 <Label htmlFor="profilePhoto">Profile Photo</Label>
                                 <div className="flex items-center gap-4">
@@ -212,6 +222,8 @@ export default function Component() {
                                     )}
                                 </div>
                             </div>
+
+
                             {/* <Button type="submit" className="w-full">
                                 Save Changes
                             </Button> */}
