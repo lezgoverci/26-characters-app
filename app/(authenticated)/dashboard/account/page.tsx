@@ -25,8 +25,6 @@ export default function Component() {
         profilePhoto: null as File | null,
         phone: "555-1234",
         address: "123 Main St, Anytown USA",
-        company: "Acme Inc",
-        jobTitle: "Software Engineer",
     })
     const [errors, setErrors] = useState({
         firstName: false,
@@ -37,8 +35,6 @@ export default function Component() {
         confirmPassword: false,
         phone: false,
         address: false,
-        company: false,
-        jobTitle: false,
     })
     const [success, setSuccess] = useState(false)
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,8 +57,6 @@ export default function Component() {
             confirmPassword: formData.newPassword.trim() !== formData.confirmPassword.trim(),
             phone: formData.phone.trim() === "",
             address: formData.address.trim() === "",
-            company: formData.company.trim() === "",
-            jobTitle: formData.jobTitle.trim() === "",
         }
         setErrors(newErrors)
         if (Object.values(newErrors).some(Boolean)) {
@@ -83,7 +77,7 @@ export default function Component() {
                 <h1 className="text-lg font-semibold">Account</h1>
                 <div className="flex items-center gap-2">
 
-                    {/* <Button size="sm">Save</Button> */}
+                    <Button size="sm">Save</Button>
 
                 </div>
             </header>
@@ -201,28 +195,8 @@ export default function Component() {
                                 />
                                 {errors.address && <p className="text-red-500 text-sm">Address is required</p>}
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="company">Company</Label>
-                                <Input
-                                    id="company"
-                                    name="company"
-                                    value={formData.company}
-                                    onChange={handleInputChange}
-                                    className={errors.company ? "border-red-500" : ""}
-                                />
-                                {errors.company && <p className="text-red-500 text-sm">Company is required</p>}
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="jobTitle">Job Title</Label>
-                                <Input
-                                    id="jobTitle"
-                                    name="jobTitle"
-                                    value={formData.jobTitle}
-                                    onChange={handleInputChange}
-                                    className={errors.jobTitle ? "border-red-500" : ""}
-                                />
-                                {errors.jobTitle && <p className="text-red-500 text-sm">Job title is required</p>}
-                            </div>
+
+
                             <div className="space-y-2">
                                 <Label htmlFor="profilePhoto">Profile Photo</Label>
                                 <div className="flex items-center gap-4">
@@ -238,9 +212,9 @@ export default function Component() {
                                     )}
                                 </div>
                             </div>
-                            <Button type="submit" className="w-full">
+                            {/* <Button type="submit" className="w-full">
                                 Save Changes
-                            </Button>
+                            </Button> */}
                         </form>
                     </CardContent>
                 </Card>
