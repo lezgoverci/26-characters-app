@@ -86,7 +86,7 @@ export default function Templates() {
                     <Button variant="outline" size="sm" onClick={() => window.open(template.link, "_blank")}>Open with Google Slides</Button>
                   </TableCell>
                   <TableCell>{
-                    ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][template.month - 1]
+                    ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][parseInt(template.month) - 1]
                   }</TableCell>
                   <TableCell>{template.year}</TableCell>
                   <TableCell>{template.status == "completed" ? <Badge className="bg-green-200" variant="outline">Completed</Badge> : <Badge variant="outline">Processing</Badge>}</TableCell>
