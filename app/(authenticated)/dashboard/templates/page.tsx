@@ -78,12 +78,14 @@ export default function Templates() {
               {templates.map((template) => (
                 <TableRow key={template.id}>
                   <TableCell><Link href={`/dashboard/templates/${template.id}`} className="font-medium underline" prefetch={false}>
-                      {template.name}
-                    </Link></TableCell>
+                    {template.name}
+                  </Link></TableCell>
                   <TableCell>
                     <Button variant="outline" size="sm" onClick={() => window.open(template.link, "_blank")}>Open with Google Slides</Button>
                   </TableCell>
-                  <TableCell>{template.month}</TableCell>
+                  <TableCell>{
+                    ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][template.month - 1]
+                  }</TableCell>
                   <TableCell>{template.year}</TableCell>
                   <TableCell>{template.status}</TableCell>
                 </TableRow>
@@ -103,7 +105,7 @@ export default function Templates() {
               </Button>
             </div>
           }
-  
+
         </>
         }
       </main>
