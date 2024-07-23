@@ -106,7 +106,7 @@ export default function Component() {
     const updateAccount = async (values: z.infer<typeof accountFormSchema>) => {
         const data = { ...values, id: user.id, access_token: access_token }
         try {
-            const response = await axios.put(`https://n8n.xponent.ph/webhook-test/api/account`, data);
+            const response = await axios.put(`https://n8n.xponent.ph/webhook/api/account`, data);
             console.log(response.data);
             toast({
                 title: "Success",
@@ -124,7 +124,7 @@ export default function Component() {
     const updateEmail = async (values: z.infer<typeof changeEmailFormSchema>) => {
         const data = { ...values, id: user.id, access_token: access_token }
         try {
-            const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/account/update-email`, data);
+            const response = await axios.post(`https://n8n.xponent.ph/webhook/api/account/update-email`, data);
             console.log(response.data);
             toast({
                 title: "Success",
@@ -151,7 +151,7 @@ export default function Component() {
 
 
         try {
-            const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/account/update-password`, {
+            const response = await axios.post(`https://n8n.xponent.ph/webhook/api/account/update-password`, {
                 new_password: values.new_password,
                 access_token: access_token
             });
