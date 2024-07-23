@@ -217,7 +217,6 @@ export default function Component() {
                 <h1 className="text-lg font-semibold">Account</h1>
                 <div className="flex items-center gap-2">
 
-                    <Button size="sm">Save</Button>
 
                 </div>
             </header>
@@ -226,8 +225,8 @@ export default function Component() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Account Settings</CardTitle>
-                        <CardDescription>Update your personal information and change your profile photo.</CardDescription>
+                        <CardTitle className="text-base">Account Settings</CardTitle>
+                        <CardDescription>Update your personal information.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Form {...accountForm} >
@@ -261,8 +260,8 @@ export default function Component() {
                                     )}
                                 />
 
-                                <Button type="submit" className="w-full">
-                                    Save Changes
+                                <Button variant="outline" type="submit" className="w-full">
+                                    Update Account
                                 </Button>
 
                             </form>
@@ -271,7 +270,7 @@ export default function Component() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Update Email</CardTitle>
+                        <CardTitle className="text-base">Email</CardTitle>
                         <CardDescription>Update your email.</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -293,8 +292,8 @@ export default function Component() {
                                         </div>
                                     )}
                                 />
-                                <Button type="submit" className="w-full">
-                                    Save Changes
+                                <Button variant="outline" type="submit" className="w-full">
+                                    Update Email
                                 </Button>
 
                             </form>
@@ -303,7 +302,7 @@ export default function Component() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Change Password</CardTitle>
+                        <CardTitle className="text-base">Password</CardTitle>
                         <CardDescription>Update your password details.</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -314,7 +313,7 @@ export default function Component() {
                                     name="current_password"
                                     render={({ field }) => (
                                         <div className="space-y-1">
-                                            <FormLabel>Password</FormLabel>
+                                            <FormLabel>Current Password</FormLabel>
                                             <FormControl>
                                                 <Input id="password" type="password" placeholder="Enter your password" required {...field} />
                                             </FormControl>
@@ -340,14 +339,14 @@ export default function Component() {
                                         <div className="space-y-1">
                                             <FormLabel>Confirm Password</FormLabel>
                                             <FormControl>
-                                                <Input id="retype_password" type="password" placeholder="Retype your password" required {...field} />
+                                                <Input id="retype_password" type="password" placeholder="Retype your new password" required {...field} />
                                             </FormControl>
                                         </div>
                                     )}
                                 />
 
 
-                                <Button variant="secondary" type="submit" className="w-full">
+                                <Button variant="outline" type="submit" className="w-full">
                                     Update Password
                                 </Button>
                             </form>

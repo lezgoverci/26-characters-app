@@ -66,18 +66,6 @@ export default function Signup() {
     },
   })
 
-  // const formState = useFormState({
-  //   control: form.control
-  // })
-
-  const [formData, setFormData] = useState({
-
-    email: '',
-    password: '',
-    confirmPassword: ''
-
-  });
-
   const [isLoading, setIsLoading] = useState(false)
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -135,30 +123,6 @@ export default function Signup() {
       <div className="flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md space-y-4">
           <h2 className="text-2xl font-bold">Create an account</h2>
-          {/* <form className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required onChange={
-                (e) => setFormData({ ...formData, email: e.target.value })
-              } />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="Enter your password" required onChange={
-                (e) => setFormData({ ...formData, password: e.target.value })
-              } />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
-              <Input id="confirm-password" type="password" placeholder="Retype your password" required onChange={
-                (e) => setFormData({ ...formData, confirmPassword: e.target.value })
-              } />
-            </div>
-            <Button onClick={handleSubmit} type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Sign Up
-            </Button>
-          </form> */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
