@@ -13,19 +13,19 @@ import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import axios from "axios"
 
+import { Account } from "@/types"
+
 export default function Component() {
 
     const { toast } = useToast()
     const [formData, setFormData] = useState({
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
+        firstName: "",
+        lastName: "",
+        email: "",
         password: "",
         newPassword: "",
         confirmPassword: "",
         profilePhoto: null as File | null,
-        phone: "555-1234",
-        address: "123 Main St, Anytown USA",
     })
     const [errors, setErrors] = useState({
         firstName: false,
@@ -34,8 +34,6 @@ export default function Component() {
         password: false,
         newPassword: false,
         confirmPassword: false,
-        phone: false,
-        address: false,
     })
     const [success, setSuccess] = useState(false)
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,11 +51,9 @@ export default function Component() {
             firstName: formData.firstName.trim() === "",
             lastName: formData.lastName.trim() === "",
             email: !validateEmail(formData.email),
-            password: formData.password.trim() === "",
-            newPassword: formData.newPassword.trim() === "",
-            confirmPassword: formData.newPassword.trim() !== formData.confirmPassword.trim(),
-            phone: formData.phone.trim() === "",
-            address: formData.address.trim() === "",
+            // password: formData.password.trim() === "",
+            // newPassword: formData.newPassword.trim() === "",
+            // confirmPassword: formData.newPassword.trim() !== formData.confirmPassword.trim(),
         }
         setErrors(newErrors)
         if (Object.values(newErrors).some(Boolean)) {
@@ -73,17 +69,61 @@ export default function Component() {
         return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
     }
 
+    const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {   
+        e.preventDefault();
+        const newErrors = {
+            password: formData.password.trim() === "",
+            newPassword: formData.newPassword.trim() === "",
+            confirmPassword: formData.newPassword.trim() !== formData.confirmPassword.trim(),
+        }
+        setErrors(newErrors)
+        if (Object.values(newErrors).some(Boolean)) {
+            return
+        }
+        const user = JSON.parse(localStorage.getItem("user") as string)
+        const access_token = localStorage.getItem("accessToken")
+        console.log(user)
+        try {
+            const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/account/update-password`, {
+                id: user.id,
+                password: formData.password,
+                new_password: formData.newPassword,
+                access_token: access_token
+            });
+            console.log(response.data);
+            toast({
+                title: "Success",
+                description: "Password updated successfully",
+            });
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: "Error",
+                description: "An error occurred",
+            });
+        }
+    }
+
 
     const fetchLoggedInUser = async () => {
-        const access_token = localStorage.getItem("accessToken")
+        const user = JSON.parse(localStorage.getItem("user") as string)
+
         try {
-            const response = await axios.get(`https://n8n.xponent.ph/webhook/api/account?access_token=${access_token}`);
+            const response = await axios.get(`https://n8n.xponent.ph/webhook/api/account?id=${user.id}`);
             console.log(response.data);
-            setFormData({...formData, email: response.data.email});
+            setFormData({...formData, 
+                firstName: response.data.first_name,
+                lastName: response.data.last_name,
+                profilePhoto: response.data.profile_photo,
+                email: user.email
+            });
+
 
         } catch (error) {
             console.error(error);
         }
+
+        
     };
 
     useEffect(() => {
@@ -155,7 +195,7 @@ export default function Component() {
                         <CardDescription>Update your password details.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleChangePassword} className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="password">Current Password</Label>
                                 <Input
@@ -200,7 +240,7 @@ export default function Component() {
                         </form>
                     </CardContent>
                 </Card>
-                <Card>
+                {/* <Card>
                     <CardHeader>
                         <CardTitle>Additional Information</CardTitle>
                         <CardDescription>Update your contact and professional details.</CardDescription>
@@ -224,23 +264,13 @@ export default function Component() {
                             </div>
 
 
-                            {/* <Button type="submit" className="w-full">
+                            <Button type="submit" className="w-full">
                                 Save Changes
-                            </Button> */}
+                            </Button>
                         </form>
                     </CardContent>
-                </Card>
-                {success && (
-                    <div>
-                        <div>
-                            <div />
-                            <div>
-                                <div>Success</div>
-                                <div>Profile updated successfully</div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                </Card> */}
+             
             </div>
         </>
     )

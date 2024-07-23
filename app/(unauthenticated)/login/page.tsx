@@ -94,11 +94,12 @@ export default function Component() {
 
         if (response.data.statusCode === 200) {
           // Extract tokens from the response
-          const { access_token, refresh_token } = response.data.body;
+          const { access_token, refresh_token, user } = response.data.body;
 
           // Store the tokens in localStorage
           localStorage.setItem('accessToken', access_token);
           localStorage.setItem('refreshToken', refresh_token);
+          localStorage.setItem('user', JSON.stringify(user));
 
           setIsLoading(false);
           toast({

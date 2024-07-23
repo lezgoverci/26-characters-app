@@ -25,8 +25,9 @@ export default function SideMenu() {
 
   
     // Clear local storage items
-    localStorage.removeItem('sb-access-token');
-    localStorage.removeItem('sb-refresh-token');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
   
     // Redirect to the login page
     router.push('/login');
