@@ -126,6 +126,11 @@ export default function Component() {
                 title: "Success",
                 description: "Email updated successfully",
             });
+
+            localStorage.setItem("user", JSON.stringify(response.data))
+
+            loadUser()
+            
             setLoading(false)
         } catch (error) {
             console.error(error);
