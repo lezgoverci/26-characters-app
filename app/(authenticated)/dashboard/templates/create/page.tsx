@@ -149,7 +149,7 @@ export default function TemplatesCreate() {
         <h1 className="text-lg font-semibold">Templates</h1>
         <Button size="sm" onClick={handleSave} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Save</Button>
       </header>
-      <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
+      <main className="max-w-2xl mx-auto p-8 grid  gap-8">
         <div className="grid gap-6">
           <Card>
             <CardHeader>
@@ -230,7 +230,7 @@ export default function TemplatesCreate() {
             </CardContent>
           </Card>
         </div>
-        <div className="grid gap-6">
+        {/* <div className="grid gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Preview Users</CardTitle>
@@ -273,7 +273,7 @@ export default function TemplatesCreate() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
       </main>
     </div>
 

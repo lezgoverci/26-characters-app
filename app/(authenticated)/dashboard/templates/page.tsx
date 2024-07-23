@@ -96,7 +96,7 @@ export default function Templates() {
 
             </TableBody>
           </Table>
-          {
+          {/* {
             templates.length > 0 &&
             <div className="mt-6 flex justify-between">
               <Button variant="outline" size="sm">
@@ -106,7 +106,7 @@ export default function Templates() {
                 Next
               </Button>
             </div>
-          }
+          } */}
 
         </>
         }
