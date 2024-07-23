@@ -93,7 +93,7 @@ export default function Signup() {
             title: 'Success',
             description: "Signup successful",
           });
-          router.push('/dashboard/templates')
+          router.push('/login')
         }
 
       })
