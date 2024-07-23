@@ -17,13 +17,13 @@ import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
-  
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 
 export default function Component() {
   const [search, setSearch] = useState("")
@@ -48,7 +48,7 @@ export default function Component() {
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
-  }, [search,users])
+  }, [search, users])
   const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (inputRef.current) {
       setSearch(inputRef.current.value);
@@ -82,63 +82,63 @@ export default function Component() {
     // setTreasureChestCustomPrompt(e.target.value)
   }
   return (
-   
-      <div className="flex flex-col flex-1">
-        <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
-          <h1 className="text-lg font-semibold">Settings</h1>
-          <div className="flex items-center gap-2">
-         
-            <Button size="sm">Save</Button>
-        
-          </div>
-        </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6 md:grid md:grid-cols-2 md:gap-6">
-          <div className="grid gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>General Settings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form className="grid gap-4">
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div className="space-y-1">
-                      <Label htmlFor="google-drive-link">Google Drive Folder Link</Label>
-                      <Input
-                        id="google-drive-link"
-                        placeholder="Enter Google Drive folder link"
-                        value={googleDriveLink}
-                        // onChange={handleGoogleDriveLinkChange}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="openai-api-key">OpenAI API Key</Label>
-                      <Input
-                        id="openai-api-key"
-                        placeholder="Enter OpenAI API key"
-                        value={openAIApiKey}
-                        // onChange={handleOpenAIApiKeyChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div className="space-y-1">
-                      <Label htmlFor="default-model">Default Model</Label>
-                    
-                      <Select  name="default-model" value={defaultModel} 
-                      // onValueChange={handleDefaultModelChange}
-                      >
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Theme" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
-                            <SelectItem value="gpt-4">GPT-4</SelectItem>
-                            <SelectItem value="gpt-4-o">GPT-4o</SelectItem>
-                        </SelectContent>
-                        </Select>
 
-                    </div>
-                    {/* <div className="space-y-1">
+    <div className="flex flex-col flex-1">
+      <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
+        <h1 className="text-lg font-semibold">Settings</h1>
+        <div className="flex items-center gap-2">
+
+          <Button size="sm">Save</Button>
+
+        </div>
+      </header>
+      <main className="w-full max-w-2xl mx-auto p-8 grid  gap-8">
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">General Settings</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form className="grid gap-4">
+              <div className="grid grid-cols-1 gap-4 ">
+                <div className="space-y-1">
+                  <Label htmlFor="google-drive-link">Google Drive Folder Link</Label>
+                  <Input
+                    id="google-drive-link"
+                    placeholder="Enter Google Drive folder link"
+                    value={googleDriveLink}
+                  // onChange={handleGoogleDriveLinkChange}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="openai-api-key">OpenAI API Key</Label>
+                  <Input
+                    id="openai-api-key"
+                    placeholder="Enter OpenAI API key"
+                    value={openAIApiKey}
+                  // onChange={handleOpenAIApiKeyChange}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4 ">
+                <div className="space-y-1">
+                  <Label htmlFor="default-model">Default Model</Label>
+
+                  <Select name="default-model" value={defaultModel}
+                  // onValueChange={handleDefaultModelChange}
+                  >
+                    <SelectTrigger className="">
+                      <SelectValue placeholder="Theme" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
+                      <SelectItem value="gpt-4">GPT-4</SelectItem>
+                      <SelectItem value="gpt-4-o">GPT-4o</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                </div>
+                {/* <div className="space-y-1">
                       <Label htmlFor="assistant">Assistant</Label>
                       <Select id="assistant" value={assistant} onValueChange={handleAssistantChange}>
                         <option value="gpt-3.5">GPT-3.5</option>
@@ -146,56 +146,55 @@ export default function Component() {
                         <option value="gpt-4-optimized">GPT-4 Optimized</option>
                       </Select>
                     </div> */}
-                  </div>
-                  {/* <Button type="submit" className="w-full">
+              </div>
+              {/* <Button type="submit" className="w-full">
                     Save Settings
                   </Button> */}
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="grid gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Integrations</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                <Button variant="outline">
-                    <ChromeIcon className="mr-2 h-4 w-4" /> Connect with Google Drive
-                </Button>
+            </form>
+          </CardContent>
+        </Card>
 
-                <Button variant="outline">
-                    <SheetIcon className="mr-2 h-4 w-4" /> Connect with Google Sheets
-                </Button>
-               
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Integrations</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <Button variant="outline">
+                <ChromeIcon className="mr-2 h-4 w-4" /> Connect with Google Drive
+              </Button>
 
-                <Button variant="outline">
-                    <MailIcon className="mr-2 h-4 w-4" /> Connect with Gmail
-                </Button>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Treasure Chest Custom Prompt</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                  <Textarea
-                    id="treasure-chest-custom-prompt"
-                    placeholder="Enter your custom prompt for the Treasure Chest feature"
-                    value={treasureChestCustomPrompt}
-                    // onChange={handleTreasureChestCustomPromptChange}
-                    className="min-h-[100px]"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </main>
-      </div>
-  
+              <Button variant="outline">
+                <SheetIcon className="mr-2 h-4 w-4" /> Connect with Google Sheets
+              </Button>
+
+
+              <Button variant="outline">
+                <MailIcon className="mr-2 h-4 w-4" /> Connect with Gmail
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Treasure Chest Custom Prompt</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <Textarea
+                id="treasure-chest-custom-prompt"
+                placeholder="Enter your custom prompt for the Treasure Chest feature"
+                value={treasureChestCustomPrompt}
+                // onChange={handleTreasureChestCustomPromptChange}
+                className="min-h-[100px]"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+      </main>
+    </div>
+
   )
 }
 
@@ -401,68 +400,68 @@ function UsersIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 function ChromeIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-      <svg
-        {...props}
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="12" cy="12" r="10" />
-        <circle cx="12" cy="12" r="4" />
-        <line x1="21.17" x2="12" y1="8" y2="8" />
-        <line x1="3.95" x2="8.54" y1="6.06" y2="14" />
-        <line x1="10.88" x2="15.46" y1="21.94" y2="14" />
-      </svg>
-    )
-  }
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="4" />
+      <line x1="21.17" x2="12" y1="8" y2="8" />
+      <line x1="3.95" x2="8.54" y1="6.06" y2="14" />
+      <line x1="10.88" x2="15.46" y1="21.94" y2="14" />
+    </svg>
+  )
+}
 
-  function MailIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-      <svg
-        {...props}
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <rect width="20" height="16" x="2" y="4" rx="2" />
-        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-      </svg>
-    )
-  }
+function MailIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="20" height="16" x="2" y="4" rx="2" />
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </svg>
+  )
+}
 
 
 function SheetIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-      <svg
-        {...props}
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-        <line x1="3" x2="21" y1="9" y2="9" />
-        <line x1="3" x2="21" y1="15" y2="15" />
-        <line x1="9" x2="9" y1="9" y2="21" />
-        <line x1="15" x2="15" y1="9" y2="21" />
-      </svg>
-    )
-  }
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <line x1="3" x2="21" y1="9" y2="9" />
+      <line x1="3" x2="21" y1="15" y2="15" />
+      <line x1="9" x2="9" y1="9" y2="21" />
+      <line x1="15" x2="15" y1="9" y2="21" />
+    </svg>
+  )
+}
