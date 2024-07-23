@@ -40,10 +40,10 @@ export interface Client {
   }
 
   export interface Account {
-    id: number;
+    id?: number;
     first_name: string;
     last_name: string;
-    profile_photo: string;
+    profile_photo?: File | null;
   }
 
   export interface User {

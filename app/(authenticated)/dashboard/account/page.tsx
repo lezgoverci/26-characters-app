@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef, use } from "react"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -13,11 +13,54 @@ import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import axios from "axios"
 
-import { Account } from "@/types"
+import { Account, User } from "@/types"
+
+
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm, useFormState } from "react-hook-form"
+
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
 
 export default function Component() {
 
+    const accountFormSchema = z.object({
+        first_name: z.string().min(2),
+        last_name: z.string().min(2)
+    })
+    const accountForm = useForm<z.infer<typeof accountFormSchema>>({
+        resolver: zodResolver(accountFormSchema)
+    })
+
+    const changeEmailFormSchema = z.object({
+        email: z.string().email(),
+    })
+    const changeEmailForm = useForm<z.infer<typeof changeEmailFormSchema>>({
+        resolver: zodResolver(changeEmailFormSchema)
+    })
+
+    const changePasswordFormSchema = z.object({
+        current_password: z.string().min(8),
+        new_password: z.string().min(8),
+        retype_password: z.string().min(8),
+    })
+    const changePasswordForm = useForm<z.infer<typeof changePasswordFormSchema>>({
+        resolver: zodResolver(changePasswordFormSchema)
+    })
+
     const { toast } = useToast()
+
+
+
+
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -35,7 +78,21 @@ export default function Component() {
         newPassword: false,
         confirmPassword: false,
     })
-    const [success, setSuccess] = useState(false)
+
+    const [user, setUser] = useState<{
+        id?: number;
+        first_name?: string;
+        last_name?: string;
+        email?: string;
+    }>({
+
+        first_name: "",
+        last_name: "",
+        email: "",
+    })
+    const [access_token, setAccessToken] = useState("")
+
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
         setErrors({ ...errors, [e.target.name]: false })
@@ -45,52 +102,60 @@ export default function Component() {
             setFormData({ ...formData, profilePhoto: e.target.files[0] })
         }
     }
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        const newErrors = {
-            firstName: formData.firstName.trim() === "",
-            lastName: formData.lastName.trim() === "",
-            email: !validateEmail(formData.email),
-            // password: formData.password.trim() === "",
-            // newPassword: formData.newPassword.trim() === "",
-            // confirmPassword: formData.newPassword.trim() !== formData.confirmPassword.trim(),
+
+    const updateAccount = async (values: z.infer<typeof accountFormSchema>) => {
+        const data = { ...values, id: user.id, access_token: access_token }
+        try {
+            const response = await axios.put(`https://n8n.xponent.ph/webhook-test/api/account`, data);
+            console.log(response.data);
+            toast({
+                title: "Success",
+                description: "Profile updated successfully",
+            });
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: "Error",
+                description: "An error occurred",
+            });
         }
-        setErrors(newErrors)
-        if (Object.values(newErrors).some(Boolean)) {
-            return
-        }
-        setSuccess(true)
-        toast({
-            title: "Success",
-            description: "Profile updated successfully",
-        })
-    }
-    const validateEmail = (email: string) => {
-        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
     }
 
-    const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {   
-        e.preventDefault();
-        const newErrors = {
-            password: formData.password.trim() === "",
-            newPassword: formData.newPassword.trim() === "",
-            confirmPassword: formData.newPassword.trim() !== formData.confirmPassword.trim(),
+    const updateEmail = async (values: z.infer<typeof changeEmailFormSchema>) => {
+        const data = { ...values, id: user.id, access_token: access_token }
+        try {
+            const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/account/update-email`, data);
+            console.log(response.data);
+            toast({
+                title: "Success",
+                description: "Email updated successfully",
+            });
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: "Error",
+                description: "An error occurred",
+            });
         }
-        setErrors(newErrors)
-        if (Object.values(newErrors).some(Boolean)) {
-            return
-        }
-        const user = JSON.parse(localStorage.getItem("user") as string)
-        const access_token = localStorage.getItem("accessToken")
-        console.log(user)
+    }
+
+
+    const handleSubmit = (values: z.infer<typeof accountFormSchema>) => {
+        updateAccount(values);
+    }
+
+
+    const handleChangePassword = async (values: z.infer<typeof changePasswordFormSchema>) => {
+
+
+
+
         try {
             const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/account/update-password`, {
-                id: user.id,
-                password: formData.password,
-                new_password: formData.newPassword,
+                new_password: values.new_password,
                 access_token: access_token
             });
-            console.log(response.data);
+
             toast({
                 title: "Success",
                 description: "Password updated successfully",
@@ -106,29 +171,46 @@ export default function Component() {
 
 
     const fetchLoggedInUser = async () => {
-        const user = JSON.parse(localStorage.getItem("user") as string)
+
+
+        if (user?.id == undefined)
+            return
 
         try {
-            const response = await axios.get(`https://n8n.xponent.ph/webhook/api/account?id=${user.id}`);
+            const response = await axios.get(`https://n8n.xponent.ph/webhook/api/account?id=${user?.id}`);
             console.log(response.data);
-            setFormData({...formData, 
-                firstName: response.data.first_name,
-                lastName: response.data.last_name,
-                profilePhoto: response.data.profile_photo,
-                email: user.email
-            });
+
+
+            accountForm.setValue("first_name", response.data.first_name)
+            accountForm.setValue("last_name", response.data.last_name)
+
+
 
 
         } catch (error) {
             console.error(error);
         }
 
-        
+
     };
 
+    const loadUser = () => {
+        setUser(JSON.parse(localStorage.getItem("user") as string));
+        setAccessToken(localStorage.getItem("accessToken") as string);
+    }
+
     useEffect(() => {
-        fetchLoggedInUser();
+        loadUser();
+
     }, []);
+
+    useEffect(() => {
+
+        console.log("user", user)
+        fetchLoggedInUser();
+        changeEmailForm.setValue("email", user.email as string)
+
+    }, [user.id])
     return (
         <>
             <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
@@ -145,48 +227,78 @@ export default function Component() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Account Settings</CardTitle>
-                        <CardDescription>Update your personal information and change your password.</CardDescription>
+                        <CardDescription>Update your personal information and change your profile photo.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="firstName">First Name</Label>
-                                    <Input
-                                        id="firstName"
-                                        name="firstName"
-                                        value={formData.firstName}
-                                        onChange={handleInputChange}
-                                        className={errors.firstName ? "border-red-500" : ""}
-                                    />
-                                    {errors.firstName && <p className="text-red-500 text-sm">First name is required</p>}
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="lastName">Last Name</Label>
-                                    <Input
-                                        id="lastName"
-                                        name="lastName"
-                                        value={formData.lastName}
-                                        onChange={handleInputChange}
-                                        className={errors.lastName ? "border-red-500" : ""}
-                                    />
-                                    {errors.lastName && <p className="text-red-500 text-sm">Last name is required</p>}
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                    className={errors.email ? "border-red-500" : ""}
-                                />
-                                {errors.email && <p className="text-red-500 text-sm">Invalid email address</p>}
-                            </div>
+                        <Form {...accountForm} >
+                            <form onSubmit={accountForm.handleSubmit(handleSubmit)} className="space-y-4">
+                                <FormField
+                                    control={accountForm.control}
+                                    name="first_name"
+                                    render={({ field }) => (
+                                        <div className="space-y-1">
+                                            <FormLabel>First Name</FormLabel>
+                                            <FormControl>
+                                                <>
+                                                    <Input required {...field} />
+                                                    <FormMessage>{accountForm.formState.errors.first_name?.message}</FormMessage>
+                                                </>
 
-                        </form>
+                                            </FormControl>
+                                        </div>
+                                    )}
+                                />
+                                <FormField
+                                    control={accountForm.control}
+                                    name="last_name"
+                                    render={({ field }) => (
+                                        <div className="space-y-1">
+                                            <FormLabel>Last Name</FormLabel>
+                                            <FormControl>
+                                                <Input required {...field} />
+                                            </FormControl>
+                                        </div>
+                                    )}
+                                />
+
+                                <Button type="submit" className="w-full">
+                                    Save Changes
+                                </Button>
+
+                            </form>
+                        </Form>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Update Email</CardTitle>
+                        <CardDescription>Update your email.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Form {...changeEmailForm} >
+                            <form onSubmit={changeEmailForm.handleSubmit(updateEmail)} className="space-y-4">
+
+                                <FormField
+                                    control={changeEmailForm.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <div className="space-y-1">
+                                            <FormLabel>Email</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="email"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                        </div>
+                                    )}
+                                />
+                                <Button type="submit" className="w-full">
+                                    Save Changes
+                                </Button>
+
+                            </form>
+                        </Form>
                     </CardContent>
                 </Card>
                 <Card>
@@ -195,49 +307,51 @@ export default function Component() {
                         <CardDescription>Update your password details.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleChangePassword} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="password">Current Password</Label>
-                                <Input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                    className={errors.password ? "border-red-500" : ""}
+                        <Form {...changePasswordForm} >
+                            <form onSubmit={changePasswordForm.handleSubmit(handleChangePassword)} className="space-y-4">
+                                <FormField
+                                    control={changePasswordForm.control}
+                                    name="current_password"
+                                    render={({ field }) => (
+                                        <div className="space-y-1">
+                                            <FormLabel>Password</FormLabel>
+                                            <FormControl>
+                                                <Input id="password" type="password" placeholder="Enter your password" required {...field} />
+                                            </FormControl>
+                                        </div>
+                                    )}
                                 />
-                                {errors.password && <p className="text-red-500 text-sm">Current password is required</p>}
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="newPassword">New Password</Label>
-                                <Input
-                                    id="newPassword"
-                                    name="newPassword"
-                                    type="password"
-                                    value={formData.newPassword}
-                                    onChange={handleInputChange}
-                                    className={errors.newPassword ? "border-red-500" : ""}
+                                <FormField
+                                    control={changePasswordForm.control}
+                                    name="new_password"
+                                    render={({ field }) => (
+                                        <div className="space-y-1">
+                                            <FormLabel>New Password</FormLabel>
+                                            <FormControl>
+                                                <Input id="new_password" type="password" placeholder="Enter your new password" required {...field} />
+                                            </FormControl>
+                                        </div>
+                                    )}
                                 />
-                                {errors.newPassword && <p className="text-red-500 text-sm">New password is required</p>}
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                                <Input
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    type="password"
-                                    value={formData.confirmPassword}
-                                    onChange={handleInputChange}
-                                    className={errors.confirmPassword ? "border-red-500" : ""}
+                                <FormField
+                                    control={changePasswordForm.control}
+                                    name="retype_password"
+                                    render={({ field }) => (
+                                        <div className="space-y-1">
+                                            <FormLabel>Confirm Password</FormLabel>
+                                            <FormControl>
+                                                <Input id="retype_password" type="password" placeholder="Retype your password" required {...field} />
+                                            </FormControl>
+                                        </div>
+                                    )}
                                 />
-                                {errors.confirmPassword && <p className="text-red-500 text-sm">Passwords do not match</p>}
-                            </div>
 
 
-                            <Button variant="secondary" type="submit" className="w-full">
-                                Update Password
-                            </Button>
-                        </form>
+                                <Button variant="secondary" type="submit" className="w-full">
+                                    Update Password
+                                </Button>
+                            </form>
+                        </Form>
                     </CardContent>
                 </Card>
                 {/* <Card>
@@ -270,7 +384,7 @@ export default function Component() {
                         </form>
                     </CardContent>
                 </Card> */}
-             
+
             </div>
         </>
     )
