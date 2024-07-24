@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useState, useMemo, useRef, SetStateAction } from "react"
+import { useState, useMemo, useRef, SetStateAction, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
@@ -24,10 +24,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import axios from "axios"
+
 
 export default function Component() {
-  const [search, setSearch] = useState("")
-  const [selectedUser, setSelectedUser] = useState(null)
+
   const [googleDriveLink, setGoogleDriveLink] = useState("")
   const [openAIApiKey, setOpenAIApiKey] = useState("")
   const [defaultModel, setDefaultModel] = useState("gpt-3.5")
@@ -36,27 +37,14 @@ export default function Component() {
   const [googleSheetsIntegration, setGoogleSheetsIntegration] = useState(false)
   const [gmailIntegration, setGmailIntegration] = useState(false)
   const [treasureChestCustomPrompt, setTreasureChestCustomPrompt] = useState("")
-  const users = [
-    { id: 1, name: "John Doe", email: "john@example.com" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com" },
-    { id: 3, name: "Bob Johnson", email: "bob@example.com" },
-    { id: 4, name: "Sarah Lee", email: "sarah@example.com" },
-    { id: 5, name: "Tom Wilson", email: "tom@example.com" },
-  ]
 
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  const filteredUsers = useMemo(() => {
-    return users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()))
-  }, [search, users])
-  const handleSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (inputRef.current) {
-      setSearch(inputRef.current.value);
-    }
-  };
-  const handleUserSelect = (user: SetStateAction<null>) => {
-    setSelectedUser(user)
-  }
+  const [settings, setSettings] = useState([])
+
+  const [loading, setLoading] = useState(true)
+
+
+
   const handleGoogleDriveLinkChange = (e: React.MouseEvent<HTMLButtonElement>) => {
     // setGoogleDriveLink(e.target.value)
   }
@@ -81,6 +69,26 @@ export default function Component() {
   const handleTreasureChestCustomPromptChange = (e: React.MouseEvent<HTMLButtonElement>) => {
     // setTreasureChestCustomPrompt(e.target.value)
   }
+
+
+  const fetchSettings = async () => {
+
+    setLoading(true)
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/settings`);
+      // localStorage.setItem("settings", JSON.stringify(response.data))
+      setSettings(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.error(error);
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchSettings()
+  }, [])
+
   return (
 
     <div className="flex flex-col flex-1">
