@@ -40,20 +40,21 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useFormState } from "react-hook-form"
 
+import { CheckCircledIcon } from '@radix-ui/react-icons'
+
 
 export default function Component() {
 
-  const [googleDriveLink, setGoogleDriveLink] = useState("")
-  const [openAIApiKey, setOpenAIApiKey] = useState("")
-  const [defaultModel, setDefaultModel] = useState("gpt-3.5")
-  const [assistant, setAssistant] = useState("gpt-3.5")
+
   const [googleDriveIntegration, setGoogleDriveIntegration] = useState(false)
   const [googleSheetsIntegration, setGoogleSheetsIntegration] = useState(false)
   const [gmailIntegration, setGmailIntegration] = useState(false)
-  const [treasureChestCustomPrompt, setTreasureChestCustomPrompt] = useState("")
 
 
-  const [settings, setSettings] = useState([])
+
+  const [settings, setSettings] = useState<any>([])
+  const [generalSettings, setGeneralSettings] = useState<any>([])
+  const [integrations, setIntegrations] = useState<any>([])
 
   const [loading, setLoading] = useState(true)
 
@@ -145,11 +146,17 @@ export default function Component() {
 
   useEffect(() => {
     if (settings.length > 0) {
-      const generalSettings = settings.find((setting: any) => setting.name === "general_settings")?.value;
-      console.log(generalSettings)
+      const newGeneralSettings = settings.find((setting: any) => setting.name === "general_settings")?.value;
+      const newIntegrations = settings.find((setting: any) => setting.name === "integrations")?.value;
+
+      setGeneralSettings(newGeneralSettings)
+      setIntegrations(newIntegrations)
+
       generalSettingsForm.setValue("google_drive_folder", generalSettings?.google_drive_folder)
       generalSettingsForm.setValue("openai_api_key", generalSettings?.openai_api_key)
       generalSettingsForm.setValue("default_model", generalSettings?.default_model)
+
+
     }
   }
     , [settings])
@@ -159,11 +166,11 @@ export default function Component() {
     <div className="flex flex-col flex-1">
       <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
         <h1 className="text-lg font-semibold">Settings</h1>
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
 
           <Button size="sm">Save</Button>
 
-        </div>
+        </div> */}
       </header>
       <main className="w-full max-w-2xl mx-auto p-8 grid  gap-8">
 
@@ -250,38 +257,70 @@ export default function Component() {
             <CardTitle className="text-base">Integrations</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4">
-              <Button variant="outline">
-                <ChromeIcon className="mr-2 h-4 w-4" /> Connect with Google Drive
-              </Button>
+            <div className="grid gap-4 grid-cols-3">
+              <Card>
+                <CardHeader className="flex flex-col items-center justify-between space-y-4">
+                  <ChromeIcon className="h-5 w-5" />
+                  <CardTitle className="text-sm text-center">Google Drive</CardTitle>
 
-              <Button variant="outline">
-                <SheetIcon className="mr-2 h-4 w-4" /> Connect with Google Sheets
-              </Button>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center">
+                  <Button size="sm" variant="outline">
+                    {integrations.find((integration: any) => integration.type === "googleDriveOAuth2Api")?.is_active ? "Connected" : "Connect"}
+                    {integrations.find((integration: any) => integration.type === "googleDriveOAuth2Api")?.is_active ? <CheckCircledIcon className="ml-2 h-4 w-4" /> : null}
+      
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-col items-center justify-between space-y-4">
+                  <SheetIcon className="h-5 w-5" />
+                  <CardTitle className="text-sm text-center">Google Sheets</CardTitle>
+
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center">
+                  <Button size="sm" variant="outline">
+                    {integrations.find((integration: any) => integration.type === "googleSheetsOAuth2Api")?.is_active ? "Connected" : "Connect"}
+                    {integrations.find((integration: any) => integration.type === "googleSheetsOAuth2Api")?.is_active ? <CheckCircledIcon className="ml-2 h-4 w-4" /> : null}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-col items-center justify-between space-y-4">
+                  <SheetIcon className="h-5 w-5" />
+                  <CardTitle className="text-sm text-center">Google Slides</CardTitle>
+
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center">
+                  <Button size="sm" variant="outline">
+                    {integrations.find((integration: any) => integration.type === "googleSlidesOAuth2Api")?.is_active ? "Connected" : "Connect"}
+                    {integrations.find((integration: any) => integration.type === "googleSlidesOAuth2Api")?.is_active ? <CheckCircledIcon className="ml-2 h-4 w-4" /> : null}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-col items-center justify-between space-y-4">
+                  <MailIcon className="h-5 w-5" />
+                  <CardTitle className="text-sm text-center">Gmail</CardTitle>
+
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center">
+                  <Button size="sm" variant="outline">
+                    {integrations.find((integration: any) => integration.type === "gmailOAuth2")?.is_active ? "Connected" : "Connect"}
+                    {integrations.find((integration: any) => integration.type === "gmailOAuth2")?.is_active ? <CheckCircledIcon className="ml-2 h-4 w-4 " /> : null}
+                  </Button>
+                </CardContent>
+              </Card>
 
 
-              <Button variant="outline">
-                <MailIcon className="mr-2 h-4 w-4" /> Connect with Gmail
-              </Button>
             </div>
           </CardContent>
         </Card>
-        {/* <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Treasure Chest Custom Prompt</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              <Textarea
-                id="treasure-chest-custom-prompt"
-                placeholder="Enter your custom prompt for the Treasure Chest feature"
-                value={treasureChestCustomPrompt}
-                // onChange={handleTreasureChestCustomPromptChange}
-                className="min-h-[100px]"
-              />
-            </div>
-          </CardContent>
-        </Card> */}
+
+
 
       </main>
     </div>
