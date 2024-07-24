@@ -24,7 +24,21 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+
 import axios from "axios"
+
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm, useFormState } from "react-hook-form"
 
 
 export default function Component() {
@@ -42,6 +56,15 @@ export default function Component() {
   const [settings, setSettings] = useState([])
 
   const [loading, setLoading] = useState(true)
+
+  const generalSettingsFormSchema = z.object({
+    google_drive_folder: z.string(),
+    openai_api_key: z.string(),
+    default_model: z.string(),
+  });
+  const generalSettingsForm = useForm<z.infer<typeof generalSettingsFormSchema>>({
+    resolver: zodResolver(generalSettingsFormSchema)
+  })
 
 
 
@@ -70,6 +93,36 @@ export default function Component() {
     // setTreasureChestCustomPrompt(e.target.value)
   }
 
+  const handleSaveGeneralSettings = (values: z.infer<typeof generalSettingsFormSchema>) => {
+
+    console.log(values)
+    try {
+      saveSettings(values)
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  const saveSettings = async (values: z.infer<typeof generalSettingsFormSchema>) => {
+    const generalSettingsId = settings.find((setting: any) => setting.name === "general_settings")?.id;
+    const payload = {
+      data: {
+        "google_drive_folder": values.google_drive_folder,
+        "openai_api_key": values.openai_api_key,
+        "default_model": values.default_model
+      },
+      id: generalSettingsId
+    }
+    axios.post(`https://n8n.xponent.ph/webhook/api/settings`, payload)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.error(error)
+      })
+  }
+
 
   const fetchSettings = async () => {
 
@@ -77,6 +130,7 @@ export default function Component() {
     try {
       const response = await axios.get(`https://n8n.xponent.ph/webhook/api/settings`);
       // localStorage.setItem("settings", JSON.stringify(response.data))
+
       setSettings(response.data)
       setLoading(false)
     } catch (error) {
@@ -88,6 +142,17 @@ export default function Component() {
   useEffect(() => {
     fetchSettings()
   }, [])
+
+  useEffect(() => {
+    if (settings.length > 0) {
+      const generalSettings = settings.find((setting: any) => setting.name === "general_settings")?.value;
+      console.log(generalSettings)
+      generalSettingsForm.setValue("google_drive_folder", generalSettings?.google_drive_folder)
+      generalSettingsForm.setValue("openai_api_key", generalSettings?.openai_api_key)
+      generalSettingsForm.setValue("default_model", generalSettings?.default_model)
+    }
+  }
+    , [settings])
 
   return (
 
@@ -107,58 +172,76 @@ export default function Component() {
             <CardTitle className="text-base">General Settings</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="grid gap-4">
-              <div className="grid grid-cols-1 gap-4 ">
-                <div className="space-y-1">
-                  <Label htmlFor="google-drive-link">Google Drive Folder Link</Label>
-                  <Input
-                    id="google-drive-link"
-                    placeholder="Enter Google Drive folder link"
-                    value={googleDriveLink}
-                  // onChange={handleGoogleDriveLinkChange}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="openai-api-key">OpenAI API Key</Label>
-                  <Input
-                    id="openai-api-key"
-                    placeholder="Enter OpenAI API key"
-                    value={openAIApiKey}
-                  // onChange={handleOpenAIApiKeyChange}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 gap-4 ">
-                <div className="space-y-1">
-                  <Label htmlFor="default-model">Default Model</Label>
+            <Form {...generalSettingsForm}>
+              <form className="grid gap-4" onSubmit={generalSettingsForm.handleSubmit(handleSaveGeneralSettings)}>
 
-                  <Select name="default-model" value={defaultModel}
-                  // onValueChange={handleDefaultModelChange}
-                  >
-                    <SelectTrigger className="">
-                      <SelectValue placeholder="Theme" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
-                      <SelectItem value="gpt-4">GPT-4</SelectItem>
-                      <SelectItem value="gpt-4-o">GPT-4o</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <FormField
+                  control={generalSettingsForm.control}
+                  name="google_drive_folder"
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <FormLabel>Google Drive Folder</FormLabel>
+                      <FormControl>
+                        <>
+                          <Input required {...field} />
+                          <FormMessage>{generalSettingsForm.formState.errors.google_drive_folder?.message}</FormMessage>
+                        </>
 
-                </div>
-                {/* <div className="space-y-1">
-                      <Label htmlFor="assistant">Assistant</Label>
-                      <Select id="assistant" value={assistant} onValueChange={handleAssistantChange}>
-                        <option value="gpt-3.5">GPT-3.5</option>
-                        <option value="gpt-4">GPT-4</option>
-                        <option value="gpt-4-optimized">GPT-4 Optimized</option>
-                      </Select>
-                    </div> */}
-              </div>
-              {/* <Button type="submit" className="w-full">
-                    Save Settings
-                  </Button> */}
-            </form>
+                      </FormControl>
+                    </div>
+                  )}
+                />
+
+                <FormField
+                  control={generalSettingsForm.control}
+                  name="openai_api_key"
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <FormLabel>OpenAI API Key</FormLabel>
+                      <FormControl>
+                        <>
+                          <Input required {...field} />
+                          <FormMessage>{generalSettingsForm.formState.errors.openai_api_key?.message}</FormMessage>
+                        </>
+
+                      </FormControl>
+                    </div>
+                  )}
+                />
+
+
+                <FormField
+                  control={generalSettingsForm.control}
+                  name="default_model"
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <FormLabel>Default Model</FormLabel>
+                      <FormControl>
+                        <>
+                          <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Select a model" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
+                              <SelectItem value="gpt-4">GPT-4</SelectItem>
+                              <SelectItem value="gpt-4-o">GPT-4o</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage>{generalSettingsForm.formState.errors.default_model?.message}</FormMessage>
+                        </>
+
+                      </FormControl>
+                    </div>
+                  )}
+                />
+
+
+                <Button variant="outline" type="submit" className="w-full">
+                  Save Settings
+                </Button>
+              </form>
+            </Form>
           </CardContent>
         </Card>
 
