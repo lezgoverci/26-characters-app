@@ -183,14 +183,17 @@ export default function Component() {
     fetchSettings()
   }, [])
   function handleDelete(file: File): void {
+    setLoading(true);
     axios.delete(`https://n8n.xponent.ph/webhook/api/files?id=${file.id}`)
       .then(response => {
         console.log(response.data);
         fetchFiles()
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error updating data:', error);
         fetchFiles()
+        setLoading(false);
       });
   }
 
