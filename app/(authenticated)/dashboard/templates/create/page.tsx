@@ -116,7 +116,7 @@ export default function TemplatesCreate() {
   const handleSave = async () => {
     setLoading(true)
     try {
-      const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/templates`, {
+      const response = await axios.post(`https://n8n.xponent.ph/webhook/api/templates`, {
         link: template?.link,
         name: template?.name,
         month: template?.month,
@@ -188,6 +188,7 @@ export default function TemplatesCreate() {
 
                   <div className="space-y-1">
                     <Label htmlFor="google-drive-link">Google Drive Link</Label>
+                    <CardDescription>Remember to set file access to <strong>Anyone with the link can edit</strong></CardDescription>
                     {loading ? <SkeletonOneRow /> :
                       <Input name="link" id="google-drive-link" placeholder="Enter link" value={template?.link} onChange={(e) => handleSetTemplate(e)} />
                     } </div>
