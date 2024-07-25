@@ -41,9 +41,17 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useFormState } from "react-hook-form"
 
 import { CheckCircledIcon } from '@radix-ui/react-icons'
+import { set } from "date-fns"
+
+import { useToast } from "@/components/ui/use-toast"
+
+import SkeletonInput from "@/components/skeleton-input"
+import { Loader2 } from "lucide-react"
 
 
 export default function Component() {
+
+  const { toast } = useToast()
 
   const [settings, setSettings] = useState<any>([])
   const [generalSettings, setGeneralSettings] = useState<any>([])
@@ -72,25 +80,25 @@ export default function Component() {
     const prompt = "consent"
 
     const url = `https://accounts.google.com/o/oauth2/auth?redirect_uri=${redirect_uri}&prompt=${prompt}&response_type=${response_type}&client_id=${client_id}&scope=${scope}&access_type=${access_type}`
-    
+
     console.log(url)
-    
+
     window.open(url, "_blank")
 
   }
-  
+
   const handleGoogleDriveIntegration = () => {
     generateGoogleDriveOAuthToken()
-   
+
   }
   const handleGoogleSheetsIntegration = () => {
-  
+
   }
-  const handleGmailIntegration= () => {
-  
+  const handleGmailIntegration = () => {
+
   }
 
-  const handleGoogleSlidesIntegration = () =>{
+  const handleGoogleSlidesIntegration = () => {
 
   }
 
@@ -106,6 +114,7 @@ export default function Component() {
   }
 
   const saveSettings = async (values: z.infer<typeof generalSettingsFormSchema>) => {
+    setLoading(true)
     const generalSettingsId = settings.find((setting: any) => setting.name === "general_settings")?.id;
     const payload = {
       data: {
@@ -118,9 +127,20 @@ export default function Component() {
     axios.post(`https://n8n.xponent.ph/webhook/api/settings`, payload)
       .then(response => {
         console.log(response)
+        toast({
+          title: "Settings Saved",
+          description: "Settings have been saved successfully",
+        })
+        setLoading(false)
       })
       .catch(error => {
         console.error(error)
+        toast({
+          title: "Error",
+          description: "An error occurred while saving settings",
+          variant: "destructive"
+        })
+        setLoading(false)
       })
   }
 
@@ -181,70 +201,74 @@ export default function Component() {
           <CardContent>
             <Form {...generalSettingsForm}>
               <form className="grid gap-4" onSubmit={generalSettingsForm.handleSubmit(handleSaveGeneralSettings)}>
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={generalSettingsForm.control}
+                    name="google_drive_folder"
+                    render={({ field }) => (
+                      <div className="space-y-1">
+                        <FormLabel>Google Drive Folder</FormLabel>
+                        <FormControl>
+                          <>
+                            <Input required {...field} />
+                            <FormMessage>{generalSettingsForm.formState.errors.google_drive_folder?.message}</FormMessage>
+                          </>
 
-                <FormField
-                  control={generalSettingsForm.control}
-                  name="google_drive_folder"
-                  render={({ field }) => (
-                    <div className="space-y-1">
-                      <FormLabel>Google Drive Folder</FormLabel>
-                      <FormControl>
-                        <>
-                          <Input required {...field} />
-                          <FormMessage>{generalSettingsForm.formState.errors.google_drive_folder?.message}</FormMessage>
-                        </>
+                        </FormControl>
+                      </div>
+                    )}
+                  />
+                }
 
-                      </FormControl>
-                    </div>
-                  )}
-                />
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={generalSettingsForm.control}
+                    name="openai_api_key"
+                    render={({ field }) => (
+                      <div className="space-y-1">
+                        <FormLabel>OpenAI API Key</FormLabel>
+                        <FormControl>
+                          <>
+                            <Input required {...field} />
+                            <FormMessage>{generalSettingsForm.formState.errors.openai_api_key?.message}</FormMessage>
+                          </>
 
-                <FormField
-                  control={generalSettingsForm.control}
-                  name="openai_api_key"
-                  render={({ field }) => (
-                    <div className="space-y-1">
-                      <FormLabel>OpenAI API Key</FormLabel>
-                      <FormControl>
-                        <>
-                          <Input required {...field} />
-                          <FormMessage>{generalSettingsForm.formState.errors.openai_api_key?.message}</FormMessage>
-                        </>
+                        </FormControl>
+                      </div>
+                    )}
+                  />}
 
-                      </FormControl>
-                    </div>
-                  )}
-                />
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={generalSettingsForm.control}
+                    name="default_model"
+                    render={({ field }) => (
+                      <div className="space-y-1">
+                        <FormLabel>Default Model</FormLabel>
+                        <FormControl>
+                          <>
+                            <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>
+                              <SelectTrigger className="">
+                                <SelectValue placeholder="Select a model" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
+                                <SelectItem value="gpt-4">GPT-4</SelectItem>
+                                <SelectItem value="gpt-4-o">GPT-4o</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage>{generalSettingsForm.formState.errors.default_model?.message}</FormMessage>
+                          </>
 
-
-                <FormField
-                  control={generalSettingsForm.control}
-                  name="default_model"
-                  render={({ field }) => (
-                    <div className="space-y-1">
-                      <FormLabel>Default Model</FormLabel>
-                      <FormControl>
-                        <>
-                          <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger className="">
-                              <SelectValue placeholder="Select a model" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
-                              <SelectItem value="gpt-4">GPT-4</SelectItem>
-                              <SelectItem value="gpt-4-o">GPT-4o</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage>{generalSettingsForm.formState.errors.default_model?.message}</FormMessage>
-                        </>
-
-                      </FormControl>
-                    </div>
-                  )}
-                />
+                        </FormControl>
+                      </div>
+                    )}
+                  />
+                }
 
 
-                <Button variant="outline" type="submit" className="w-full">
+                <Button disabled={loading} variant="outline" type="submit" className="w-full">
+                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Save Settings
                 </Button>
               </form>
