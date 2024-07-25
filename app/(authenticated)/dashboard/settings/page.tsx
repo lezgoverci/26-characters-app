@@ -207,7 +207,8 @@ export default function Component() {
                     name="google_drive_folder"
                     render={({ field }) => (
                       <div className="space-y-1">
-                        <FormLabel>Google Drive Folder</FormLabel>
+                        <FormLabel>Google Drive</FormLabel>
+                        <FormDescription>Generated files will be stored in this folder</FormDescription>
                         <FormControl>
                           <>
                             <Input required {...field} />
@@ -227,6 +228,7 @@ export default function Component() {
                     render={({ field }) => (
                       <div className="space-y-1">
                         <FormLabel>OpenAI API Key</FormLabel>
+                        <FormDescription>Visit this <a target="_blank" className="font-bold text-blue-800" href="https://platform.openai.com/settings/organization/team">OpenAI page</a> to get your API key</FormDescription>
                         <FormControl>
                           <>
                             <Input required {...field} />
@@ -244,7 +246,8 @@ export default function Component() {
                     name="default_model"
                     render={({ field }) => (
                       <div className="space-y-1">
-                        <FormLabel>Default Model</FormLabel>
+                        <FormLabel>AI Model</FormLabel>
+                        <FormDescription>Default model to use for generating TC contents</FormDescription>
                         <FormControl>
                           <>
                             <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>

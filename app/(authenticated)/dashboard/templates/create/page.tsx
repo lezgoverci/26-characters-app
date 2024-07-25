@@ -43,6 +43,8 @@ export default function TemplatesCreate() {
   const [loading, setLoading] = useState<boolean>(true)
   const { toast } = useToast()
 
+  const [settings, setSettings] = useState<any>({})
+
   // const id = searchParams.get("id")
   const [search, setSearch] = useState("")
   const [selectedUser, setSelectedUser] = useState(null)
@@ -83,6 +85,21 @@ export default function TemplatesCreate() {
     }
   }
 
+  const fetchSettings = async () => {
+
+    setLoading(true)
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/settings`);
+      // localStorage.setItem("settings", JSON.stringify(response.data))
+
+      setSettings(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.error(error);
+      setLoading(false)
+    }
+  }
+
   const searchUsers = async () => {
     setLoading(true)
     try {
@@ -99,11 +116,12 @@ export default function TemplatesCreate() {
   const handleSave = async () => {
     setLoading(true)
     try {
-      const response = await axios.post(`https://n8n.xponent.ph/webhook/api/templates`, {
+      const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/templates`, {
         link: template?.link,
         name: template?.name,
         month: template?.month,
-        year: template?.year
+        year: template?.year,
+        general_settings: settings.find((setting: any) => setting.name === "general_settings")?.value
       });
       toast({
         description: "Successfully created template",
@@ -133,6 +151,7 @@ export default function TemplatesCreate() {
   useEffect(() => {
     setLoading(false)
     fetchUsers()
+    fetchSettings()
 
   }, []);
 
