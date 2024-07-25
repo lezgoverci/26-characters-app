@@ -45,13 +45,6 @@ import { CheckCircledIcon } from '@radix-ui/react-icons'
 
 export default function Component() {
 
-
-  const [googleDriveIntegration, setGoogleDriveIntegration] = useState(false)
-  const [googleSheetsIntegration, setGoogleSheetsIntegration] = useState(false)
-  const [gmailIntegration, setGmailIntegration] = useState(false)
-
-
-
   const [settings, setSettings] = useState<any>([])
   const [generalSettings, setGeneralSettings] = useState<any>([])
   const [integrations, setIntegrations] = useState<any>([])
@@ -69,29 +62,36 @@ export default function Component() {
 
 
 
-  const handleGoogleDriveLinkChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // setGoogleDriveLink(e.target.value)
+  const generateGoogleDriveOAuthToken = async () => {
+    const redirect_uri = "https://n8n.xponent.ph/webhook/api/integrations"
+    const client_id = "1012113547659-pmqe0svb8mpcka5k5dth8n095jn1u4gq.apps.googleusercontent.com"
+    const client_secret = "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"
+    const scope = "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/presentations"
+    const response_type = "code"
+    const access_type = "offline"
+    const prompt = "consent"
+
+    const url = `https://accounts.google.com/o/oauth2/auth?redirect_uri=${redirect_uri}&prompt=${prompt}&response_type=${response_type}&client_id=${client_id}&scope=${scope}&access_type=${access_type}`
+    
+    console.log(url)
+    
+    window.open(url, "_blank")
+
   }
-  const handleOpenAIApiKeyChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // setOpenAIApiKey(e.target.value)
+  
+  const handleGoogleDriveIntegration = () => {
+    generateGoogleDriveOAuthToken()
+   
   }
-  const handleDefaultModelChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // setDefaultModel(value)
+  const handleGoogleSheetsIntegration = () => {
+  
   }
-  const handleAssistantChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // setAssistant(value)
+  const handleGmailIntegration= () => {
+  
   }
-  const handleGoogleDriveIntegrationChange = () => {
-    setGoogleDriveIntegration(!googleDriveIntegration)
-  }
-  const handleGoogleSheetsIntegrationChange = () => {
-    setGoogleSheetsIntegration(!googleSheetsIntegration)
-  }
-  const handleGmailIntegrationChange = () => {
-    setGmailIntegration(!gmailIntegration)
-  }
-  const handleTreasureChestCustomPromptChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // setTreasureChestCustomPrompt(e.target.value)
+
+  const handleGoogleSlidesIntegration = () =>{
+
   }
 
   const handleSaveGeneralSettings = (values: z.infer<typeof generalSettingsFormSchema>) => {
@@ -265,7 +265,7 @@ export default function Component() {
 
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center">
-                  <Button size="sm" variant="outline">
+                  <Button onClick={()=> handleGoogleDriveIntegration()} size="sm" variant="outline">
                     {integrations.find((integration: any) => integration.type === "googleDriveOAuth2Api")?.is_active ? "Connected" : "Connect"}
                     {integrations.find((integration: any) => integration.type === "googleDriveOAuth2Api")?.is_active ? <CheckCircledIcon className="ml-2 h-4 w-4" /> : null}
       
