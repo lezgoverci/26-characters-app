@@ -50,6 +50,8 @@ import {
 
 import axios from "axios"
 
+import SkeletonInput from "@/components/skeleton-input"
+
 
 export default function ClientsDetails() {
 
@@ -57,8 +59,8 @@ export default function ClientsDetails() {
   const [client, setClient] = useState<Client | null>(null)
   const [url, setUrl] = useState<string>("")
   const [clientEmailInput, setClientEmailInput] = useState<string>("")
-  const [loading, setLoading] = useState<boolean>(false)
-  const [templates, setTemplates] = useState< Template[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+
 
   const router = useRouter()
 
@@ -96,24 +98,20 @@ export default function ClientsDetails() {
   })
 
   const fetchClient = async () => {
+    setLoading(true)
     try {
       const response = await axios.get(`https://n8n.xponent.ph/webhook/2f4bc294-6be4-4da2-ba85-9f681a8e93b4/api/clients/${params?.id}`);
       console.log(response.data);
       setClient(response.data)
       form.reset(response.data)
+      setLoading(false)
     } catch (error) {
       console.error(error);
+      setLoading(false)
     }
   };
 
-  const fetchTemplates = async () => {
-    try {
-      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/templates`);
-      setTemplates(response.data.data)
-    } catch (error) {
-      console.error(error);
-    }
-  }
+
 
 
 
@@ -181,7 +179,6 @@ export default function ClientsDetails() {
   useEffect(() => {
 
     fetchClient()
-    fetchTemplates()
   }, [])
   return (
     <Form {...form}>
@@ -196,291 +193,304 @@ export default function ClientsDetails() {
               Save</Button>
           </header>
           <main className="grid gap-4 lg:grid-cols-2 overflow-auto p-4 md:p-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Personal</CardTitle>
-                    <CardDescription>
-                      Update personal details
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="first_name"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="name">First Name</FormLabel>
+            <Card>
+              <CardHeader>
+                <CardTitle>Personal</CardTitle>
+                <CardDescription>
+                  Update personal details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={form.control}
+                    name="first_name"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="name">First Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="first_name"
+                            type="text"
+                            placeholder="Enter your first name"
+
+                            {...field}
+                            className="w-full text-sm font-medium"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />}
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={form.control}
+                    name="last_name"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="name">Last Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="last_name"
+                            type="text"
+                            placeholder="Enter your last name"
+
+                            {...field}
+                            className="w-full text-sm font-medium"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />}
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="name">Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="email"
+                            type="text"
+                            placeholder="Enter email"
+
+                            {...field}
+                            className="w-full text-sm font-medium"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />}
+
+
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Company</CardTitle>
+                <CardDescription>
+                  Update company details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={form.control}
+                    name="company"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="name">Company</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="company"
+                            type="text"
+                            placeholder="Enter your company"
+
+                            {...field}
+                            className="w-full text-sm font-medium"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />}
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={form.control}
+                    name="company_description"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="name">Company Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            id="company_description"
+
+                            placeholder="Enter your company description"
+
+                            {...field}
+                            className="w-full text-sm font-medium"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                }
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="name">Role</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="role"
+                            type="text"
+                            placeholder="Enter your role"
+
+                            {...field}
+                            className="w-full text-sm font-medium"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />}
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={form.control}
+                    name="experience"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="name">Experience</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="experience"
+                            type="text"
+                            placeholder="Enter your experience"
+
+                            {...field}
+                            className="w-full text-sm font-medium"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />}
+
+
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Treasure Chest</CardTitle>
+                <CardDescription>
+                  Update treasure chest profile
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {loading ? <SkeletonInput /> :
+                  <FormField
+                    control={form.control}
+                    name="subscription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Subscription</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <Input
-                              id="first_name"
-                              type="text"
-                              placeholder="Enter your first name"
-
-                              {...field}
-                              className="w-full text-sm font-medium"
-                            />
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a client subscription" />
+                            </SelectTrigger>
                           </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                          <SelectContent>
+                            <SelectItem value="standard">Standard</SelectItem>
+                            <SelectItem value="premium">Premium</SelectItem>
+
+                          </SelectContent>
+                        </Select>
+
+                      </FormItem>
+                    )}
+                  />}
+                {loading ? <SkeletonInput /> :
+
+                  <FormField
+                    control={form.control}
+                    name="writing_profile"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="writing-profile">Writing Profile</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            id="writing-profile"
+                            placeholder="Enter your writing profile"
+                            {...field}
+                            className="w-full min-h-[100px] text-sm text-muted-foreground"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />}
+                {loading ? <SkeletonInput /> :
+
+                  <FormField
+                    control={form.control}
+                    name="recruiting_profile"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="recruiting-profile">Recruiting Profile</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            id="recruiting-profile"
+                            placeholder="Enter your recruiting profile"
+                            {...field}
+                            className="w-full min-h-[100px] text-sm text-muted-foreground"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />}
+                {loading ? <SkeletonInput /> :
+
+                  <FormField
+                    control={form.control}
+                    name="prompt"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel htmlFor="prompt">Prompt</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            id="prompt"
+                            placeholder="Enter your prompt"
+                            {...field}
+                            className="w-full min-h-[100px] text-sm text-muted-foreground"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />}
+
+
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Delete Client</CardTitle>
+                <CardDescription>
+                  Type <strong>{client?.email}</strong> in the input field below to delete this template. This action cannot be undone.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? <SkeletonInput /> :
+                  <div className="flex flex-col gap-4">
+                    <Input
+                      placeholder="Enter client email to confirm deletion"
+                      onChange={(e) => handleClientEmailInput(e)}
+                      value={clientEmailInput}
                     />
-                    <FormField
-                      control={form.control}
-                      name="last_name"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="name">Last Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              id="last_name"
-                              type="text"
-                              placeholder="Enter your last name"
-
-                              {...field}
-                              className="w-full text-sm font-medium"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="name">Email</FormLabel>
-                          <FormControl>
-                            <Input
-                              id="email"
-                              type="text"
-                              placeholder="Enter email"
-
-                              {...field}
-                              className="w-full text-sm font-medium"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <Button
+                      variant="destructive"
+                      className="w-auto"
+                      size="sm"
+                      onClick={deleteClient}
+                      disabled={!(clientEmailInput === client?.email && clientEmailInput !== "" && !loading)}
+                    >
+                      {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Delete
+                    </Button>
+                  </div>}
+              </CardContent>
+            </Card>
 
 
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Company</CardTitle>
-                    <CardDescription>
-                      Update company details
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="company"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="name">Company</FormLabel>
-                          <FormControl>
-                            <Input
-                              id="company"
-                              type="text"
-                              placeholder="Enter your company"
 
-                              {...field}
-                              className="w-full text-sm font-medium"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="company_description"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="name">Company Description</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              id="company_description"
-
-                              placeholder="Enter your company description"
-
-                              {...field}
-                              className="w-full text-sm font-medium"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="role"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="name">Role</FormLabel>
-                          <FormControl>
-                            <Input
-                              id="role"
-                              type="text"
-                              placeholder="Enter your role"
-
-                              {...field}
-                              className="w-full text-sm font-medium"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="experience"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="name">Experience</FormLabel>
-                          <FormControl>
-                            <Input
-                              id="experience"
-                              type="text"
-                              placeholder="Enter your experience"
-
-                              {...field}
-                              className="w-full text-sm font-medium"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Treasure Chest</CardTitle>
-                    <CardDescription>
-                      Update treasure chest profile
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="subscription"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Subscription</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a client subscription" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="standard">Standard</SelectItem>
-                              <SelectItem value="premium">Premium</SelectItem>
-
-                            </SelectContent>
-                          </Select>
-
-                        </FormItem>
-                      )}
-                    />
-              
-                    <FormField
-                      control={form.control}
-                      name="writing_profile"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="writing-profile">Writing Profile</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              id="writing-profile"
-                              placeholder="Enter your writing profile"
-                              {...field}
-                              className="w-full min-h-[100px] text-sm text-muted-foreground"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="recruiting_profile"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="recruiting-profile">Recruiting Profile</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              id="recruiting-profile"
-                              placeholder="Enter your recruiting profile"
-                              {...field}
-                              className="w-full min-h-[100px] text-sm text-muted-foreground"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="prompt"
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel htmlFor="prompt">Prompt</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              id="prompt"
-                              placeholder="Enter your prompt"
-                              {...field}
-                              className="w-full min-h-[100px] text-sm text-muted-foreground"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Delete Client</CardTitle>
-                    <CardDescription>
-                      Type <strong>{client?.email}</strong> in the input field below to delete this template. This action cannot be undone.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-col gap-4">
-                      <Input
-                        placeholder="Enter client email to confirm deletion"
-                        onChange={(e) => handleClientEmailInput(e)}
-                        value={clientEmailInput}
-                      />
-                      <Button
-                        variant="destructive"
-                        className="w-auto"
-                        size="sm"
-                        onClick={deleteClient}
-                        disabled={!(clientEmailInput === client?.email && clientEmailInput !== "" && !loading)}
-                      >
-                        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Delete
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-          
-       
 
           </main>
         </div>

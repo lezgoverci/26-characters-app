@@ -155,9 +155,9 @@ export default function Component() {
       setSettings(response.data)
       setGeneralSettings(response.data.find((setting: any) => setting.name === "general_settings")?.value)
 
-      // generalSettingsForm.setValue("google_drive_folder", generalSettings?.google_drive_folder)
-      // generalSettingsForm.setValue("openai_api_key", generalSettings?.openai_api_key)
-      // generalSettingsForm.setValue("default_model", generalSettings?.default_model)
+      generalSettingsForm.setValue("google_drive_folder", response.data.find((setting: any) => setting.name === "general_settings")?.value?.google_drive_folder)
+      generalSettingsForm.setValue("openai_api_key", response.data.find((setting: any) => setting.name === "general_settings")?.value?.openai_api_key)
+      generalSettingsForm.setValue("default_model", response.data.find((setting: any) => setting.name === "general_settings")?.value?.default_model)
       
 
       setLoading(false)
@@ -171,11 +171,11 @@ export default function Component() {
     fetchSettings()
   }, [])
 
-  useEffect(() => {
-    generalSettingsForm.setValue("google_drive_folder", generalSettings?.google_drive_folder)
-      generalSettingsForm.setValue("openai_api_key", generalSettings?.openai_api_key)
-      generalSettingsForm.setValue("default_model", generalSettings?.default_model)
-  } , [generalSettings])
+  // useEffect(() => {
+  //   generalSettingsForm.setValue("google_drive_folder", generalSettings?.google_drive_folder)
+  //     generalSettingsForm.setValue("openai_api_key", generalSettings?.openai_api_key)
+  //     generalSettingsForm.setValue("default_model", generalSettings?.default_model)
+  // } , [generalSettings])
 
   // useEffect(() => {
   //   if (settings.length > 0) {

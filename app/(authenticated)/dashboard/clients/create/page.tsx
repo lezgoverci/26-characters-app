@@ -23,6 +23,8 @@ import axios from "axios"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 
+import { useRouter } from 'next/navigation'
+
 import {
   Select,
   SelectContent,
@@ -46,10 +48,14 @@ import {
 
 import { Input } from "@/components/ui/input"
 
+import SkeletonInput from "@/components/skeleton-input"
+
 export default function ClientCreate() {
 
   const [loading, setLoading] = useState<boolean>(false)
   const { toast } = useToast()
+
+  const router = useRouter()
 
 
   const formSchema = z.object({
@@ -104,6 +110,7 @@ export default function ClientCreate() {
         variant: "default"
       });
       setLoading(false)
+      router.push('/dashboard/clients')
     } catch (error) {
       console.error('Error updating data:', error);
       setLoading(false)
@@ -142,7 +149,7 @@ export default function ClientCreate() {
               </CardHeader>
               <CardContent className="space-y-4">
 
-
+              {loading ? <SkeletonInput /> :
                 <FormField
                   control={form.control}
                   name="first_name"
@@ -161,7 +168,9 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                />}
+
+{loading ? <SkeletonInput /> :
 
                 <FormField
                   control={form.control}
@@ -181,7 +190,8 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                />}
+                 {loading ? <SkeletonInput /> :
 
                 <FormField
                   control={form.control}
@@ -201,7 +211,7 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                />}
 
 
 
@@ -216,7 +226,7 @@ export default function ClientCreate() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-
+              {loading ? <SkeletonInput /> :
                 <FormField
                   control={form.control}
                   name="company"
@@ -235,8 +245,8 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
-
+                />}
+ {loading ? <SkeletonInput /> :
                 <FormField
                   control={form.control}
                   name="company_description"
@@ -254,7 +264,8 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                />}
+                 {loading ? <SkeletonInput /> :
                 <FormField
                   control={form.control}
                   name="role"
@@ -273,8 +284,8 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
-
+                />}
+ {loading ? <SkeletonInput /> :
                 <FormField
                   control={form.control}
                   name="experience"
@@ -293,7 +304,7 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                />}
 
 
 
@@ -308,6 +319,7 @@ export default function ClientCreate() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+              {loading ? <SkeletonInput /> :
                 <FormField
                   control={form.control}
                   name="subscription"
@@ -329,11 +341,11 @@ export default function ClientCreate() {
 
                     </FormItem>
                   )}
-                />
+                />}
 
 
 
-               
+{loading ? <SkeletonInput /> :
                 <FormField
                   control={form.control}
                   name="writing_profile"
@@ -351,7 +363,8 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                />}
+                 {loading ? <SkeletonInput /> :
 
                 <FormField
                   control={form.control}
@@ -370,7 +383,8 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                />}
+                 {loading ? <SkeletonInput /> :
 
                 <FormField
                   control={form.control}
@@ -389,7 +403,7 @@ export default function ClientCreate() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                />}
               
               </CardContent>
             </Card>

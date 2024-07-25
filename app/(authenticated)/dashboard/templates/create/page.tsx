@@ -19,6 +19,8 @@ import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
 
+import { useRouter } from 'next/navigation'
+
 import {
   Select,
   SelectContent,
@@ -42,6 +44,8 @@ export default function TemplatesCreate() {
 
   const [loading, setLoading] = useState<boolean>(true)
   const { toast } = useToast()
+
+  const router = useRouter()
 
   const [settings, setSettings] = useState<any>({})
 
@@ -128,6 +132,7 @@ export default function TemplatesCreate() {
         variant: "default"
       });
       setLoading(false)
+      router.push('/dashboard/templates')
     } catch (error) {
       console.error('Error updating data:', error);
       setLoading(false)
