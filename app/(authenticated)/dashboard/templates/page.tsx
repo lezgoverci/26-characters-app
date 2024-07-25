@@ -9,7 +9,7 @@ import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-
+import { Loader2 } from "lucide-react"
 import SideMenu from "@/components/sidemenu"
 import { useRouter } from "next/navigation"
 import axios from "axios"
@@ -19,6 +19,7 @@ import { SkeletonList } from "@/components/skeleton-list"
 import { Template } from "@/types"
 
 import { Badge } from "@/components/ui/badge"
+import { set } from "date-fns"
 
 
 
@@ -29,6 +30,7 @@ export default function Templates() {
   const [loading, setLoading] = useState(true)
 
   const fetchTemplates = async () => {
+    setLoading(true)
     try {
       const res = await axios.get("https://n8n.xponent.ph/webhook/api/templates/")
       console.log(res)
@@ -58,6 +60,7 @@ export default function Templates() {
       </header>
 
       <main className="flex-1 overflow-auto p-4 md:p-6">
+      <Button variant="outline" onClick={fetchTemplates} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Refresh List</Button>
         {loading ? <SkeletonList /> : <>
           <Table>
             <TableHeader>
