@@ -63,7 +63,6 @@ export default function ClientCreate() {
     subscription: z.string().min(2).max(50),
     writing_profile: z.string().min(2).max(9999),
     recruiting_profile: z.string().min(2).max(9999),
-    treasure_chest_link: z.string().min(2).max(9999),
     prompt: z.string().min(2).max(9999)
   })
 
@@ -80,7 +79,6 @@ export default function ClientCreate() {
       subscription: "",
       writing_profile: "",
       recruiting_profile: "",
-      treasure_chest_link: "",
       prompt: ""
     },
   })
@@ -120,13 +118,7 @@ export default function ClientCreate() {
     console.log(errors)
   }
 
-  const handleGenerateClick = () => {
 
-
-    const newUrl = 'http://example.com/generated-url'; // Replace this with URL generation logic
-    setUrl(newUrl);
-    form.setValue('treasure_chest_link', newUrl);
-  };
 
   return (
     <Form {...form}>
@@ -341,32 +333,7 @@ export default function ClientCreate() {
 
 
 
-                <FormField
-                  control={form.control}
-                  name="treasure_chest_link"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="role">Treasure Chest</FormLabel>
-                      <FormControl>
-                        <div className="flex w-full text-sm items-center space-x-2">
-                          <Input
-                            id="treasure_chest_link"
-                            type="text"
-                            // placeholder="Enter your role"
-                            {...field}
-                            value={url}
-                            className=" text-muted-foreground"
-                          />
-                          <Button variant="outline" size="sm" onClick={(event) => { event.preventDefault(); handleGenerateClick(); }}>
-                            <GiftIcon className="h-4 w-4 mr-2" />
-                            Generate
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+               
                 <FormField
                   control={form.control}
                   name="writing_profile"

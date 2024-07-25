@@ -94,10 +94,10 @@ export default function Clients() {
             <Button size="sm" onClick={() => {
               router.push("/dashboard/clients/create")
             }}>Create New</Button>
-            <Button variant="outline" size="sm">
+            {/* <Button variant="outline" size="sm">
               <UploadIcon className="h-4 w-4 mr-2" />
               Import CSV
-            </Button>
+            </Button> */}
           </div>
         </header>
 

@@ -10,7 +10,6 @@ export interface Client {
     subscription: string;
     writing_profile: string;
     recruiting_profile: string;
-    treasure_chest_link: string;
     prompt: string;
   };
 
