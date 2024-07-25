@@ -44,12 +44,14 @@ export default function Component() {
 
   const [client, setClient] = useState<Client | null>(null)
 
+  const [settings, setSettings] = useState<any | null>()
+
   const [files, setFiles] = useState<File[] | null>()
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(9)
   const filteredFiles = useMemo(() => {
     return files?.filter((file) => {
-      return file.filename.toLowerCase().includes(search.toLowerCase()) ||
+      return file.filename?.toLowerCase().includes(search.toLowerCase()) ||
         templates.find((template) => template.id == file.template)?.name.toLowerCase().includes(search.toLowerCase())
     })
   }, [search, files])
@@ -85,7 +87,13 @@ export default function Component() {
     setLoading(true)
     try {
       const response = await axios.get(`https://n8n.xponent.ph/webhook/api/files?client=${params?.id}`);
-      setFiles(response.data.data)
+      if (response.data.data.length == 0) {
+        setFiles([])
+        console.log("No files found")
+      }else{
+        setFiles(response.data.data)
+      }
+      
       setLoading(false)
     } catch (error) {
       console.error(error);
@@ -108,6 +116,21 @@ export default function Component() {
     }
   };
 
+  const fetchSettings = async () => {
+
+    setLoading(true)
+    try {
+      const response = await axios.get(`https://n8n.xponent.ph/webhook/api/settings`);
+      // localStorage.setItem("settings", JSON.stringify(response.data))
+
+      setSettings(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.error(error);
+      setLoading(false)
+    }
+  }
+
   const getTemplate = async (id: string) => {
     setLoading(true)
     try {
@@ -127,9 +150,10 @@ export default function Component() {
     const data = {
       client: client,
       type: client?.subscription,
-      template: selectedTemplate
+      template: selectedTemplate,
+      settings: settings
     };
-    axios.post(`https://n8n.xponent.ph/webhook/api/treasure-chest?type=${data.type}`, data)
+    axios.post(`https://n8n.xponent.ph/webhook-test/api/treasure-chest?type=${data.type}`, data)
       .then(response => {
         console.log(response.data);
         fetchFiles()
@@ -156,6 +180,7 @@ export default function Component() {
     fetchFiles()
     fetchClient()
     fetchTemplates()
+    fetchSettings()
   }, [])
   function handleDelete(file: File): void {
     axios.delete(`https://n8n.xponent.ph/webhook/api/files?id=${file.id}`)
