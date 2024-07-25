@@ -275,7 +275,7 @@ export default function Component() {
                   <div className="space-y-1">
                     <Label htmlFor="google-drive-link">Google Drive Link</Label>
                     {loading ? <SkeletonOneRow /> :
-                      <Input name="link" id="google-drive-link" placeholder="Enter link" value={template?.link} onChange={(e) => handleSetTemplate(e)} />
+                      <Input disabled name="link" id="google-drive-link" placeholder="Enter link" value={template?.link} onChange={(e) => handleSetTemplate(e)} />
                     } </div>
                   <div className="flex ">
                     <div className="space-y-1 w-full flex flex-col">  
