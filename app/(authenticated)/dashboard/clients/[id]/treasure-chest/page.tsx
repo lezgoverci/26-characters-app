@@ -151,9 +151,9 @@ export default function Component() {
       client: client,
       type: client?.subscription,
       template: selectedTemplate,
-      settings: settings
+      general_settings: settings.find((setting: any) => setting.name === "general_settings")?.value,
     };
-    axios.post(`https://n8n.xponent.ph/webhook-test/api/treasure-chest?type=${data.type}`, data)
+    axios.post(`https://n8n.xponent.ph/webhook/api/treasure-chest?type=${data.type}`, data)
       .then(response => {
         console.log(response.data);
         fetchFiles()
