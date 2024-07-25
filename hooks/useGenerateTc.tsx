@@ -19,7 +19,6 @@ const useGenerateTc = () => {
             subscription: '',
             writing_profile: '',
             recruiting_profile: '',
-            treasure_chest_link: '',
             prompt:''
         }
     );
