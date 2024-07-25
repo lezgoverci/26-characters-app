@@ -5,7 +5,7 @@
  */
 "use client"
 
-import { useState, useMemo, useRef, SetStateAction, useEffect } from "react"
+import { useState, useMemo, useRef, SetStateAction, useEffect, use } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
@@ -153,6 +153,13 @@ export default function Component() {
       // localStorage.setItem("settings", JSON.stringify(response.data))
 
       setSettings(response.data)
+      setGeneralSettings(response.data.find((setting: any) => setting.name === "general_settings")?.value)
+
+      // generalSettingsForm.setValue("google_drive_folder", generalSettings?.google_drive_folder)
+      // generalSettingsForm.setValue("openai_api_key", generalSettings?.openai_api_key)
+      // generalSettingsForm.setValue("default_model", generalSettings?.default_model)
+      
+
       setLoading(false)
     } catch (error) {
       console.error(error);
@@ -165,21 +172,27 @@ export default function Component() {
   }, [])
 
   useEffect(() => {
-    if (settings.length > 0) {
-      const newGeneralSettings = settings.find((setting: any) => setting.name === "general_settings")?.value;
-      const newIntegrations = settings.find((setting: any) => setting.name === "integrations")?.value;
-
-      setGeneralSettings(newGeneralSettings)
-      setIntegrations(newIntegrations)
-
-      generalSettingsForm.setValue("google_drive_folder", generalSettings?.google_drive_folder)
+    generalSettingsForm.setValue("google_drive_folder", generalSettings?.google_drive_folder)
       generalSettingsForm.setValue("openai_api_key", generalSettings?.openai_api_key)
       generalSettingsForm.setValue("default_model", generalSettings?.default_model)
+  } , [generalSettings])
+
+  // useEffect(() => {
+  //   if (settings.length > 0) {
+  //     const newGeneralSettings = settings.find((setting: any) => setting.name === "general_settings")?.value;
+  //     const newIntegrations = settings.find((setting: any) => setting.name === "integrations")?.value;
+
+  //     setGeneralSettings(newGeneralSettings)
+  //     setIntegrations(newIntegrations)
+
+  //     generalSettingsForm.setValue("google_drive_folder", generalSettings?.google_drive_folder)
+  //     generalSettingsForm.setValue("openai_api_key", generalSettings?.openai_api_key)
+  //     generalSettingsForm.setValue("default_model", generalSettings?.default_model)
 
 
-    }
-  }
-    , [settings])
+  //   }
+  // }
+  //   , [settings])
 
   return (
 
