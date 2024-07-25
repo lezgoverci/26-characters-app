@@ -252,7 +252,7 @@ export default function Component() {
           </CardContent>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="text-base">Integrations</CardTitle>
           </CardHeader>
@@ -318,7 +318,7 @@ export default function Component() {
 
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
 
 
