@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Pagination } from "@/components/ui/pagination"
 import { Loader2 } from "lucide-react"
-import { Client, Template, File } from "@/types"
+import { Client, Template, File, Tile } from "@/types"
 import axios from "axios"
 import { useEffect } from "react"
 import SkeletonCardGridSimple from '@/components/skeleton-card-grid-simple';
@@ -45,6 +45,9 @@ export default function Component() {
   const [client, setClient] = useState<Client | null>(null)
 
   const [settings, setSettings] = useState<any | null>()
+
+
+  const  [ tiles, setTiles ] = useState<Tile[] | null>()
 
   const [files, setFiles] = useState<File[] | null>()
   const [currentPage, setCurrentPage] = useState(1)
@@ -131,6 +134,18 @@ export default function Component() {
     }
   }
 
+  const fetchTiles = async () => {
+     setLoading(true)
+      try {
+        const response = await axios.get(`https://n8n.xponent.ph/webhook-test/api/tiles?id=${params?.id}`);
+        setTiles(response.data.data)
+        setLoading(false)
+      } catch (error) {
+        console.error(error);
+        setLoading(false)
+      }
+    }
+
   const getTemplate = async (id: string) => {
     setLoading(true)
     try {
@@ -181,6 +196,7 @@ export default function Component() {
     fetchClient()
     fetchTemplates()
     fetchSettings()
+    fetchTiles()
   }, [])
   function handleDelete(file: File): void {
     setLoading(true);

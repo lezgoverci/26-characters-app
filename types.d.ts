@@ -49,3 +49,11 @@ export interface Client {
     id: number;
     email: string;
   }
+
+  export interface Tile {
+    id: number;
+    link: string;
+    client: string;
+    created_at: string;
+    updated_at: string;
+  }
