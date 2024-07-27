@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Pagination } from "@/components/ui/pagination"
 import { Loader2 } from "lucide-react"
-import { Client, Template, File, Tile } from "@/types"
+import { Client, Template, File } from "@/types"
 import axios from "axios"
 import { useEffect } from "react"
 import SkeletonCardGridSimple from '@/components/skeleton-card-grid-simple';
@@ -42,12 +42,14 @@ export default function Component() {
   const [templates, setTemplates] = useState<Template[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
 
+
   const [client, setClient] = useState<Client | null>(null)
 
   const [settings, setSettings] = useState<any | null>()
 
 
-  const  [ tiles, setTiles ] = useState<Tile[] | null>()
+
+
 
   const [files, setFiles] = useState<File[] | null>()
   const [currentPage, setCurrentPage] = useState(1)
@@ -93,10 +95,10 @@ export default function Component() {
       if (response.data.data.length == 0) {
         setFiles([])
         console.log("No files found")
-      }else{
+      } else {
         setFiles(response.data.data)
       }
-      
+
       setLoading(false)
     } catch (error) {
       console.error(error);
@@ -134,17 +136,7 @@ export default function Component() {
     }
   }
 
-  const fetchTiles = async () => {
-     setLoading(true)
-      try {
-        const response = await axios.get(`https://n8n.xponent.ph/webhook-test/api/tiles?id=${params?.id}`);
-        setTiles(response.data.data)
-        setLoading(false)
-      } catch (error) {
-        console.error(error);
-        setLoading(false)
-      }
-    }
+
 
   const getTemplate = async (id: string) => {
     setLoading(true)
@@ -189,6 +181,8 @@ export default function Component() {
   }
 
 
+
+
   useEffect(() => {
 
 
@@ -196,7 +190,7 @@ export default function Component() {
     fetchClient()
     fetchTemplates()
     fetchSettings()
-    fetchTiles()
+
   }, [])
   function handleDelete(file: File): void {
     setLoading(true);
@@ -217,10 +211,11 @@ export default function Component() {
 
     <div className="flex flex-col">
       <header className="flex h-14 items-center justify-between border-b bg-muted/40 px-4 md:px-6">
-        <h1 className="text-lg font-semibold">Files</h1>
+
+        <h1 className="text-lg font-semibold">{client?.first_name} {client?.last_name} Treasure Chest</h1>
 
       </header>
-      <main className="flex-1 overflow-auto p-4 md:p-6">
+      <main className="flex-1 overflow-auto p-4 md:p-6 gap-4">
 
         <div className="flex justify-between mb-4 gap-2">
           <div>
@@ -266,6 +261,7 @@ export default function Component() {
 
           </div>
           <div className='flex gap-2'>
+          
             <Select onValueChange={(value) => { handleSelectTemplate(value) }} value={selectedTemplate?.id.toString()}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a template" />
@@ -340,6 +336,8 @@ export default function Component() {
           // onPageChange={handlePageChange}
           />
         </div>
+
+     
       </main>
     </div>
 

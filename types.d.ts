@@ -11,6 +11,7 @@ export interface Client {
     writing_profile: string;
     recruiting_profile: string;
     prompt: string;
+    active_monthly_tiles?: string;
   };
 
   export interface Template {
@@ -54,6 +55,7 @@ export interface Client {
     id: number;
     link: string;
     client: string;
+    name: string;
     created_at: string;
     updated_at: string;
   }

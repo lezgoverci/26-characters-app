@@ -69,7 +69,8 @@ export default function ClientCreate() {
     subscription: z.string().min(2).max(50),
     writing_profile: z.string().min(2).max(9999),
     recruiting_profile: z.string().min(2).max(9999),
-    prompt: z.string().min(2).max(9999)
+    prompt: z.string().min(2).max(9999),
+    active_monthly_tiles: z.string().min(2).max(9999),
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -85,7 +86,8 @@ export default function ClientCreate() {
       subscription: "",
       writing_profile: "",
       recruiting_profile: "",
-      prompt: ""
+      prompt: "",
+      active_monthly_tiles: "",
     },
   })
 
@@ -135,278 +137,304 @@ export default function ClientCreate() {
             <h1 className="text-lg font-semibold">New Client</h1>
             <Button size="sm" disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Submit</Button>
           </header>
-          <main className="grid gap-4 lg:grid-cols-2 overflow-auto p-4 md:p-6">
+          <main className="flex flex-col lg:flex-row gap-4 overflow-auto p-4 md:p-6">
 
 
 
+            <div className="flex flex-col w-full lg:w-1/3 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Personal</CardTitle>
+                  <CardDescription>
+                    Add personal details
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Personal</CardTitle>
-                <CardDescription>
-                  Add personal details
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                  {loading ? <SkeletonInput /> :
+                    <FormField
+                      control={form.control}
+                      name="first_name"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="first_name">First Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="first_name"
+                              type="text"
+                              placeholder="Enter your first name"
+                              {...field}
+                              className="w-full text-sm font-medium"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
 
-              {loading ? <SkeletonInput /> :
-                <FormField
-                  control={form.control}
-                  name="first_name"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="first_name">First Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="first_name"
-                          type="text"
-                          placeholder="Enter your first name"
-                          {...field}
-                          className="w-full text-sm font-medium"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
+                  {loading ? <SkeletonInput /> :
 
-{loading ? <SkeletonInput /> :
+                    <FormField
+                      control={form.control}
+                      name="last_name"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="last_name">Last Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="last_name"
+                              type="text"
+                              placeholder="Enter your last name"
+                              {...field}
+                              className="w-full text-sm font-medium"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
+                  {loading ? <SkeletonInput /> :
 
-                <FormField
-                  control={form.control}
-                  name="last_name"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="last_name">Last Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="last_name"
-                          type="text"
-                          placeholder="Enter your last name"
-                          {...field}
-                          className="w-full text-sm font-medium"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
-                 {loading ? <SkeletonInput /> :
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="email">Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="Enter your email"
-                          {...field}
-                          className="w-full text-sm text-muted-foreground"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
-
-
-
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Company</CardTitle>
-                <CardDescription>
-                  Add company details
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-              {loading ? <SkeletonInput /> :
-                <FormField
-                  control={form.control}
-                  name="company"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="company">Company</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="company"
-                          type="text"
-                          placeholder="Enter your company name"
-                          {...field}
-                          className="w-full text-sm font-medium"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
- {loading ? <SkeletonInput /> :
-                <FormField
-                  control={form.control}
-                  name="company_description"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="company-description">Company Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id="company-description"
-                          placeholder="Enter your company description"
-                          {...field}
-                          className="w-full text-sm text-muted-foreground"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
-                 {loading ? <SkeletonInput /> :
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="role">Role</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="role"
-                          type="text"
-                          placeholder="Enter your role"
-                          {...field}
-                          className="w-full text-sm text-muted-foreground"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
- {loading ? <SkeletonInput /> :
-                <FormField
-                  control={form.control}
-                  name="experience"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="experience">Experience</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="experience"
-                          type="text"
-                          placeholder="5 years of experience"
-                          {...field}
-                          className="w-full text-sm text-muted-foreground"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="email">Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="email"
+                              type="email"
+                              placeholder="Enter your email"
+                              {...field}
+                              className="w-full text-sm text-muted-foreground"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
 
 
 
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Treasure Chest</CardTitle>
-                <CardDescription>
-                  Add treasure chest profile
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-              {loading ? <SkeletonInput /> :
-                <FormField
-                  control={form.control}
-                  name="subscription"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Subscription</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a client subscription" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="standard">Standard</SelectItem>
-                          <SelectItem value="premium">Premium</SelectItem>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Company</CardTitle>
+                  <CardDescription>
+                    Add company details
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {loading ? <SkeletonInput /> :
+                    <FormField
+                      control={form.control}
+                      name="company"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="company">Company</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="company"
+                              type="text"
+                              placeholder="Enter your company name"
+                              {...field}
+                              className="w-full text-sm font-medium"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
+                  {loading ? <SkeletonInput /> :
+                    <FormField
+                      control={form.control}
+                      name="company_description"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="company-description">Company Description</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              id="company-description"
+                              placeholder="Enter your company description"
+                              {...field}
+                              className="w-full text-sm text-muted-foreground"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
+                  {loading ? <SkeletonInput /> :
+                    <FormField
+                      control={form.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="role">Role</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="role"
+                              type="text"
+                              placeholder="Enter your role"
+                              {...field}
+                              className="w-full text-sm text-muted-foreground"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
+                  {loading ? <SkeletonInput /> :
+                    <FormField
+                      control={form.control}
+                      name="experience"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="experience">Experience</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="experience"
+                              type="text"
+                              placeholder="5 years of experience"
+                              {...field}
+                              className="w-full text-sm text-muted-foreground"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
 
-                        </SelectContent>
-                      </Select>
-
-                    </FormItem>
-                  )}
-                />}
 
 
+                </CardContent>
+              </Card>
 
-{loading ? <SkeletonInput /> :
-                <FormField
-                  control={form.control}
-                  name="writing_profile"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="writing-profile">Writing Profile</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id="writing-profile"
-                          placeholder="Enter your writing profile"
-                          {...field}
-                          className="w-full min-h-[100px] text-sm text-muted-foreground"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
-                 {loading ? <SkeletonInput /> :
+            </div>
+            <div className="w-full lg:w-2/3">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Treasure Chest</CardTitle>
+                  <CardDescription>
+                    Add treasure chest profile
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {loading ? <SkeletonInput /> :
+                    <FormField
+                      control={form.control}
+                      name="subscription"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subscription</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a client subscription" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="standard">Standard</SelectItem>
+                              <SelectItem value="premium">Premium</SelectItem>
 
-                <FormField
-                  control={form.control}
-                  name="recruiting_profile"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="recruiting-profile">Recruiting Profile</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id="recruiting-profile"
-                          placeholder="Enter your recruiting profile"
-                          {...field}
-                          className="w-full min-h-[100px] text-sm text-muted-foreground"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
-                 {loading ? <SkeletonInput /> :
+                            </SelectContent>
+                          </Select>
 
-                <FormField
-                  control={form.control}
-                  name="prompt"
-                  render={({ field }) => (
-                    <FormItem className="space-y-1">
-                      <FormLabel htmlFor="prompt">Prompt</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id="prompt"
-                          placeholder="Enter your prompt"
-                          {...field}
-                          className="w-full min-h-[100px] text-sm text-muted-foreground"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />}
-              
-              </CardContent>
-            </Card>
+                        </FormItem>
+                      )}
+                    />}
+
+                  {loading ? <SkeletonInput /> :
+                    <FormField
+                      control={form.control}
+                      name="active_monthly_tiles"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Monthly Tiles</FormLabel>
+                          <Input
+                            id="active_monthly_tiles"
+                            type="text"
+                            placeholder="Enter the Google Drive folder link"
+
+                            {...field}
+                            className="w-full text-sm font-medium"
+                          />
+
+                        </FormItem>
+                      )}
+                    />}
+
+
+
+                  {loading ? <SkeletonInput /> :
+                    <FormField
+                      control={form.control}
+                      name="writing_profile"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="writing-profile">Writing Profile</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              id="writing-profile"
+                              placeholder="Enter your writing profile"
+                              {...field}
+                              className="w-full min-h-[100px] text-sm text-muted-foreground"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
+                  {loading ? <SkeletonInput /> :
+
+                    <FormField
+                      control={form.control}
+                      name="recruiting_profile"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="recruiting-profile">Recruiting Profile</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              id="recruiting-profile"
+                              placeholder="Enter your recruiting profile"
+                              {...field}
+                              className="w-full min-h-[100px] text-sm text-muted-foreground"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
+                  {loading ? <SkeletonInput /> :
+
+                    <FormField
+                      control={form.control}
+                      name="prompt"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel htmlFor="prompt">Prompt</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              id="prompt"
+                              placeholder="Enter your prompt"
+                              {...field}
+                              className="w-full min-h-[100px] text-sm text-muted-foreground"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />}
+
+                </CardContent>
+              </Card>
+            </div>
+
+
+
 
 
 
