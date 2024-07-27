@@ -23,6 +23,8 @@ import SkeletonCardGridSimple from '@/components/skeleton-card-grid-simple';
 import { useParams } from "next/navigation"
 import { Trash } from "lucide-react"
 
+import { useRouter } from 'next/navigation'
+
 import {
   Select,
   SelectContent,
@@ -41,6 +43,8 @@ export default function Component() {
   const [search, setSearch] = useState("")
   const [templates, setTemplates] = useState<Template[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
+
+  const router = useRouter()
 
 
   const [client, setClient] = useState<Client | null>(null)
@@ -311,8 +315,8 @@ export default function Component() {
                           console.log(`Viewing ${file.filename}`);
                           window.open(file.link, "_blank");
                         }}
-                      >View</Button> : null}
-                    <Button disabled={
+                      >Open</Button> : null}
+                    {/* <Button disabled={
                       !["completed", "failed"].includes(file.status)
                     } variant="outline" size="sm" onClick={() => handleDownload(file)}>
                       {
@@ -322,7 +326,8 @@ export default function Component() {
                         file.status === "processing" ? "Processing" : "Download PDF"
                       }
 
-                    </Button>
+                    </Button> */}
+                    <Button variant="outline" size="sm" onClick={(e) => router.push(`treasure-chest/${file?.generated_treasure_chest}`)}>Edit</Button>
                   </CardContent>
                 </Card>
               ))}

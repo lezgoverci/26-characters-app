@@ -37,6 +37,7 @@ export interface Client {
     drive_id: string;
     created_at: string;
     updated_at: string;
+    generated_treasure_chest?: number;
   }
 
   export interface Account {
