@@ -297,7 +297,7 @@ export default function Component() {
                 <Card key={file.id}>
 
                   <CardHeader className="flex flex-row justify-between">
-                    <div className="font-medium">{file.filename}</div>
+                    <div className="font-medium">{file.filename} ({file.type == "premium" ? "Personalized" :"Standard"})</div>
                     <Trash onClick={() => handleDelete(file)} size={16} />
                   </CardHeader>
                   <CardContent className="flex items-center gap-4">
@@ -327,7 +327,7 @@ export default function Component() {
                       }
 
                     </Button> */}
-                    <Button variant="outline" size="sm" onClick={(e) => router.push(`treasure-chest/${file?.generated_treasure_chest}`)}>Edit</Button>
+                    <Button variant="outline" size="sm" onClick={(e) => router.push(`treasure-chest/${file?.generated_treasure_chest}?fileId=${file?.id}`)}>Edit</Button>
                   </CardContent>
                 </Card>
               ))}

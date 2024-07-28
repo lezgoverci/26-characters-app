@@ -38,6 +38,7 @@ export interface Client {
     created_at: string;
     updated_at: string;
     generated_treasure_chest?: number;
+    type?: string;
   }
 
   export interface Account {
