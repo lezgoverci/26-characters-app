@@ -265,7 +265,7 @@ export default function Component() {
 
           </div>
           <div className='flex gap-2'>
-          
+
             <Select onValueChange={(value) => { handleSelectTemplate(value) }} value={selectedTemplate?.id.toString()}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a template" />
@@ -273,11 +273,13 @@ export default function Component() {
               <SelectContent>
                 <SelectGroup>
                   {/* <SelectLabel>Templates</SelectLabel> */}
-                  {templates.map((template) => (
-                    <SelectItem key={template.id} value={template.id.toString()}>
+                  {templates.map((template) => {
+                    return template.status == "completed" && <SelectItem key={template.id} value={template.id.toString()}>
                       {template.name}
                     </SelectItem>
-                  ))}
+                  }
+
+                  )}
 
                 </SelectGroup>
               </SelectContent>
@@ -297,7 +299,7 @@ export default function Component() {
                 <Card key={file.id}>
 
                   <CardHeader className="flex flex-row justify-between">
-                    <div className="font-medium">{file.filename} ({file.type == "premium" ? "Personalized" :"Standard"})</div>
+                    <div className="font-medium">{file.filename} ({file.type == "premium" ? "Personalized" : "Standard"})</div>
                     <Trash onClick={() => handleDelete(file)} size={16} />
                   </CardHeader>
                   <CardContent className="flex items-center gap-4">
@@ -342,7 +344,7 @@ export default function Component() {
           />
         </div>
 
-     
+
       </main>
     </div>
 
