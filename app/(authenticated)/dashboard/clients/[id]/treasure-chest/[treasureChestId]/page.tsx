@@ -25,6 +25,8 @@ import {
 
 import { Button } from "@/components/ui/button"
 
+import { useToast } from "@/components/ui/use-toast"
+
 import {
     Select,
     SelectContent,
@@ -43,6 +45,8 @@ import axios from "axios"
 
 export default function TreasureChestDetailsPage() {
     const params = useParams<{ treasureChestId: string, id: string }>()
+
+    const { toast } = useToast()
 
     const searchParams = useSearchParams()
 
@@ -100,7 +104,10 @@ export default function TreasureChestDetailsPage() {
             } else {
                 const sortedByIdPosts = response.data.data.sort((a: any, b: any) => a.id - b.id)
                 setPosts(sortedByIdPosts)
-                setSelectedPost(sortedByIdPosts[0])
+                if (!selectedPost) {
+                    setSelectedPost(sortedByIdPosts[0])
+                }
+                
             }
 
             setLoading(false)
@@ -165,9 +172,16 @@ export default function TreasureChestDetailsPage() {
             console.log(response.data)
             fetchGeneratedPosts()
             setLoading(false)
+            toast({
+                description: "Changes applied successfully",
+            });
         } catch (error) {
             console.error(error);
             setLoading(false)
+            toast({
+                description: "Failed to apply changes",
+                variant: "destructive"
+            });
         }
     }
 
@@ -251,10 +265,10 @@ export default function TreasureChestDetailsPage() {
 
                                                     onChange={
                                                         (e) => {
-                                                            if(selectedPost){
+                                                            if (selectedPost) {
                                                                 setSelectedPost({ ...selectedPost, raw_content: e.target.value })
                                                             }
-                                                            
+
                                                         }
                                                     }
 
