@@ -251,7 +251,10 @@ export default function TreasureChestDetailsPage() {
 
                                                     onChange={
                                                         (e) => {
-                                                            setSelectedPost({ ...selectedPost, raw_content: e.target.value })
+                                                            if(selectedPost){
+                                                                setSelectedPost({ ...selectedPost, raw_content: e.target.value })
+                                                            }
+                                                            
                                                         }
                                                     }
 
