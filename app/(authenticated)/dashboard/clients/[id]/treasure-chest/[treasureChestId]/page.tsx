@@ -62,6 +62,7 @@ export default function TreasureChestDetailsPage() {
     const [file, setFile] = useState<File | null>(null)
 
     const [settings, setSettings] = useState<any | null>()
+    const [generatedDraftPost, setGeneratedDraftPost] = useState("")
 
     const fetchClient = async () => {
         setLoading(true)
@@ -98,6 +99,7 @@ export default function TreasureChestDetailsPage() {
                 console.log("No posts found")
             } else {
                 setPosts(response.data.data)
+                setSelectedPost(response.data.data[0])
             }
 
             setLoading(false)
@@ -120,9 +122,10 @@ export default function TreasureChestDetailsPage() {
                 openai_api_key: settings?.openai_api_key
             });
             
-            const newSelectedPost = { ...selectedPost, generated_content: response.data.data }
-            console.log(newSelectedPost)
-            setSelectedPost(newSelectedPost)
+            // const newSelectedPost = { ...selectedPost, updated_generated_content: response.data.data }
+            // console.log(newSelectedPost)
+            // setSelectedPost(newSelectedPost)
+            setGeneratedDraftPost(response.data.data)
             setLoading(false)
         } catch (error) {
             console.error(error);
@@ -140,12 +143,35 @@ export default function TreasureChestDetailsPage() {
           const general_settings = response.data.find((setting: any) => setting.name == "general_settings")?.value
           console.log(general_settings)
           setSettings(general_settings)
+          setSelectedModel(general_settings?.default_model)
           setLoading(false)
         } catch (error) {
           console.error(error);
           setLoading(false)
         }
       }
+
+      const applyChanges = async () => {
+        setLoading(true)
+        try {
+          const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/apply-single-post`, {
+            generated_post_id: selectedPost?.id,
+            generated_content: generatedDraftPost,
+            original_content: selectedPost?.generated_content,
+            presentation_file_id: file?.drive_id
+          });
+          console.log(response.data)
+          setLoading(false)
+        } catch (error) {
+          console.error(error);
+          setLoading(false)
+        }
+      }
+
+
+    useEffect(() => {
+        setGeneratedDraftPost(selectedPost?.generated_content as string)
+    } , [selectedPost])
 
     useEffect(() => {
         fetchGeneratedPosts()
@@ -176,6 +202,7 @@ export default function TreasureChestDetailsPage() {
                                     <Select value={selectedPost?.id.toString()} onValueChange={(value) => {
                                         const foundPost = posts?.find((post: Post) => post.id.toString() == value);
                                         setSelectedPost(foundPost ?? null);
+                                        
                                     }}  >
                                         <SelectTrigger className="w-1/4">
                                             <SelectValue placeholder="Select a post" />
@@ -188,7 +215,12 @@ export default function TreasureChestDetailsPage() {
                                         </SelectContent>
 
                                     </Select>
-                                    <Button size="sm" className='w-auto'>
+                                    <Button onClick={
+                                        (e) => {
+                                            e.preventDefault()
+                                            applyChanges()
+                                        }
+                                    } size="sm" className='w-auto'>
                                         Apply Changes
                                     </Button>
 
@@ -202,6 +234,12 @@ export default function TreasureChestDetailsPage() {
                                                 <Textarea
                                                     id="writing-profile"
                                                     value={selectedPost?.raw_content}
+
+                                                    onChange={
+                                                        (e) => {
+                                                            setSelectedPost({ ...selectedPost, raw_content: e.target.value })
+                                                        }
+                                                    }
 
                                                     className="w-full min-h-[200px] text-sm text-muted-foreground"
                                                 />
@@ -217,6 +255,7 @@ export default function TreasureChestDetailsPage() {
 
                                                     className="w-full min-h-[100px] text-sm text-muted-foreground"
                                                 />
+                                                <Label>AI Model</Label>
                                                 <Select value={selectedModel} onValueChange={
                                                     (value) => {
                                                         setSelectedModel(value)
@@ -250,7 +289,7 @@ export default function TreasureChestDetailsPage() {
                                                     <Label>Generated</Label>
                                                     <Textarea
                                                         id="writing-profile"
-                                                        value={selectedPost?.generated_content}
+                                                        value={generatedDraftPost}
 
                                                         className="w-full min-h-[600px] text-sm text-muted-foreground"
                                                     />

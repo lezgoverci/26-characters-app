@@ -69,4 +69,5 @@ export interface Post {
   generated_content: string;
   generated_treasure_chest: number;
   created_at: string;
+  updated_generated_content?: string;
 }
