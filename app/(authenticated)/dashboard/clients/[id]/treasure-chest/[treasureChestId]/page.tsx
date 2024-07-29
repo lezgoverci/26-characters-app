@@ -98,8 +98,9 @@ export default function TreasureChestDetailsPage() {
                 setPosts([])
                 console.log("No posts found")
             } else {
-                setPosts(response.data.data)
-                setSelectedPost(response.data.data[0])
+                const sortedByIdPosts = response.data.data.sort((a: any, b: any) => a.id - b.id)
+                setPosts(sortedByIdPosts)
+                setSelectedPost(sortedByIdPosts[0])
             }
 
             setLoading(false)
@@ -121,7 +122,7 @@ export default function TreasureChestDetailsPage() {
                 model: selectedModel,
                 openai_api_key: settings?.openai_api_key
             });
-            
+
             // const newSelectedPost = { ...selectedPost, updated_generated_content: response.data.data }
             // console.log(newSelectedPost)
             // setSelectedPost(newSelectedPost)
@@ -137,41 +138,43 @@ export default function TreasureChestDetailsPage() {
 
         setLoading(true)
         try {
-          const response = await axios.get(`https://n8n.xponent.ph/webhook/api/settings`);
-          // localStorage.setItem("settings", JSON.stringify(response.data))
-    
-          const general_settings = response.data.find((setting: any) => setting.name == "general_settings")?.value
-          console.log(general_settings)
-          setSettings(general_settings)
-          setSelectedModel(general_settings?.default_model)
-          setLoading(false)
-        } catch (error) {
-          console.error(error);
-          setLoading(false)
-        }
-      }
+            const response = await axios.get(`https://n8n.xponent.ph/webhook/api/settings`);
+            // localStorage.setItem("settings", JSON.stringify(response.data))
 
-      const applyChanges = async () => {
+            const general_settings = response.data.find((setting: any) => setting.name == "general_settings")?.value
+            console.log(general_settings)
+            setSettings(general_settings)
+            setSelectedModel(general_settings?.default_model)
+            setLoading(false)
+        } catch (error) {
+            console.error(error);
+            setLoading(false)
+        }
+    }
+
+    const applyChanges = async () => {
         setLoading(true)
         try {
-          const response = await axios.post(`https://n8n.xponent.ph/webhook-test/api/apply-single-post`, {
-            generated_post_id: selectedPost?.id,
-            generated_content: generatedDraftPost,
-            original_content: selectedPost?.generated_content,
-            presentation_file_id: file?.drive_id
-          });
-          console.log(response.data)
-          setLoading(false)
+            const response = await axios.post(`https://n8n.xponent.ph/webhook/api/apply-single-post`, {
+                generated_post_id: selectedPost?.id,
+                generated_content: generatedDraftPost,
+                original_content: selectedPost?.generated_content,
+                presentation_file_id: file?.drive_id,
+                title: selectedPost?.title,
+            });
+            console.log(response.data)
+            fetchGeneratedPosts()
+            setLoading(false)
         } catch (error) {
-          console.error(error);
-          setLoading(false)
+            console.error(error);
+            setLoading(false)
         }
-      }
+    }
 
 
     useEffect(() => {
         setGeneratedDraftPost(selectedPost?.generated_content as string)
-    } , [selectedPost])
+    }, [selectedPost])
 
     useEffect(() => {
         fetchGeneratedPosts()
@@ -202,7 +205,7 @@ export default function TreasureChestDetailsPage() {
                                     <Select value={selectedPost?.id.toString()} onValueChange={(value) => {
                                         const foundPost = posts?.find((post: Post) => post.id.toString() == value);
                                         setSelectedPost(foundPost ?? null);
-                                        
+
                                     }}  >
                                         <SelectTrigger className="w-1/4">
                                             <SelectValue placeholder="Select a post" />
@@ -215,14 +218,25 @@ export default function TreasureChestDetailsPage() {
                                         </SelectContent>
 
                                     </Select>
-                                    <Button onClick={
-                                        (e) => {
-                                            e.preventDefault()
-                                            applyChanges()
-                                        }
-                                    } size="sm" className='w-auto'>
-                                        Apply Changes
-                                    </Button>
+                                    <div className='flex gap-4'>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+
+                                                window.open(file?.link, "_blank");
+                                            }}
+                                        >Open Slides</Button>
+                                        <Button onClick={
+                                            (e) => {
+                                                e.preventDefault()
+                                                applyChanges()
+                                            }
+                                        } size="sm" className='w-auto'>
+                                            Apply Changes
+                                        </Button>
+                                    </div>
+
 
                                 </CardHeader>
                                 <CardContent className="flex items-center gap-4">
@@ -248,7 +262,7 @@ export default function TreasureChestDetailsPage() {
                                                     name="custom_prompt"
                                                     id="custom_prompt"
                                                     value={customPrompt}
-                                                    
+
                                                     onChange={(e) => {
                                                         setCustomPrompt(e.target.value)
                                                     }}
@@ -277,11 +291,19 @@ export default function TreasureChestDetailsPage() {
 
                                                 </Select>
                                                 <div className='flex gap-4'>
-                                                    <Button onClick={(e)=>{
-                                                        e.preventDefault()
-                                                        generateNewContent()}} variant="outline" className='w-full'>Generate</Button>
+                                                    <Button
+                                                        disabled={file?.type == "premium" ? false : true}
+                                                        onClick={(e) => {
+                                                            e.preventDefault()
+                                                            generateNewContent()
+                                                        }} variant="outline" className='w-full'>Generate</Button>
 
                                                 </div>
+                                                {file?.type == "premium" ? null :
+                                                    <p>
+                                                        You can only generate content for personalized treasure chest
+                                                    </p>
+                                                }
 
                                             </div>
                                             {client?.subscription !== "premium" ? null :
