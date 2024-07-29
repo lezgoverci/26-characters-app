@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 
 import { Textarea } from "@/components/ui/textarea"
-import { Client, File } from "@/types"
+import { Client, File, Post } from "@/types"
 
 import {
     Form,
@@ -39,6 +39,8 @@ import SkeletonInput from "@/components/skeleton-input"
 
 import axios from "axios"
 
+
+
 export default function TreasureChestDetailsPage() {
     const params = useParams<{ treasureChestId: string, id: string }>()
 
@@ -49,11 +51,17 @@ export default function TreasureChestDetailsPage() {
 
     const [client, setClient] = useState<Client | null>(null)
 
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState<Post[]>([])
 
-    const [selectedPost, setSelectedPost] = useState<any>(null)
+    const [selectedPost, setSelectedPost] = useState<Post | null>(null)
+
+    const [selectedModel, setSelectedModel] = useState("")
+
+    const [customPrompt, setCustomPrompt] = useState("")
 
     const [file, setFile] = useState<File | null>(null)
+
+    const [settings, setSettings] = useState<any | null>()
 
     const fetchClient = async () => {
         setLoading(true)
@@ -99,25 +107,22 @@ export default function TreasureChestDetailsPage() {
         }
     }
 
-    const generateNewContent = async (
-        original: string,
-        custom_prompt: string,
-        writing_profile: string,
-        recruiting_profile: string,
-        original_prompt: string,
-        model: string
-    ) => {
+    const generateNewContent = async () => {
         setLoading(true)
         try {
-            const response = await axios.post(`https://n8n.xponent.ph/webhook/api/generate-post`, {
-                original,
-                custom_prompt,
-                writing_profile,
-                recruiting_profile,
-                original_prompt
+            const response = await axios.post(`https://n8n.xponent.ph/webhook/api/generate-single-post`, {
+                original: selectedPost?.raw_content,
+                custom_prompt: customPrompt,
+                writing_profile: client?.writing_profile,
+                recruiting_profile: client?.recruiting_profile,
+                original_prompt: client?.prompt,
+                model: selectedModel,
+                openai_api_key: settings?.openai_api_key
             });
-            console.log(response.data)
-            fetchGeneratedPosts()
+            
+            const newSelectedPost = { ...selectedPost, generated_content: response.data.data }
+            console.log(newSelectedPost)
+            setSelectedPost(newSelectedPost)
             setLoading(false)
         } catch (error) {
             console.error(error);
@@ -125,9 +130,27 @@ export default function TreasureChestDetailsPage() {
         }
     }
 
+    const fetchSettings = async () => {
+
+        setLoading(true)
+        try {
+          const response = await axios.get(`https://n8n.xponent.ph/webhook/api/settings`);
+          // localStorage.setItem("settings", JSON.stringify(response.data))
+    
+          const general_settings = response.data.find((setting: any) => setting.name == "general_settings")?.value
+          console.log(general_settings)
+          setSettings(general_settings)
+          setLoading(false)
+        } catch (error) {
+          console.error(error);
+          setLoading(false)
+        }
+      }
+
     useEffect(() => {
         fetchGeneratedPosts()
         fetchClient()
+        fetchSettings()
 
         if (fileId) {
             fetchFile()
@@ -144,31 +167,30 @@ export default function TreasureChestDetailsPage() {
 
                 <div className="flex flex-col justify-between mb-4 gap-4">
                     {loading ? <SkeletonCardPost /> :
-                        posts.length > 0 && (
+                        (posts.length > 0) && (
 
                             <Card >
 
                                 <CardHeader className="flex flex-row justify-between items-center">
 
-                                    <Select value={selectedPost?.id} onValueChange={
-                                        (value) => {
-                                            setSelectedPost(posts.find((post: any) => post.id == value))
-                                        }
-                                    } >
-                                        <SelectTrigger className="w-[300px]">
+                                    <Select value={selectedPost?.id.toString()} onValueChange={(value) => {
+                                        const foundPost = posts?.find((post: Post) => post.id.toString() == value);
+                                        setSelectedPost(foundPost ?? null);
+                                    }}  >
+                                        <SelectTrigger className="w-1/4">
                                             <SelectValue placeholder="Select a post" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
                                                 {posts.map((post: any) => (
-                                                    <SelectItem key={post?.id} value={post?.id}>{post?.title}</SelectItem>))}
+                                                    <SelectItem key={post?.id} value={post?.id.toString()}>{post?.title}</SelectItem>))}
                                             </SelectGroup>
                                         </SelectContent>
 
                                     </Select>
                                     <Button size="sm" className='w-auto'>
-                                                        Save Changes
-                                                    </Button>
+                                        Apply Changes
+                                    </Button>
 
                                 </CardHeader>
                                 <CardContent className="flex items-center gap-4">
@@ -187,13 +209,17 @@ export default function TreasureChestDetailsPage() {
                                                 <Textarea
                                                     name="custom_prompt"
                                                     id="custom_prompt"
-
+                                                    value={customPrompt}
+                                                    
+                                                    onChange={(e) => {
+                                                        setCustomPrompt(e.target.value)
+                                                    }}
 
                                                     className="w-full min-h-[100px] text-sm text-muted-foreground"
                                                 />
-                                                <Select value={selectedPost?.id} onValueChange={
+                                                <Select value={selectedModel} onValueChange={
                                                     (value) => {
-                                                        setSelectedPost(posts.find((post: any) => post.id == value))
+                                                        setSelectedModel(value)
                                                     }
                                                 } >
                                                     <SelectTrigger >
@@ -212,8 +238,10 @@ export default function TreasureChestDetailsPage() {
 
                                                 </Select>
                                                 <div className='flex gap-4'>
-                                                    <Button variant="outline" className='w-full'>Generate</Button>
-                                                  
+                                                    <Button onClick={(e)=>{
+                                                        e.preventDefault()
+                                                        generateNewContent()}} variant="outline" className='w-full'>Generate</Button>
+
                                                 </div>
 
                                             </div>
