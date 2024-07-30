@@ -300,7 +300,7 @@ export default function Component() {
 
                   <CardHeader className="flex flex-row justify-between">
                     <div className="font-medium">{file.filename} ({file.type == "premium" ? "Personalized" : "Standard"})</div>
-                    <Trash onClick={() => handleDelete(file)} size={16} />
+                    {file.status != "processing" && <Trash onClick={() => handleDelete(file)} size={16} />}
                   </CardHeader>
                   <CardContent className="flex items-center gap-4">
                     <div className="flex-1">
@@ -318,18 +318,18 @@ export default function Component() {
                           window.open(file.link, "_blank");
                         }}
                       >Open</Button> : null}
-                    {/* <Button disabled={
+                    <Button disabled={
                       !["completed", "failed"].includes(file.status)
-                    } variant="outline" size="sm" onClick={() => handleDownload(file)}>
+                    } variant="outline" size="sm" onClick={(e) => router.push(`treasure-chest/${file?.generated_treasure_chest}?fileId=${file?.id}`)}>
                       {
                         file.status === "processing" ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null
                       }
                       {
-                        file.status === "processing" ? "Processing" : "Download PDF"
+                        file.status === "processing" ? "Processing" : "Edit"
                       }
 
-                    </Button> */}
-                    <Button variant="outline" size="sm" onClick={(e) => router.push(`treasure-chest/${file?.generated_treasure_chest}?fileId=${file?.id}`)}>Edit</Button>
+                    </Button>
+                    {/* <Button variant="outline" size="sm" onClick={(e) => router.push(`treasure-chest/${file?.generated_treasure_chest}?fileId=${file?.id}`)}>Edit</Button> */}
                   </CardContent>
                 </Card>
               ))}

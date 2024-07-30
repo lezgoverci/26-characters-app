@@ -380,7 +380,7 @@ export default function ClientsDetails() {
                 <CardHeader>
                   <CardTitle>Delete Client</CardTitle>
                   <CardDescription>
-                    Type <strong>{client?.email}</strong> in the input field below to delete this template. This action cannot be undone.
+                    Type <strong>{client?.email}</strong> in the input field below to delete this client. This action cannot be undone.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
