@@ -193,7 +193,7 @@ export default function TreasureChestDetailsPage() {
     }
 
     useEffect(()=>{
-        console.log("contentToBeReplaced",contentToBeReplaced)
+        // console.log("contentToBeReplaced",contentToBeReplaced)
     },[contentToBeReplaced])
 
 
