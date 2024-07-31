@@ -68,6 +68,8 @@ export default function TreasureChestDetailsPage() {
     const [settings, setSettings] = useState<any | null>()
     const [generatedDraftPost, setGeneratedDraftPost] = useState("")
 
+    const [contentToBeReplaced, setContentToBeReplaced] = useState("")
+
     const fetchClient = async () => {
         setLoading(true)
         try {
@@ -84,7 +86,7 @@ export default function TreasureChestDetailsPage() {
         setLoading(true)
         try {
             const response = await axios.get(`https://n8n.xponent.ph/webhook/756fafd4-8400-4421-8892-455a7026ee9d/api/files/${fileId}`);
-            console.log(response.data)
+       
             setFile(response.data)
             setLoading(false)
         } catch (error) {
@@ -107,6 +109,8 @@ export default function TreasureChestDetailsPage() {
                 if (!selectedPost) {
                     setSelectedPost(sortedByIdPosts[0])
                 }
+
+                
                 
             }
 
@@ -134,6 +138,7 @@ export default function TreasureChestDetailsPage() {
             // console.log(newSelectedPost)
             // setSelectedPost(newSelectedPost)
             setGeneratedDraftPost(response.data.data)
+  
             setLoading(false)
         } catch (error) {
             console.error(error);
@@ -149,7 +154,7 @@ export default function TreasureChestDetailsPage() {
             // localStorage.setItem("settings", JSON.stringify(response.data))
 
             const general_settings = response.data.find((setting: any) => setting.name == "general_settings")?.value
-            console.log(general_settings)
+   
             setSettings(general_settings)
             setSelectedModel(general_settings?.default_model)
             setLoading(false)
@@ -168,9 +173,11 @@ export default function TreasureChestDetailsPage() {
                 original_content: selectedPost?.generated_content,
                 presentation_file_id: file?.drive_id,
                 title: selectedPost?.title,
+                search_content: contentToBeReplaced
             });
-            console.log(response.data)
-            fetchGeneratedPosts()
+            // console.log(response.data)
+            await fetchGeneratedPosts()
+            setContentToBeReplaced(generatedDraftPost)
             setLoading(false)
             toast({
                 description: "Changes applied successfully",
@@ -185,9 +192,15 @@ export default function TreasureChestDetailsPage() {
         }
     }
 
+    useEffect(()=>{
+        console.log("contentToBeReplaced",contentToBeReplaced)
+    },[contentToBeReplaced])
+
+
 
     useEffect(() => {
         setGeneratedDraftPost(selectedPost?.generated_content as string)
+        setContentToBeReplaced(selectedPost?.generated_content as string)
     }, [selectedPost])
 
     useEffect(() => {
@@ -329,6 +342,11 @@ export default function TreasureChestDetailsPage() {
                                                     <Textarea
                                                         id="writing-profile"
                                                         value={generatedDraftPost}
+                                                        onChange={
+                                                            (e) => {
+                                                                setGeneratedDraftPost(e.target.value)
+                                                            }
+                                                        }
 
                                                         className="w-full min-h-[600px] text-sm text-muted-foreground"
                                                     />
