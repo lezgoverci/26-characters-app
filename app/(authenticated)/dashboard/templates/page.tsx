@@ -92,7 +92,7 @@ export default function Templates() {
                     ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][parseInt(template.month) - 1]
                   }</TableCell>
                   <TableCell>{template.year}</TableCell>
-                  <TableCell>{template.status == "completed" ? <Badge className="bg-green-200" variant="outline">Completed</Badge> : <Badge variant="outline">Processing</Badge>}</TableCell>
+                  <TableCell>{template.status == "completed" ? <Badge className="bg-green-200" variant="outline">Completed</Badge> : template.status == "failed" ? <Badge variant="destructive">Failed</Badge>: <Badge variant="outline">Processing</Badge>}</TableCell>
                 </TableRow>
               ))}
 

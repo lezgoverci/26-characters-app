@@ -23,6 +23,8 @@ import SkeletonCardGridSimple from '@/components/skeleton-card-grid-simple';
 import { useParams } from "next/navigation"
 import { Trash } from "lucide-react"
 
+import { Badge } from "@/components/ui/badge"
+
 import { useRouter } from 'next/navigation'
 
 import {
@@ -318,6 +320,7 @@ export default function Component() {
                           window.open(file.link, "_blank");
                         }}
                       >Open</Button> : null}
+                      {file.status !== "failed" ?
                     <Button disabled={
                       !["completed", "failed"].includes(file.status)
                     } variant="outline" size="sm" onClick={(e) => router.push(`treasure-chest/${file?.generated_treasure_chest}?fileId=${file?.id}`)}>
@@ -327,8 +330,9 @@ export default function Component() {
                       {
                         file.status === "processing" ? "Processing" : "Edit"
                       }
-
-                    </Button>
+                    </Button> :
+                    <Badge variant="destructive">Failed</Badge>
+                    }
                     {/* <Button variant="outline" size="sm" onClick={(e) => router.push(`treasure-chest/${file?.generated_treasure_chest}?fileId=${file?.id}`)}>Edit</Button> */}
                   </CardContent>
                 </Card>
