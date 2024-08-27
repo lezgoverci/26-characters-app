@@ -59,7 +59,7 @@ export default function Component() {
 
   const [files, setFiles] = useState<File[] | null>()
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(9)
+  const [itemsPerPage, setItemsPerPage] = useState(999)
   const filteredFiles = useMemo(() => {
     return files?.filter((file) => {
       return file.filename?.toLowerCase().includes(search.toLowerCase()) ||
@@ -102,7 +102,9 @@ export default function Component() {
         setFiles([])
         console.log("No files found")
       } else {
-        setFiles(response.data.data)
+        // setFiles(response.data.data)
+        const sortedFiles = response.data.data.sort((a: File, b: File) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        setFiles(sortedFiles);
       }
 
       setLoading(false)
