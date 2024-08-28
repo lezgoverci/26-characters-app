@@ -41,7 +41,9 @@ export default function Clients() {
     setLoading(true)
     try {
       const response = await axios.get("https://n8n.xponent.ph/webhook/api/clients/")
-      setClients(response.data.data)
+      // setClients(response.data.data)
+      const sortedClients = response.data.data.sort((a: Client, b: Client) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      setClients(sortedClients)
       setLoading(false)
     } catch (error) {
       console.log(error)

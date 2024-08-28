@@ -12,6 +12,7 @@ export interface Client {
   recruiting_profile: string;
   prompt: string;
   active_monthly_tiles?: string;
+  created_at: string;
 };
 
 export interface Template {

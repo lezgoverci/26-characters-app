@@ -38,7 +38,9 @@ export default function Templates() {
         console.error(res.data.error)
         return
       }
-      setTemplates(res.data.data)
+      // setTemplates(res.data.data)
+      const sortedTemplates = res.data.data.sort((a: Template, b: Template) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      setTemplates(sortedTemplates)
       setLoading(false)
     } catch (error) {
       console.error(error)
@@ -60,7 +62,7 @@ export default function Templates() {
       </header>
 
       <main className="flex-1 overflow-auto p-4 md:p-6">
-      <Button variant="outline" onClick={fetchTemplates} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Refresh List</Button>
+        <Button variant="outline" onClick={fetchTemplates} disabled={loading}>{loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Refresh List</Button>
         {loading ? <SkeletonList /> : <>
           <Table>
             <TableHeader>
@@ -92,7 +94,7 @@ export default function Templates() {
                     ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][parseInt(template.month) - 1]
                   }</TableCell>
                   <TableCell>{template.year}</TableCell>
-                  <TableCell>{template.status == "completed" ? <Badge className="bg-green-200" variant="outline">Completed</Badge> : template.status == "failed" ? <Badge variant="destructive">Failed</Badge>: <Badge variant="outline">Processing</Badge>}</TableCell>
+                  <TableCell>{template.status == "completed" ? <Badge className="bg-green-200" variant="outline">Completed</Badge> : template.status == "failed" ? <Badge variant="destructive">Failed</Badge> : <Badge variant="outline">Processing</Badge>}</TableCell>
                 </TableRow>
               ))}
 
