@@ -39,7 +39,7 @@ export default function Templates() {
         return
       }
       // setTemplates(res.data.data)
-      const sortedTemplates = res.data.data.sort((a: Template, b: Template) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      const sortedTemplates = res.data.data.sort((a: Template, b: Template) => b.id - a.id)
       setTemplates(sortedTemplates)
       setLoading(false)
     } catch (error) {
