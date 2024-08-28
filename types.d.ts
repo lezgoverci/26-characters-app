@@ -1,5 +1,5 @@
 export interface Client {
-  id?: string;
+  id?: number;
   first_name: string;
   last_name: string;
   email: string;
@@ -12,7 +12,6 @@ export interface Client {
   recruiting_profile: string;
   prompt: string;
   active_monthly_tiles?: string;
-  created_at: string;
 };
 
 export interface Template {

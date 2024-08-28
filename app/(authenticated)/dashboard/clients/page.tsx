@@ -42,7 +42,7 @@ export default function Clients() {
     try {
       const response = await axios.get("https://n8n.xponent.ph/webhook/api/clients/")
       // setClients(response.data.data)
-      const sortedClients = response.data.data.sort((a: Client, b: Client) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      const sortedClients = response.data.data.sort((a: Client, b: Client) => (b.id ?? 0) - (a.id ?? 0))
       setClients(sortedClients)
       setLoading(false)
     } catch (error) {
@@ -139,10 +139,10 @@ export default function Clients() {
 
                             </div>
                             <div className="flex gap-2">
-                              <Button onClick={() => viewDetails(client.id ?? "")} variant="outline" size="sm">
+                              <Button onClick={() => viewDetails(client.id?.toString() ?? "")} variant="outline" size="sm">
                                 Treasure Chest
                               </Button>
-                              <Button onClick={(e) => { e.preventDefault(); editDetails(client.id ?? "") }} variant="outline" size="sm">
+                              <Button onClick={(e) => { e.preventDefault(); editDetails(client.id?.toString() ?? "") }} variant="outline" size="sm">
                                 Details
                               </Button>
                             </div>
